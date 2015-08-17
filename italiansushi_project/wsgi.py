@@ -12,3 +12,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "italiansushi_project.settings")
 
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
+
+### HEROKU SERVER SETTINGS: comment out these lines to run website locally, but keep them uncommented for heroku 
+from django.core.wsgi import get_wsgi_application
+from dj_static import Cling
+
+application = Cling(get_wsgi_application())

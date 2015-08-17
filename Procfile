@@ -1,0 +1,1 @@
+web: gunicorn italiansushi_project.wsgi --log-file -
