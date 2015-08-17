@@ -74,10 +74,11 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
   display: none;
 }
 
-.footer {
-    position: relative;
-    margin-top: -150px; /* negative value of footer height */
-    height: 150px;
-    clear:both;
-    padding-top:20px;
+.footer{
+    position:fixed;
+    bottom:0;
+    left:6%;
+    margin-left:-50px; /*negative half the width */
+    width:100px;
+    height:100px;
 }
