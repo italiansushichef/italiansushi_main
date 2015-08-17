@@ -1,0 +1,109 @@
+<!-- Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
+   from http://bootsnipp.com/snippets/featured/simple-vertical-tab -->
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Italian Sushi</title>
+
+    <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/font-awesome.min.css" %}" rel="stylesheet">
+    <link href="{% static "css/index.css" %}" rel="stylesheet">
+
+    <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootbox.min.js" %}"></script>
+
+</head>
+
+
+<body>
+    <div class="container">
+    	<div class="row">
+            <div class="col-md-8 col-md-offset-2 bhoechie-tab-container">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
+                  <div class="list-group">
+                    <a href="#" class="list-group-item active text-center">
+                      <h4 class="glyphicon glyphicon-plane"></h4><br/>Feature1
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-road"></h4><br/>Feature2
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-home"></h4><br/>Feature3
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Feature4
+                    </a>
+                    <a href="#" class="list-group-item text-center">
+                      <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Feature5
+                    </a>
+                  </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
+                    <!-- flight section -->
+                    <div class="bhoechie-tab-content active">
+                        <center>
+                          <h1 class="glyphicon glyphicon-plane" style="font-size:14em;color:#55518a"></h1>
+                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
+                          <h3 style="margin-top: 0;color:#55518a">Make an Item Set</h3>
+                        </center>
+                    </div>
+                    <!-- train section -->
+                    <div class="bhoechie-tab-content">
+                        <center>
+                          <h1 class="glyphicon glyphicon-road" style="font-size:12em;color:#55518a"></h1>
+                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
+                          <h3 style="margin-top: 0;color:#55518a">Upload your item sets</h3>
+                        </center>
+                    </div>
+        
+                    <!-- hotel search -->
+                    <div class="bhoechie-tab-content">
+                        <center>
+                          <h1 class="glyphicon glyphicon-home" style="font-size:12em;color:#55518a"></h1>
+                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
+                          <h3 style="margin-top: 0;color:#55518a">View pro item sets</h3>
+                        </center>
+                    </div>
+                    <div class="bhoechie-tab-content">
+                        <center>
+                          <h1 class="glyphicon glyphicon-cutlery" style="font-size:12em;color:#55518a"></h1>
+                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
+                          <h3 style="margin-top: 0;color:#55518a">Generate a random item set</h3>
+                        </center>
+                    </div>
+                    <div class="bhoechie-tab-content">
+                        <center>
+                          <h1 class="glyphicon glyphicon-credit-card" style="font-size:12em;color:#55518a"></h1>
+                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
+                          <h3 style="margin-top: 0;color:#55518a">Login and get started</h3>
+                        </center>
+                    </div>
+                </div>
+            </div>
+      </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+                e.preventDefault();
+                $(this).siblings('a.active').removeClass("active");
+                $(this).addClass("active");
+                var index = $(this).index();
+                $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+                $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+            });
+        });
+    </script>
+</body>
+
+
+</html>
