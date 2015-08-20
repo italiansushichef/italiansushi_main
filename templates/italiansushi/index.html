@@ -13,7 +13,7 @@
     <title>Italian Sushi</title>
 
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/font-awesome.min.css" %}" rel="stylesheet">
+    <link href="{% static "font-awesome-4.4.0/css/font-awesome.min.css" %}" rel="stylesheet">
     <link href="{% static "css/index.css" %}" rel="stylesheet">
 
     <script type="text/javascript" src="{% static "js/jquery.min.js" %}"></script>
@@ -24,60 +24,117 @@
 
 
 <body>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Italian Sushi</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="dropdown-header">Nav header</li>
+                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if logged_in %}
+                    <li><a href="../logout/">Logout</a></li> 
+                    {% else %}
+                    <li><a href="" class="login-popup">Login</a></li> 
+                    {% endif %}
+                    <!-- <li><a href="../navbar/">Default</a></li>
+                    <li><a href="../navbar-static-top/">Static top</a></li>
+                    <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li> -->
+                </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
     <div class="container section-container">
     	<div class="row">
             <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1 bhoechie-tab-container">
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
                   <div class="list-group">
                     <a href="#" class="list-group-item active text-center">
-                      <h4 class="glyphicon glyphicon-plane"></h4><br/>Feature1
+                      <h4 class="fa fa-cloud-upload"></h4><br/>Upload Item Sets
                     </a>
                     <a href="#" class="list-group-item text-center">
-                      <h4 class="glyphicon glyphicon-road"></h4><br/>Feature2
+                      <h4 class="fa fa-cloud-upload"></h4><br/>Feature2
                     </a>
                     <a href="#" class="list-group-item text-center">
-                      <h4 class="glyphicon glyphicon-home"></h4><br/>Feature3
+                      <h4 class="fa fa-home"></h4><br/>Feature3
                     </a>
                     <a href="#" class="list-group-item text-center">
-                      <h4 class="glyphicon glyphicon-cutlery"></h4><br/>Feature4
+                      <h4 class="fa fa-cutlery"></h4><br/>Feature4
                     </a>
                     <a href="#" class="list-group-item text-center">
-                      <h4 class="glyphicon glyphicon-credit-card"></h4><br/>Feature5
+                      <h4 class="fa fa-credit-card"></h4><br/>Feature5
                     </a>
                   </div>
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
                     <div class="bhoechie-tab-content active">
                         <center>
-                          <h1 class="glyphicon glyphicon-plane" style="font-size:14em;color:#55518a"></h1>
-                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
-                          <h3 style="margin-top: 0;color:#55518a">Make an Item Set</h3>
+                            <h1 class="fa fa-cloud-upload" style="font-size:10em;color:#55518a"></h1>
+                            <h2 style="margin-top: 0;color:#55518a">Upload your item sets</h2>
+                            <h5 style="margin-top: 0;color:#55518a">Store your item set JSON files online, so you 
+                            can download them on other devices. </h5>
+
+                            {% if not logged_in %}
+                            <h5 style="margin-top: 0;color:#55518a">It looks like you aren't logged in. 
+                            You must log in to save item sets to your profile. 
+                            If you don't have an account, you can create one for free! </h5>
+                            <br>
+                            <a href="#" id="login-btn" class="btn btn-lg btn-primary btn-side login-popup" type="submit">
+                                Log In</a>
+                            &nbsp;
+                            <a href="#" id="createuser-btn" class="btn btn-lg btn-primary btn-side createuser-popup" type="submit">
+                                Create Account</a>
+                            {% elif logged_in %}
+                            <h5 style="margin-top: 0;color:#55518a">Welcome {{ user.username }}!</h5>
+                            {% endif %}
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="glyphicon glyphicon-road" style="font-size:12em;color:#55518a"></h1>
+                          <h1 class="fa fa-cloud-upload" style="font-size:12em;color:#55518a"></h1>
                           <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
                           <h3 style="margin-top: 0;color:#55518a">Upload your item sets</h3>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="glyphicon glyphicon-home" style="font-size:12em;color:#55518a"></h1>
+                          <h1 class="fa fa-home" style="font-size:12em;color:#55518a"></h1>
                           <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
                           <h3 style="margin-top: 0;color:#55518a">View pro item sets</h3>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="glyphicon glyphicon-cutlery" style="font-size:12em;color:#55518a"></h1>
+                          <h1 class="fa fa-cutlery" style="font-size:12em;color:#55518a"></h1>
                           <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
                           <h3 style="margin-top: 0;color:#55518a">Generate a random item set</h3>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="glyphicon glyphicon-credit-card" style="font-size:12em;color:#55518a"></h1>
+                          <h1 class="fa fa-credit-card" style="font-size:12em;color:#55518a"></h1>
                           <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
                           <h3 style="margin-top: 0;color:#55518a">Get an item set for your matchup</h3>
                         </center>
@@ -86,6 +143,22 @@
             </div>
       </div>
     </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-mid-8">
+                    <p>
+                    Italian Sushi isn't endorsed by Riot Games and neither 
+                    reflects the views or opinions of Riot Games nor anyone 
+                    officially involved in producing or managing League of Legends. 
+                    League of Legends and Riot Games are trademarks or registered 
+                    trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         $(document).ready(function() {
@@ -98,16 +171,73 @@
                 $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
             });
         });
+
+        $('.login-popup').click(function(e){
+            e.preventDefault();
+            console.log("login-btn clicked");
+            bootbox.dialog({
+                
+                message: '<div class="row">'
+                            + '<div class="col-xs-12">'
+                                + '<h1 class="text-center form-title"> Log in to upload, save, and download item sets. </h1>'
+                                + '<div class="form-box">'
+                                    + '<form id="login-form" class="form-login" method="POST" action="/login/">'
+                                        + "{% csrf_token %}" 
+                                        + '<input type="text" name="usernameoremail" class="form-control" placeholder="Username or Email" required autofocus>'
+                                        + '<input type="password" name="password" class="form-control" placeholder="Password" required>'
+                                        + '<button type="submit" class="hide" id="submit-login-form"></button>'
+                                    + '</form>'
+                                + '</div>'
+                            + '</div>'
+                        + '</div>',
+                buttons: {
+                    success: {
+                        label: "Log In",
+                        className: "btn-primary",
+                        callback: function(){
+                            $('#submit-login-form').click();
+                            return false;
+                        }
+                    }
+                }
+            });
+        });
+
+        $('.createuser-popup').click(function(e){
+            e.preventDefault();
+            console.log("createuser-btn clicked");
+            bootbox.dialog({
+                
+                message: '<div class="row">'
+                            + '<div class="col-xs-12">'
+                                + '<h1 class="text-center form-title"> Create a free user account to upload, save, and download item sets. Please note this account is separate from your Riot League of Legends account. </h1>'
+                                + '<div class="form-box">'
+                                    + '<form id="createuser-form" class="form-login" method="POST" action="/createuser/">'
+                                        + "{% csrf_token %}" 
+                                        + '<input type="text" name="username" class="form-control" placeholder="Username" required autofocus>'
+                                        + '<input type="text" name="email" class="form-control" placeholder="Email" required>'
+                                        + '<input type="password" name="password" class="form-control" placeholder="Password" required>'
+                                        // + '<input type="password" name="repassword" class="form-control" placeholder="Re-enter Password" required>'
+                                        + '<button type="submit" class="hide" id="submit-createuser-form"></button>'
+                                    + '</form>'
+                                + '</div>'
+                            + '</div>'
+                        + '</div>',
+                buttons: {
+                    success: {
+                        label: "Create User Account",
+                        className: "btn-primary",
+                        callback: function(){
+                            $('#submit-createuser-form').click();
+                            return false;
+                        }
+                    }
+                }
+            });
+        });
+
     </script>
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-mid-8">
-                    <p>Italian Sushi isn't endorsed by Riot Games and neither reflects the views or opinions of Riot Games nor anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+
 </body>
 
 
