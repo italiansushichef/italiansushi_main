@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from italiansushi.forms import CreateUserForm, LoginForm
+from italiansushi.forms import CreateUserForm, LoginForm, ItemForm, FileForm
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as django_login
 from django.contrib.auth.models import User
 from italiansushi.models import LoginProfile, ItemSet
 from django.contrib.auth.decorators import login_required
+import re
 
 # homepage
 def index(request):
@@ -25,15 +26,17 @@ def createuser(request):
             # repassword = data['repassword']
             username = data['username']
             email = data['email']
-            # if there is already a user with that acct 
-            user_exists = User.objects.filter(username=username)
+            # if there is already a user with that acct -- matching username or email. 
+            # note: the username check is actually redundant
+            user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
             if user_exists:
-                user = authenticate(username=username, password=password)
-                if user:
+                user = authenticate(username=username, password=password, email=email)
+                if user is not None:
                     django_login(request, user)
                     return HttpResponseRedirect('/')
                 else:
-                    print "Error, a user with that username already exists"
+                    print "Error, a user with that username or email already exists"
+                    return HttpResponseRedirect('/#badlogin')
             else:
                 user = User(username=username, password=password, email=email)
                 user.set_password(password)
@@ -43,26 +46,64 @@ def createuser(request):
                 user = authenticate(username=username, password=password, email=email)
                 django_login(request, user)
                 return HttpResponseRedirect('/')
-        else:
+        else: # note: this will check if a user with that username already exists!!
             print 'invalid profile'
+            print form.errors
     return HttpResponseRedirect('/')
 
-def login(request):
+def site_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             password = data['password']
             usernameoremail = data['usernameoremail']
-            user = authenticate(username=usernameoremail, password=password)
-            django_login(request, user)
-            return HttpResponseRedirect('/')
+            # check if it is an email. if so, search database for user with that email
+            # found_user = None
+            # if re.match(r'[^@]+@[^@]+\.[^@]+', usernameoremail):
+            #     found_user = User.objects.filter(email=usernameoremail)
+            # # try checking if there is a user 
+            # if not found_user:
+            #     found_user = User.objects.filter(username=usernameoremail)
+            found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
+            # from list of possible users, try to authenticate
+            if found_user:
+                for possible_user in found_user:
+                    user = authenticate(username=possible_user, password=password)
+                    if user is not None:
+                        django_login(request, user)
+                        return HttpResponseRedirect('/')
         else:
-            print 'invalid'
+            print 'invalid data for login'
     return HttpResponseRedirect('/')
+
+@login_required
+def receive_upload(request):
+    if request.method == "POST":
+        form = FileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+            jsonfile = request.FILES['json']
+            json = jsonfile.read()
+            filetype = jsonfile.content_type
+            print data
+            print jsonfile
+            print json
+            print jsonfile.content_type
+            ## validate content type
+            ## validate size
+            if filetype == "application/json":
+                new_itemset = ItemSet(json=json)
+                print new_itemset.json
+                return HttpResponse('received a valid file...')
+            else:
+                return HttpResponse('not a json...')
+            
+        else: 
+            return HttpResponse('not a valid file...')
+    return HttpResponse('not a valid file...')
 
 @login_required
 def site_logout(request):
     logout(request)
-    print 'hm?'
     return HttpResponseRedirect('/')

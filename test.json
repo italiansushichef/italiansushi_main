@@ -1,0 +1,10 @@
+{
+    "title": "The name of the page",
+    "type": "custom",
+    "map": "any",
+    "mode": "any",
+    "priority": false,
+    "sortrank": 0,
+    "blocks": [
+    ]
+}
