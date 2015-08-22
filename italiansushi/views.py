@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from italiansushi.forms import CreateUserForm, LoginForm, ItemForm, FileForm
+from italiansushi.forms import CreateUserForm, LoginForm, FileForm
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as django_login
 from django.contrib.auth.models import User
 from italiansushi.models import LoginProfile, ItemSet
 from django.contrib.auth.decorators import login_required
 import re
+
+
 
 # homepage
 def index(request):
@@ -77,6 +79,7 @@ def site_login(request):
 
 @login_required
 def receive_upload(request):
+    MAX_UPLOADS = 10
     if request.method == "POST":
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -84,11 +87,11 @@ def receive_upload(request):
             jsonfile = request.FILES['json']
             json = jsonfile.read()
             filetype = jsonfile.content_type
-            print data
-            print jsonfile
-            print json
-            print jsonfile.content_type
-            print jsonfile.size
+            # print data
+            # print jsonfile
+            # print json
+            # print jsonfile.content_type
+            # print jsonfile.size
 
             ## insert function: validate_json(jsonfile)
             ## jsonfile.name 
@@ -101,9 +104,34 @@ def receive_upload(request):
             ## else return jsonfile
 
             if filetype == "application/json":
-                new_itemset = ItemSet(json=json)
+                user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+                
+                if user_loginprofile.saved_count >= MAX_UPLOADS:
+                    return HttpResponse('Received file, but cannot add more error because limit is 10')
+
+                # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
+                name28 = jsonfile.name[:-5][0:28] 
+                name32 = name28
+                # make sure the file name is not taken 
+                if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
+                    startindex = 1
+                    foundname = False
+                    while not foundname:
+                        name32 = name28 + '(' + str(startindex) + ')' 
+                        if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
+                            startindex += 1
+                        else:
+                            foundname = True
+
+                new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
+                new_itemset.save()
+                print new_itemset.name
+                print new_itemset.owner
                 print new_itemset.json
-                return HttpResponse('received a valid file...')
+                user_loginprofile.saved_count = len(ItemSet.objects.filter(owner=user_loginprofile))
+                user_loginprofile.save()
+                print "User saved count " +  str(user_loginprofile.saved_count)
+                return HttpResponseRedirect('/#uploadsuccess')
             else:
                 return HttpResponse('not a json...')
             

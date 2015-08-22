@@ -9,10 +9,14 @@ class LoginProfile(models.Model):
     user = models.OneToOneField(User)
     saved_count = models.PositiveSmallIntegerField(default=0)
     def __unicode__(self):
-        return self.user.username + " count: " + str(saved_count)
+        return self.user.username + " count: " + str(self.saved_count)
 
 class ItemSet(models.Model):
 
     owner = models.ForeignKey(LoginProfile)
     json = JSONField()
+    name = models.CharField(max_length=32, default='noname.json')
+
+    def __unicode__(self):
+    	return self.name + " owner: " + self.owner.user.username
 

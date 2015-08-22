@@ -20,10 +20,10 @@ class FileForm(forms.Form):
         help_text='max. 42 megabytes'
     )
 
-class ItemForm(forms.Form):
-    json = JSONField()
-
-    class Meta:
-        model = ItemSet
-        fields = ('json',)
-        exclude = ('users',)
+# class ItemForm(forms.Form):
+#     json = JSONField()
+    
+#     class Meta:
+#         model = ItemSet
+#         fields = ('json',)
+#         exclude = ('users',)
