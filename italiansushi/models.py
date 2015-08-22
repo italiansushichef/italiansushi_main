@@ -7,12 +7,12 @@ class LoginProfile(models.Model):
 
     # Linking LoginProfile to User model instance
     user = models.OneToOneField(User)
-
+    saved_count = models.PositiveSmallIntegerField(default=0)
     def __unicode__(self):
-        return self.user.username
+        return self.user.username + " count: " + str(saved_count)
 
 class ItemSet(models.Model):
 
-    users = models.ManyToManyField(LoginProfile)
+    owner = models.ForeignKey(LoginProfile)
     json = JSONField()
 
