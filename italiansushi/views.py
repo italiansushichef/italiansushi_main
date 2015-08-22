@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from italiansushi.models import LoginProfile, ItemSet
 from django.contrib.auth.decorators import login_required
 import re
+import json as jsonlib
 
 
 
@@ -28,6 +29,8 @@ def createuser(request):
             # repassword = data['repassword'] # TODO
             username = data['username']
             email = data['email']
+            ## validate email and username
+
             # if there is already a user with that acct -- matching username or email. 
             # note: the username check is actually redundant
             user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
@@ -139,6 +142,23 @@ def receive_upload(request):
             return HttpResponse('not a valid file...')
     return HttpResponse('not a valid file...')
 
+# for viewing an itemset
+@login_required
+def view_itemset(request):
+    user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+    url = request.path # or request.get_full_path()
+    user = url.split('/')[1]
+    filename = url.split('/')[-1][:-5]
+    if request.user.username == user:
+        itemset = ItemSet.objects.filter(owner=user_loginprofile, name=filename)
+        if itemset:
+            json = itemset[0].json
+            # parsed = jsonlib.loads(json)
+            # pretty = jsonlib.dumps(parsed, indent=4)
+            return HttpResponse(json, content_type="application/json")
+    return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
+    
+
 # ajax backend for items list
 # TODO more complex kind to preview different parts
 @login_required
@@ -150,6 +170,7 @@ def get_items(request):
     for i in item_ls:
         returnstr = returnstr + '>>' + str(i.name)
     return HttpResponse(returnstr)
+
 
 
 @login_required

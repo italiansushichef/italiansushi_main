@@ -303,10 +303,12 @@
                     {
                         dynamictable += '<tr>';
                         dynamictable += '<td>' + items[i] + '</td>';
-                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-default"' 
-                                        + 'id="{{user.username}}_dl_' + items[i] +'">'
-                                        + '<span class="fa fa-download"></span></button></td>';
-                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-default"'
+                        dynamictable += '<td class="text-center"><a href="/{{user.username}}/' + items[i] + '.json"' 
+                                        + ' type="submit" class="btn btn-success"' 
+                                        + 'id="{{user.username}}_dl_' + items[i] +'" target="_blank">'
+                                        + '<span class="fa fa-download"></span></a></td>';
+
+                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-danger"'
                                         + 'id="{{user.username}}_delete_' + items[i]+'">'
                                         + '<span class="fa fa-trash-o"></span></button></td>';
                         dynamictable += '</tr>';
