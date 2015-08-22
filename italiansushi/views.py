@@ -23,7 +23,7 @@ def createuser(request):
         if form.is_valid():
             data = form.cleaned_data
             password = data['password']
-            # repassword = data['repassword']
+            # repassword = data['repassword'] # TODO
             username = data['username']
             email = data['email']
             # if there is already a user with that acct -- matching username or email. 
@@ -38,9 +38,11 @@ def createuser(request):
                     print "Error, a user with that username or email already exists"
                     return HttpResponseRedirect('/#badlogin')
             else:
+                # Create user
                 user = User(username=username, password=password, email=email)
                 user.set_password(password)
                 user.save()
+                # Create profile
                 profile = LoginProfile(user=user)
                 profile.save()
                 user = authenticate(username=username, password=password, email=email)
@@ -49,6 +51,7 @@ def createuser(request):
         else: # note: this will check if a user with that username already exists!!
             print 'invalid profile'
             print form.errors
+            return HttpResponse('error creating user')
     return HttpResponseRedirect('/')
 
 def site_login(request):
@@ -58,13 +61,6 @@ def site_login(request):
             data = form.cleaned_data
             password = data['password']
             usernameoremail = data['usernameoremail']
-            # check if it is an email. if so, search database for user with that email
-            # found_user = None
-            # if re.match(r'[^@]+@[^@]+\.[^@]+', usernameoremail):
-            #     found_user = User.objects.filter(email=usernameoremail)
-            # # try checking if there is a user 
-            # if not found_user:
-            #     found_user = User.objects.filter(username=usernameoremail)
             found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
             # from list of possible users, try to authenticate
             if found_user:
@@ -72,9 +68,11 @@ def site_login(request):
                     user = authenticate(username=possible_user, password=password)
                     if user is not None:
                         django_login(request, user)
-                        return HttpResponseRedirect('/')
+                        return HttpResponseRedirect('/#loginsuccess')
+            return HttpResponse('error in login')
         else:
             print 'invalid data for login'
+            return HttpResponse('error in login')
     return HttpResponseRedirect('/')
 
 @login_required
@@ -90,8 +88,18 @@ def receive_upload(request):
             print jsonfile
             print json
             print jsonfile.content_type
-            ## validate content type
-            ## validate size
+            print jsonfile.size
+
+            ## insert function: validate_json(jsonfile)
+            ## jsonfile.name 
+            ## jsonfile.content_type -- check if it is "application/json"
+            ## jsonfile.size -- 
+            ## jsonfile.read() -- content
+            ## if it is not content_type json, return None
+            ## if it is not appropriate size, return None
+            ## if the content does not match a itemset, return None
+            ## else return jsonfile
+
             if filetype == "application/json":
                 new_itemset = ItemSet(json=json)
                 print new_itemset.json
