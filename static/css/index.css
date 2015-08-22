@@ -153,3 +153,12 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
     cursor: inherit;
     display: block;
 }*/
+
+.footer {
+    /*border-top:#000 25px solid;*/
+    padding: 10px;
+    border-top: 5px solid;
+    /*margin: 25px;*/
+    text-align: center;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
