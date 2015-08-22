@@ -42,7 +42,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <!-- <li class="active"><a href="#">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
                     <li class="dropdown">
@@ -56,7 +56,7 @@
                             <li><a href="#">Separated link</a></li>
                             <li><a href="#">One more separated link</a></li>
                         </ul>
-                    </li>
+                    </li> -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if logged_in %}
@@ -256,19 +256,89 @@
                 }
             });
         });
-
+        var items = []; 
         $('.viewfiles-popup').click(function(e){
             e.preventDefault();
-            console.log("createuser-btn clicked");
-            bootbox.dialog({
-                
-                message: '<div class="row">'
-                            + '<div class="col-xs-12">'
-                                + '<h1 class="text-center form-title"> TODO: View files saved to your profile via AJAX </h1>'
-                            + '</div>'
-                        + '</div>',
-            });
+            console.log("viewfiles-btn clicked");
+
+            $.when($.get('/view-items/', function(result){
+                tmp = result.split('>>');
+                numitems = parseInt(tmp[0]);
+                var i;
+                for (i = 1; i < numitems; i++)
+                {
+                    items.push(tmp[i]);
+                }
+                console.log("items before " + items);
+            })).then(function(){
+                console.log("items after1 " + items);
+                bootbox.dialog({
+                    
+                    message: '<div class="row">'
+                                + '<div class="col-xs-12">'
+                                    + '<h1 class="text-center form-title"> View, Download, and Delete your Item Sets </h1>'
+                                    + '<div class="panel panel-default">'
+                                        + '<div class ="panel-body" id="dynamic-panel">'
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>',
+                });
+                var dynamictable;
+                if (items.length == 0)
+                {
+                    dynamictable = '<h4> No item sets currently saved </h4>';
+                }
+                else
+                {
+                    dynamictable = '<table class="table"><col width="80%"><col width="10%"><col width="10%">';
+                    // Head
+                    dynamictable += '<thead>';
+                    dynamictable += '<tr><th>ItemSet</th><th class="text-center">Download</th>';
+                    dynamictable += '<th class="text-center">Delete</th></tr>';
+                    dynamictable += '</thead>';
+                    // Body
+                    dynamictable += '<tbody>' ;
+                    for (var i = 0; i < items.length; i++)
+                    {
+                        dynamictable += '<tr>';
+                        dynamictable += '<td>' + items[i] + '</td>';
+                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-default"' 
+                                        + 'id="{{user.username}}_dl_' + items[i] +'">'
+                                        + '<span class="fa fa-download"></span></button></td>';
+                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-default"'
+                                        + 'id="{{user.username}}_delete_' + items[i]+'">'
+                                        + '<span class="fa fa-trash-o"></span></button></td>';
+                        dynamictable += '</tr>';
+                    }
+
+                    dynamictable += '</tbody>';
+                    dynamictable += '</table>';
+                }
+                document.getElementById('dynamic-panel').innerHTML = dynamictable;
+                console.log("items after2 " + items);
+            });       
         });
+
+        /* gets the URL parameters, i.e. http://dummy.com/?technology=jquery&blog=jquerybyexample 
+            -- var tech = getUrlParameter('technology'); */  
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (var i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+            return null;
+        };
+
+        console.log(getUrlParameter('upload'));
 
     </script>
     </background>

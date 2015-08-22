@@ -131,13 +131,26 @@ def receive_upload(request):
                 user_loginprofile.saved_count = len(ItemSet.objects.filter(owner=user_loginprofile))
                 user_loginprofile.save()
                 print "User saved count " +  str(user_loginprofile.saved_count)
-                return HttpResponseRedirect('/#uploadsuccess')
+                return HttpResponseRedirect('/?upload=success')
             else:
                 return HttpResponse('not a json...')
             
         else: 
             return HttpResponse('not a valid file...')
     return HttpResponse('not a valid file...')
+
+# ajax backend for items list
+# TODO more complex kind to preview different parts
+@login_required
+def get_items(request):
+    user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+    number = user_loginprofile.saved_count
+    returnstr = str(number)
+    item_ls = ItemSet.objects.filter(owner=user_loginprofile)
+    for i in item_ls:
+        returnstr = returnstr + '>>' + str(i.name)
+    return HttpResponse(returnstr)
+
 
 @login_required
 def site_logout(request):
