@@ -263,10 +263,12 @@
             $.when($.get('/view-items/', function(result){
                 tmp = result.split('>>');
                 numitems = parseInt(tmp[0]);
+                console.log(tmp);
                 var i;
-                for (i = 1; i < numitems; i++)
+                for (i = 1; i <= numitems; i++)
                 {
                     items.push(tmp[i]);
+                    console.log("pushed " + tmp[i])
                 }
                 console.log("items before " + items);
             })).then(function(){
