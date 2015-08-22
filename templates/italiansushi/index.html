@@ -256,11 +256,11 @@
                 }
             });
         });
-        var items = []; 
+        
         $('.viewfiles-popup').click(function(e){
             e.preventDefault();
             console.log("viewfiles-btn clicked");
-
+            var items = []; 
             $.when($.get('/view-items/', function(result){
                 tmp = result.split('>>');
                 numitems = parseInt(tmp[0]);
