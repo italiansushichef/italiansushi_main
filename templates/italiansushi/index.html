@@ -1,5 +1,3 @@
-<!-- Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
-   from http://bootsnipp.com/snippets/featured/simple-vertical-tab -->
 <!DOCTYPE html>
 <html lang="en">
 {% load staticfiles %}
@@ -70,6 +68,10 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+
+    <!-- Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
+   from http://bootsnipp.com/snippets/featured/simple-vertical-tab -->
+
     <div class="container section-container" style="background-image: url(http://i.imgur.com/0IYtdou.jpg);
     max-width:100%; max-height:100%; background-size:cover; background-repeat:no-repeat; position:relative;">
     	<div class="row">
@@ -302,14 +304,14 @@
                     dynamictable += '<tbody>' ;
                     for (var i = 0; i < items.length; i++)
                     {
-                        dynamictable += '<tr>';
+                        dynamictable += '<tr id="row_' + items[i] + '">';
                         dynamictable += '<td>' + items[i] + '</td>';
                         dynamictable += '<td class="text-center"><a href="/{{user.username}}/' + items[i] + '.json"' 
                                         + ' type="submit" class="btn btn-success"' 
                                         + 'id="{{user.username}}_dl_' + items[i] +'" target="_blank">'
                                         + '<span class="fa fa-download"></span></a></td>';
 
-                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-danger"'
+                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-danger btn-delete-item"'
                                         + 'id="{{user.username}}_delete_' + items[i]+'">'
                                         + '<span class="fa fa-trash-o"></span></button></td>';
                         dynamictable += '</tr>';
@@ -320,6 +322,16 @@
                 }
                 document.getElementById('dynamic-panel').innerHTML = dynamictable;
                 console.log("items after2 " + items);
+
+                $('.btn-delete-item').click(function(e){
+                    e.preventDefault();
+                    var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!
+                    var clicked_btn = document.getElementById(id);
+                    var parentrow = $(clicked_btn.parentNode.parentNode); // hardcoded for current structure
+                    console.log("clicked a " + e.currentTarget.type + " id: " + id);
+                    console.log(parentrow);
+                    parentrow.remove();
+                });
             });       
         });
 
@@ -341,7 +353,7 @@
             return null;
         };
 
-        console.log(getUrlParameter('upload'));
+        console.log("upload= " + getUrlParameter('upload'));
 
     </script>
 </body>
