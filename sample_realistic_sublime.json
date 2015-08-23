@@ -1,0 +1,66 @@
+{
+	"associatedChampions":[92],
+	"map":"any",
+	"title":"riven",
+	"isGlobalForMaps":true,
+	"uid":"LOL_F477DC60-F314-C071-AFDE-762BAA30F93E",
+	"isGlobalForChampions":false,
+	"sortrank":0,
+	"type":"custom",
+	"priority":false,
+	"mode":"any",
+	"associatedMaps":[],
+	"blocks":[
+		{
+			"type":"starting",
+			"items":[
+				{"id":"1036","count":1},
+				{"id":"2003","count":3}
+			]
+		},
+		{
+			"type":"refill",
+			"items":[
+				{"id":"2043","count":1},
+				{"id":"2044","count":1},
+				{"id":"2003","count":3},
+				{"id":"3361","count":1},
+				{"id":"3341","count":1},
+				{"id":"3362","count":1}
+			]
+		},
+		{
+			"type":"core +25%",
+			"items":[
+				{"id":"3158","count":1},
+				{"id":"3074","count":1},
+				{"id":"3035","count":1},
+				{"id":"3065","count":1},
+				{"id":"3143","count":1},
+				{"id":"3026","count":1}
+			]
+		},
+		{	"type":"situational",
+			"items":[
+				{"id":"3047","count":1},
+				{"id":"3111","count":1},
+				{"id":"3102","count":1},
+				{"id":"3072","count":1}
+			]
+		},
+		{	"type":"10%",
+			"items":[
+				{"id":"3067","count":1},
+				{"id":"3134","count":1},
+				{"id":"3172","count":1},
+				{"id":"3142","count":1}
+			]
+		},
+		{
+			"type":"20%",
+			"items":[
+				{"id":"3071","count":1}
+			]
+		}
+	]	
+}
