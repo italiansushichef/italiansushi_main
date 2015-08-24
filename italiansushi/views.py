@@ -170,8 +170,10 @@ def preview_items(itemset, max_items):
     for b in blocks:
         items = b['items']
         for i in items:
-            if len(ls) >= max_items: return ls
-            elif 'id' in i: ls.append(i['id'])
+            if len(ls) >= max_items: 
+                return ls
+            elif 'id' in i: 
+                ls.append(i['id'])
     return ls
 
 
@@ -181,8 +183,8 @@ def preview_items(itemset, max_items):
 def get_items(request):
     user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
     response_data = {}
-    response_data["number"] = user_loginprofile.saved_count
     item_ls = ItemSet.objects.filter(owner=user_loginprofile)
+    response_data["number"] = len(item_ls)
     for i in range(0, len(item_ls)):
         response_data[i] = {}
         response_data[i]["filename"] = str(item_ls[i].name)

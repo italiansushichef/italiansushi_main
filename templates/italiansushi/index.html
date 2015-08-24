@@ -338,7 +338,7 @@
                                         + 'id="{{user.username}}_delete_' + items[i]+'">'
                                         + '<span class="fa fa-trash-o"></span></button></form></td>';
                         dynamictable += '</tr>';
-                        dynamictable += '<tr id="item_row:' + i + '">';
+                        dynamictable += '<tr id="item_row:' + i + '"></tr>';
                     }
 
                     dynamictable += '</tbody>';
@@ -363,7 +363,9 @@
                     bootbox.confirm(confirmation_message, function(result) {
                         if (result) {
                             var parentrow = $(clicked_btn.parentNode.parentNode.parentNode); // hardcoded for current structure
+                            var nextrow = parentrow.next();
                             parentrow.remove();
+                            nextrow.remove();
                             $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
                                 console.log(response);
                             });
