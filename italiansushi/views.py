@@ -170,9 +170,9 @@ def preview_items(itemset, max_items):
     for b in blocks:
         items = b['items']
         for i in items:
-            if len(ls) >= max_items: 
+            if len(ls) >= max_items:
                 return ls
-            elif 'id' in i: 
+            elif 'id' in i:
                 ls.append(i['id'])
     return ls
 
@@ -188,7 +188,7 @@ def get_items(request):
     for i in range(0, len(item_ls)):
         response_data[i] = {}
         response_data[i]["filename"] = str(item_ls[i].name)
-        response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
+    response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
     return JsonResponse(response_data)
 
 @login_required
