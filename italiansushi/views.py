@@ -109,8 +109,8 @@ def receive_upload(request):
 
             if filetype == "application/json":
                 user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-                
-                if user_loginprofile.saved_count >= MAX_UPLOADS:
+                savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
+                if savedcount >= MAX_UPLOADS:
                     return HttpResponse('Received file, but cannot add more error because limit is 10')
 
                 # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
@@ -132,9 +132,7 @@ def receive_upload(request):
                 print new_itemset.name
                 print new_itemset.owner
                 print new_itemset.json
-                user_loginprofile.saved_count = len(ItemSet.objects.filter(owner=user_loginprofile))
-                user_loginprofile.save()
-                print "User saved count " +  str(user_loginprofile.saved_count)
+                print "User saved count " +  str(savedcount)
                 return HttpResponseRedirect('/?upload=success')
             else:
                 return HttpResponseRedirect('/?upload=failure')
@@ -188,7 +186,7 @@ def get_items(request):
     for i in range(0, len(item_ls)):
         response_data[i] = {}
         response_data[i]["filename"] = str(item_ls[i].name)
-    response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
+        response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
     return JsonResponse(response_data)
 
 @login_required
@@ -203,8 +201,6 @@ def delete_itemset(request):
             itemToDelete = ItemSet.objects.filter(owner=user_loginprofile, name=name)
             if request.user.username == user and itemToDelete:
                 itemToDelete[0].delete()
-                user_loginprofile.saved_count = len(ItemSet.objects.filter(owner=user_loginprofile))
-                user_loginprofile.save()
                 return HttpResponse("deleted " + name + " successfully")
     return HttpResponse("error")
 

@@ -7,9 +7,8 @@ class LoginProfile(models.Model):
 
     # Linking LoginProfile to User model instance
     user = models.OneToOneField(User)
-    saved_count = models.PositiveSmallIntegerField(default=0)
     def __unicode__(self):
-        return self.user.username + " count: " + str(self.saved_count)
+        return self.user.username
 
 class ItemSet(models.Model):
 
