@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from italiansushi.forms import *
 from italiansushi.models import *
 from django.contrib.auth import authenticate, logout
@@ -38,10 +38,10 @@ def createuser(request):
                 user = authenticate(username=username, password=password, email=email)
                 if user is not None:
                     django_login(request, user)
-                    return HttpResponseRedirect('/')
+                    return HttpResponseRedirect('/?login=sucess')
                 else:
                     print "Error, a user with that username or email already exists"
-                    return HttpResponseRedirect('/#badlogin')
+                    return HttpResponseRedirect('/?createuser=failure')
             else:
                 # Create user
                 user = User(username=username, password=password, email=email)
@@ -52,11 +52,11 @@ def createuser(request):
                 profile.save()
                 user = authenticate(username=username, password=password, email=email)
                 django_login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/?createuser=success')
         else: # note: this will check if a user with that username already exists!!
             print 'invalid profile'
             print form.errors
-            return HttpResponse('error creating user')
+            return HttpResponseRedirect('/?createuser=failure')
     return HttpResponseRedirect('/')
 
 def site_login(request):
@@ -73,11 +73,11 @@ def site_login(request):
                     user = authenticate(username=possible_user, password=password)
                     if user is not None:
                         django_login(request, user)
-                        return HttpResponseRedirect('/#loginsuccess')
-            return HttpResponse('error in login')
+                        return HttpResponseRedirect('/?login=success')
+            return HttpResponseRedirect('/?login=failure')
         else:
-            print 'invalid data for login'
-            return HttpResponse('error in login')
+            print form.errors
+            return HttpResponseRedirect('/?login=failure')
     return HttpResponseRedirect('/')
 
 @login_required
@@ -136,11 +136,11 @@ def receive_upload(request):
                 print "User saved count " +  str(user_loginprofile.saved_count)
                 return HttpResponseRedirect('/?upload=success')
             else:
-                return HttpResponse('not a json...')
-            
+                return HttpResponseRedirect('/?upload=failure')
         else: 
-            return HttpResponse('not a valid file...')
-    return HttpResponse('not a valid file...')
+            print form.errors
+            return HttpResponseRedirect('/?upload=failure')
+    return HttpResponseRedirect('/')
 
 # for viewing an itemset
 @login_required
@@ -192,4 +192,4 @@ def delete_itemset(request):
 @login_required
 def site_logout(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/?logout=success')

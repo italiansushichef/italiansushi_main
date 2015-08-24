@@ -2,15 +2,33 @@
    from http://bootsnipp.com/snippets/featured/simple-vertical-tab 
    */
 
-/*  bhoechie tab */
-.section-container{
-/*  background-color: #55518a;*/
+.main-container {
+  background-image: url(http://i.imgur.com/0IYtdou.jpg);
+  max-width:100%; 
+  max-height:100%; 
+  background-size:cover; 
+  background-repeat:no-repeat; 
+  position:relative;
+}
+
+.section-container {
+/*  background-color: #55518a; */
   padding-top: 5%;
   padding-bottom: 5%;
   width: 100%;
-
 }
 
+.color-icon {
+  font-size:10em;
+  color:#55518a;
+}
+
+.color-header {
+  margin-top: 0;
+  color:#55518a;
+}
+
+/*  bhoechie tab */
 div.bhoechie-tab-container{
   z-index: 10;
   background-color: #ffffff;
@@ -18,10 +36,6 @@ div.bhoechie-tab-container{
   border-radius: 4px;
   -moz-border-radius: 4px;
   border:1px solid #ddd;
-
-/*  margin: 0 auto;*/
-/*  margin-top: 20px;
-  margin-left: 50px;*/
   -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
   box-shadow: 0 6px 12px rgba(0,0,0,.175);
   -moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
@@ -57,6 +71,7 @@ div.bhoechie-tab-menu div.list-group>a.active .glyphicon,
 div.bhoechie-tab-menu div.list-group>a.active .fa{
   background-color: #5A55A3;
   background-image: #5A55A3;
+  border-color: #5A55A3;
   color: #ffffff;
 }
 div.bhoechie-tab-menu div.list-group>a.active:after{

@@ -25,6 +25,20 @@
 </head>
 
 
+<div class="alert alert-success fade in bot-page-alert" role="alert" hidden 
+    style="position: fixed;bottom: -10px;z-index:9999;width:300px;">
+    <span class="glyphicon glyphicon-exclamation-sign"></span>
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <span id="alert-success-span"></span>
+</div>
+
+<div class="alert alert-danger fade in" role="alert" hidden 
+    style="position: fixed;bottom: -10px;z-index:9999;width:300px;">
+    <span class="glyphicon glyphicon-exclamation-sign"></span>
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <span id="alert-danger-span"></span>
+</div>
+
 <body>
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
@@ -72,8 +86,7 @@
     <!-- Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
    from http://bootsnipp.com/snippets/featured/simple-vertical-tab -->
 
-    <div class="container section-container" style="background-image: url(http://i.imgur.com/0IYtdou.jpg);
-    max-width:100%; max-height:100%; background-size:cover; background-repeat:no-repeat; position:relative;">
+    <div class="container section-container main-container">
     	<div class="row">
             <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1 bhoechie-tab-container">
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
@@ -98,13 +111,13 @@
                 <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
                     <div class="bhoechie-tab-content active">
                         <center>
-                            <h1 class="fa fa-cloud-upload" style="font-size:10em;color:#55518a"></h1>
-                            <h2 style="margin-top: 0;color:#55518a">Upload your item sets</h2>
-                            <h5 style="margin-top: 0;color:#55518a">Store your item set JSON files online, so you 
+                            <h1 class="fa fa-cloud-upload color-icon"></h1>
+                            <h2 class="color-header">Upload your item sets</h2>
+                            <h5 class="color-header">Store your item set JSON files online, so you 
                             can download them on other devices. </h5>
 
                             {% if not logged_in %}
-                            <h5 style="margin-top: 0;color:#55518a">It looks like you aren't logged in. 
+                            <h5 class="color-header">It looks like you aren't logged in. 
                             You must log in to save item sets to your profile. 
                             If you don't have an account, you can create one for free! </h5>
                             
@@ -135,30 +148,30 @@
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="fa fa-cloud-upload" style="font-size:12em;color:#55518a"></h1>
-                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
-                          <h3 style="margin-top: 0;color:#55518a">Upload your item sets</h3>
+                          <h1 class="fa fa-cloud-upload color-icon"></h1>
+                          <h2 class="color-header">Coming Soon</h2>
+                          <h3 class="color-header">Upload your item sets</h3>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="fa fa-home" style="font-size:12em;color:#55518a"></h1>
-                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
-                          <h3 style="margin-top: 0;color:#55518a">View pro item sets</h3>
+                          <h1 class="fa fa-home color-icon"></h1>
+                          <h2 class="color-header">Coming Soon</h2>
+                          <h3 class="color-header">View pro item sets</h3>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="fa fa-cutlery" style="font-size:12em;color:#55518a"></h1>
-                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
-                          <h3 style="margin-top: 0;color:#55518a">Generate a random item set</h3>
+                          <h1 class="fa fa-cutlery color-icon"></h1>
+                          <h2 class="color-header">Coming Soon</h2>
+                          <h3 class="color-header">Generate a random item set</h3>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="fa fa-credit-card" style="font-size:12em;color:#55518a"></h1>
-                          <h2 style="margin-top: 0;color:#55518a">Coming Soon</h2>
-                          <h3 style="margin-top: 0;color:#55518a">Get an item set for your matchup</h3>
+                          <h1 class="fa fa-credit-card color-icon"></h1>
+                          <h2 class="color-header">Coming Soon</h2>
+                          <h3 class="color-header">Get an item set for your matchup</h3>
                         </center>
                     </div>
                 </div>
@@ -279,7 +292,7 @@
                     
                     message: '<div class="row">'
                                 + '<div class="col-xs-12">'
-                                    + '<h1 class="text-center form-title"> View, Download, and Delete your Item Sets </h1>'
+                                    + '<h1 class="text-center form-title"> Download and Delete your Item Sets </h1>'
                                     + '<div class="panel panel-default">'
                                         + '<div class ="panel-body" id="dynamic-panel">'
                                         + '</div>'
@@ -331,9 +344,13 @@
                 $('.btn-delete-item').click(function(e){
                     e.preventDefault();
                     var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!
-                    var clicked_btn = document.getElementById(id);
-                    // console.log("clicked id: " + id);
-                    var itemset_name = clicked_btn.id.split('_')[2];
+                    var clicked_btn = document.getElementById(id);                    
+                    var clicked_btn_id = clicked_btn.id.split('_');
+                    var itemset_name = clicked_btn_id[2];
+                    for (var i = 3; i < clicked_btn_id.length; i++)
+                    {
+                        itemset_name += "_" + clicked_btn_id[i];
+                    }
                     var delete_form_id = clicked_btn.id + '_form';
                     var delete_form = document.getElementById(delete_form_id);
                     var confirmation_message = "Are you sure you want to remove " + itemset_name + "?";
@@ -370,6 +387,9 @@
         };
 
         console.log("upload= " + getUrlParameter('upload'));
+        console.log("login= " + getUrlParameter('login'));
+        console.log("createuser= " + getUrlParameter('createuser'));
+        console.log("logout= " + getUrlParameter('logout'));
 
     </script>
 </body>
