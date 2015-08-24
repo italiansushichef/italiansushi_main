@@ -260,21 +260,21 @@
         
         $('.viewfiles-popup').click(function(e){
             e.preventDefault();
-            console.log("viewfiles-btn clicked");
+            // console.log("viewfiles-btn clicked");
             var items = []; 
             $.when($.get('/view-items/', function(result){
                 tmp = result.split('>>');
                 numitems = parseInt(tmp[0]);
-                console.log(tmp);
+                // console.log(tmp);
                 var i;
                 for (i = 1; i <= numitems; i++)
                 {
                     items.push(tmp[i]);
-                    console.log("pushed " + tmp[i])
+                    // console.log("pushed " + tmp[i])
                 }
-                console.log("items before " + items);
+                // console.log("items before " + items);
             })).then(function(){
-                console.log("items after1 " + items);
+                // console.log("items after1 " + items);
                 bootbox.dialog({
                     
                     message: '<div class="row">'
@@ -311,9 +311,14 @@
                                         + 'id="{{user.username}}_dl_' + items[i] +'" target="_blank">'
                                         + '<span class="fa fa-download"></span></a></td>';
 
-                        dynamictable += '<td class="text-center"><button type="submit" class="btn btn-danger btn-delete-item"'
+                        dynamictable += '<td class="text-center">'
+                                        + '<form method="POST" action="" id="{{user.username}}_delete_'+items[i]+'_form">' 
+                                        + "{% csrf_token %}"
+                                        + '<input type="text" name="name" value="'+items[i]+'" hidden = true/>'
+                                        + '<input type="text" name="user" value="{{user.username}}" hidden = true/>'
+                                        + '<button type="submit" class="btn btn-danger btn-delete-item"'
                                         + 'id="{{user.username}}_delete_' + items[i]+'">'
-                                        + '<span class="fa fa-trash-o"></span></button></td>';
+                                        + '<span class="fa fa-trash-o"></span></button></form></td>';
                         dynamictable += '</tr>';
                     }
 
@@ -321,16 +326,27 @@
                     dynamictable += '</table>';
                 }
                 document.getElementById('dynamic-panel').innerHTML = dynamictable;
-                console.log("items after2 " + items);
+                // console.log("items after2 " + items);
 
                 $('.btn-delete-item').click(function(e){
                     e.preventDefault();
                     var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!
                     var clicked_btn = document.getElementById(id);
-                    var parentrow = $(clicked_btn.parentNode.parentNode); // hardcoded for current structure
-                    console.log("clicked a " + e.currentTarget.type + " id: " + id);
-                    console.log(parentrow);
-                    parentrow.remove();
+                    // console.log("clicked id: " + id);
+                    var itemset_name = clicked_btn.id.split('_')[2];
+                    var delete_form_id = clicked_btn.id + '_form';
+                    var delete_form = document.getElementById(delete_form_id);
+                    var confirmation_message = "Are you sure you want to remove " + itemset_name + "?";
+                    bootbox.confirm(confirmation_message, function(result) {
+                        if (result) {
+                            var parentrow = $(clicked_btn.parentNode.parentNode.parentNode); // hardcoded for current structure
+                            parentrow.remove();
+                            $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
+                                console.log(response);
+                            });
+                        }
+                    });
+                    
                 });
             });       
         });

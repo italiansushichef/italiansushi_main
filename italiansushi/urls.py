@@ -7,6 +7,7 @@ urlpatterns = patterns('',
         url(r'^login/$', views.site_login, name='login'),
         url(r'^logout/$', views.site_logout, name='logout'),
         url(r'^upload/$', views.receive_upload, name='upload'),
-        url(r'^view-items/', views.get_items, name='get_items'),
+        url(r'^view-items/$', views.get_items, name='get_items'),
+        url(r'^delete-itemset/$', views.delete_itemset, name='delete_itemset'),
         url(r'^.*\.json$', views.view_itemset, name='view_itemset'),
         )

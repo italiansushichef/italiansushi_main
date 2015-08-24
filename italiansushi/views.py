@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from italiansushi.forms import CreateUserForm, LoginForm, FileForm
+from italiansushi.forms import *
+from italiansushi.models import *
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as django_login
 from django.contrib.auth.models import User
-from italiansushi.models import LoginProfile, ItemSet
 from django.contrib.auth.decorators import login_required
 import re
 import json as jsonlib
@@ -171,6 +171,22 @@ def get_items(request):
         returnstr = returnstr + '>>' + str(i.name)
     return HttpResponse(returnstr)
 
+@login_required
+def delete_itemset(request):
+    if request.method == "POST":
+        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+        form = DeleteItemSetForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            name = data['name']
+            user = data['user']
+            itemToDelete = ItemSet.objects.filter(owner=user_loginprofile, name=name)
+            if request.user.username == user and itemToDelete:
+                itemToDelete[0].delete()
+                user_loginprofile.saved_count = len(ItemSet.objects.filter(owner=user_loginprofile))
+                user_loginprofile.save()
+                return HttpResponse("deleted " + name + " successfully")
+    return HttpResponse("error")
 
 
 @login_required

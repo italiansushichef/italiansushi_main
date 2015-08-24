@@ -20,6 +20,10 @@ class FileForm(forms.Form):
         help_text='max. 42 megabytes'
     )
 
+class DeleteItemSetForm(forms.Form):
+    name = forms.CharField(max_length=32)
+    user = forms.CharField(max_length=None)
+
 # class ItemForm(forms.Form):
 #     json = JSONField()
     
