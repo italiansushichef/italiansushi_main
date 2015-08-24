@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, logout
 from django.contrib.auth import login as django_login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 import re
 import json as jsonlib
 
@@ -153,23 +154,40 @@ def view_itemset(request):
         itemset = ItemSet.objects.filter(owner=user_loginprofile, name=filename)
         if itemset:
             json = itemset[0].json
+            parsed = jsonlib.loads(json)
+            print parsed['blocks']
             # parsed = jsonlib.loads(json)
             # pretty = jsonlib.dumps(parsed, indent=4)
             return HttpResponse(json, content_type="application/json")
     return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
     
 
+# Helper non-view method to get a list of up to n items from the input json 
+def preview_items(itemset, max_items):
+    ls = []
+    parsed = jsonlib.loads(itemset.json)
+    blocks = parsed['blocks']
+    for b in blocks:
+        items = b['items']
+        for i in items:
+            if len(ls) >= max_items: return ls
+            else: ls.append(i['id'])
+    return ls
+
+
 # ajax backend for items list
 # TODO more complex kind to preview different parts
 @login_required
 def get_items(request):
     user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-    number = user_loginprofile.saved_count
-    returnstr = str(number)
+    response_data = {}
+    response_data["number"] = user_loginprofile.saved_count
     item_ls = ItemSet.objects.filter(owner=user_loginprofile)
-    for i in item_ls:
-        returnstr = returnstr + '>>' + str(i.name)
-    return HttpResponse(returnstr)
+    for i in range(0, len(item_ls)):
+        response_data[i] = {}
+        response_data[i]["filename"] = str(item_ls[i].name)
+        response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
+    return JsonResponse(response_data)
 
 @login_required
 def delete_itemset(request):

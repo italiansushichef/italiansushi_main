@@ -274,16 +274,14 @@
         $('.viewfiles-popup').click(function(e){
             e.preventDefault();
             // console.log("viewfiles-btn clicked");
-            var items = []; 
+            var items = [];
+            var item_ids = []; 
             $.when($.get('/view-items/', function(result){
-                tmp = result.split('>>');
-                numitems = parseInt(tmp[0]);
-                // console.log(tmp);
-                var i;
-                for (i = 1; i <= numitems; i++)
+                numitems = result.number;
+                for (var i = 0; i < numitems; i++)
                 {
-                    items.push(tmp[i]);
-                    // console.log("pushed " + tmp[i])
+                    items.push(result[i]["filename"]);
+                    item_ids[i] = result[i]["item_ids"]
                 }
                 // console.log("items before " + items);
             })).then(function(){
@@ -307,10 +305,12 @@
                 }
                 else
                 {
-                    dynamictable = '<table class="table"><col width="80%"><col width="10%"><col width="10%">';
+                    dynamictable = '<table class="table"><col width="70%"><col width="10%"><col width="10%"><col width="10%">';
                     // Head
                     dynamictable += '<thead>';
-                    dynamictable += '<tr><th>ItemSet</th><th class="text-center">Download</th>';
+                    dynamictable += '<tr><th>ItemSet</th>';
+                    dynamictable += '<th class="text-center">Preview</th>';
+                    dynamictable += '<th class="text-center">Download</th>';
                     dynamictable += '<th class="text-center">Delete</th></tr>';
                     dynamictable += '</thead>';
                     // Body
@@ -319,6 +319,11 @@
                     {
                         dynamictable += '<tr id="row_' + items[i] + '">';
                         dynamictable += '<td>' + items[i] + '</td>';
+                        dynamictable += '<td class="text-center">'
+                                        + '<button type="submit" class="btn btn-primary btn-preview-item"'
+                                        + 'id="{{user.username}}_preview:' + items[i] +'_'+i+'">'
+                                        + '<span class="fa fa-search"></span></button></form></td>';
+
                         dynamictable += '<td class="text-center"><a href="/{{user.username}}/' + items[i] + '.json"' 
                                         + ' type="submit" class="btn btn-success"' 
                                         + 'id="{{user.username}}_dl_' + items[i] +'" target="_blank">'
@@ -333,6 +338,7 @@
                                         + 'id="{{user.username}}_delete_' + items[i]+'">'
                                         + '<span class="fa fa-trash-o"></span></button></form></td>';
                         dynamictable += '</tr>';
+                        dynamictable += '<tr id="item_row:' + i + '">';
                     }
 
                     dynamictable += '</tbody>';
@@ -364,6 +370,22 @@
                         }
                     });
                     
+                });
+                
+                $('.btn-preview-item').click(function(e){
+                    e.preventDefault();
+                    var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!                
+                    var clicked_btn_id = id.split('_');
+                    var num_id = clicked_btn_id[clicked_btn_id.length - 1];
+                    console.log(num_id);
+                    var myitems_id = item_ids[num_id];
+                    var itemshtml = "";
+                    for (var i = 0; i < myitems_id.length; i++)
+                    {
+                        console.log(myitems_id[i]);
+                        itemshtml += '<img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/item/' + myitems_id[i] + '.png">';
+                    }
+                    document.getElementById('item_row:' + num_id).innerHTML = itemshtml;
                 });
             });       
         });
