@@ -171,7 +171,7 @@ def preview_items(itemset, max_items):
         items = b['items']
         for i in items:
             if len(ls) >= max_items: return ls
-            else: ls.append(i['id'])
+            elif 'id' in i: ls.append(i['id'])
     return ls
 
 

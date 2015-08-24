@@ -385,6 +385,10 @@
                         console.log(myitems_id[i]);
                         itemshtml += '<img src="http://ddragon.leagueoflegends.com/cdn/5.7.1/img/item/' + myitems_id[i] + '.png">';
                     }
+                    if (itemshtml == "")
+                    {
+                        itemshtml = '<p><strong> No items in this item set. </strong></p>';
+                    }
                     document.getElementById('item_row:' + num_id).innerHTML = itemshtml;
                 });
             });       
