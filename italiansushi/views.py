@@ -108,35 +108,35 @@ def receive_upload(request):
             ## if the content does not match a itemset, return None
             ## else return jsonfile
 
-            if filetype == "application/json":
-                user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-                savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
-                if savedcount >= MAX_UPLOADS:
-                    return HttpResponse('Received file, but cannot add more error because limit is 10')
+            # if filetype == "application/json":
+            user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+            savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
+            if savedcount >= MAX_UPLOADS:
+                return HttpResponse('Received file, but cannot add more error because limit is 10')
 
-                # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
-                name28 = jsonfile.name[:-5][0:28] 
-                name32 = name28
-                # make sure the file name is not taken 
-                if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
-                    startindex = 1
-                    foundname = False
-                    while not foundname:
-                        name32 = name28 + '(' + str(startindex) + ')' 
-                        if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
-                            startindex += 1
-                        else:
-                            foundname = True
+            # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
+            name28 = jsonfile.name[:-5][0:28] 
+            name32 = name28
+            # make sure the file name is not taken 
+            if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
+                startindex = 1
+                foundname = False
+                while not foundname:
+                    name32 = name28 + '(' + str(startindex) + ')' 
+                    if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
+                        startindex += 1
+                    else:
+                        foundname = True
 
-                new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
-                new_itemset.save()
-                print new_itemset.name
-                print new_itemset.owner
-                print new_itemset.json
-                print "User saved count " +  str(savedcount)
-                return HttpResponseRedirect('/?upload=success')
-            else:
-                return HttpResponseRedirect('/?upload=notjson')
+            new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
+            new_itemset.save()
+            print new_itemset.name
+            print new_itemset.owner
+            print new_itemset.json
+            print "User saved count " +  str(savedcount)
+            return HttpResponseRedirect('/?upload=success')
+            # else:
+            #     return HttpResponseRedirect('/?upload=notjson')
         else: 
             print form.errors
             return HttpResponseRedirect('/?upload=formfailure')
