@@ -31,7 +31,8 @@ def createuser(request):
             username = data['username']
             email = data['email']
             ## validate email and username
-
+            if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+                return HttpResponseRedirect('/?createuser=bademail')
             # if there is already a user with that acct -- matching username or email. 
             # note: the username check is actually redundant
             user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
@@ -42,7 +43,7 @@ def createuser(request):
                     return HttpResponseRedirect('/?login=sucess')
                 else:
                     print "Error, a user with that username or email already exists"
-                    return HttpResponseRedirect('/?createuser=failure')
+                    return HttpResponseRedirect('/?createuser=useremailtaken')
             else:
                 # Create user
                 user = User(username=username, password=password, email=email)
@@ -57,7 +58,7 @@ def createuser(request):
         else: # note: this will check if a user with that username already exists!!
             print 'invalid profile'
             print form.errors
-            return HttpResponseRedirect('/?createuser=failure')
+            return HttpResponseRedirect('/?createuser=formfailure')
     return HttpResponseRedirect('/')
 
 def site_login(request):
@@ -75,10 +76,10 @@ def site_login(request):
                     if user is not None:
                         django_login(request, user)
                         return HttpResponseRedirect('/?login=success')
-            return HttpResponseRedirect('/?login=failure')
+            return HttpResponseRedirect('/?login=nouser')
         else:
             print form.errors
-            return HttpResponseRedirect('/?login=failure')
+            return HttpResponseRedirect('/?login=formfailure')
     return HttpResponseRedirect('/')
 
 @login_required
@@ -135,10 +136,10 @@ def receive_upload(request):
                 print "User saved count " +  str(savedcount)
                 return HttpResponseRedirect('/?upload=success')
             else:
-                return HttpResponseRedirect('/?upload=failure')
+                return HttpResponseRedirect('/?upload=notjson')
         else: 
             print form.errors
-            return HttpResponseRedirect('/?upload=failure')
+            return HttpResponseRedirect('/?upload=formfailure')
     return HttpResponseRedirect('/')
 
 # for viewing an itemset
