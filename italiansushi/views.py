@@ -123,14 +123,14 @@ def validate_json(inputfile):
             # and contains an items dict list 
                 # which includes item id as a string  # TODO validate string ID
     }
-
     # this check isn't working on windows. find out why
     # if inputfile.content_type != "application/json": return None
     if size > 6000: 
         print "Input file size is too big"
         return None
+    contents = inputfile.read()
     try:
-        parsed = jsonlib.loads(inputfile.read())
+        parsed = jsonlib.loads(contents)
     except ValueError:
         print "No JSON object could be decoded"
         return None
@@ -161,7 +161,7 @@ def validate_json(inputfile):
                 if "id" not in item: # also validate item id
                     print "bad item id"
                     return None
-        return inputfile
+        return contents
 
 # receiving view for uploading a file
 # redirects to main page if success, error page if failure
@@ -173,12 +173,12 @@ def receive_upload(request):
         if form.is_valid():
             data = form.cleaned_data
             jsonfile = request.FILES['json']
-            jsonfile = validate_json(jsonfile)
-            if not jsonfile:
+            contents = validate_json(jsonfile)
+            if not contents:
                 return HttpResponseRedirect('/?upload=badjson')
 
-            # Read and save contents of file
-            json = jsonfile.read()
+            # Save contents of file
+            json = contents
             user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
             savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
             if savedcount >= MAX_UPLOADS:
@@ -201,6 +201,7 @@ def receive_upload(request):
 
             new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
             new_itemset.save()
+            print "New json in database: (name, owner, json) "
             print new_itemset.name
             print new_itemset.owner
             print new_itemset.json
@@ -231,16 +232,20 @@ def view_itemset(request):
 # Helper non-view method to get a list of up to n items from the input json 
 def preview_items(itemset, max_items):
     ls = []
-    parsed = jsonlib.loads(itemset.json)
-    blocks = parsed['blocks']
-    for b in blocks:
-        items = b['items']
-        for i in items:
-            if len(ls) >= max_items:
-                return ls
-            elif 'id' in i:
-                ls.append(i['id'])
-    return ls
+    try:
+        parsed = jsonlib.loads(itemset.json)
+    except:
+        return None
+    else:
+        blocks = parsed['blocks']
+        for b in blocks:
+            items = b['items']
+            for i in items:
+                if len(ls) >= max_items:
+                    return ls
+                elif 'id' in i:
+                    ls.append(i['id'])
+        return ls
 
 
 # ajax backend for displaying items list
@@ -254,6 +259,11 @@ def get_items(request):
         response_data[i] = {}
         response_data[i]["filename"] = str(item_ls[i].name)
         response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
+        # preview_ls = preview_items(item_ls[i], 15) # for debugging only
+        # if not preview_ls:
+        #     item_ls[i].delete()
+        # else:
+        #     response_data[i]["item_ids"] = preview_ls
     return JsonResponse(response_data)
 
 # ajax backed for deleting an item set
