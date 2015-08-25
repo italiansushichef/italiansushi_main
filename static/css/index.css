@@ -11,6 +11,20 @@
   position:relative;
 }
 
+.inner-error-container {
+  padding: 35% 10%;
+  background-color: ;
+}
+
+.error-container {
+  background-image: url(http://i.imgur.com/GU9It15.jpg);
+  max-width:100%; 
+  max-height:100%; 
+  background-size:100% 100%;
+  background-repeat:no-repeat; 
+  position:relative;
+}
+
 .section-container {
 /*  background-color: #55518a; */
   padding-top: 5%;

@@ -9,5 +9,6 @@ urlpatterns = patterns('',
         url(r'^upload/$', views.receive_upload, name='upload'),
         url(r'^view-items/$', views.get_items, name='get_items'),
         url(r'^delete-itemset/$', views.delete_itemset, name='delete_itemset'),
+        url(r'^error/$', views.error_page, name='error'),
         url(r'^.*\.json$', views.view_itemset, name='view_itemset'),
         )

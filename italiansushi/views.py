@@ -10,7 +10,13 @@ from django.core import serializers
 import re
 import json as jsonlib
 
-
+def error_page(request):
+    if request.user.is_authenticated():
+        logged_in = True
+    else:
+        logged_in = False
+    context_dict = {'logged_in': logged_in}
+    return render(request, 'italiansushi/error.html', context_dict)
 
 # homepage
 def index(request):
