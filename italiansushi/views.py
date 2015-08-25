@@ -10,6 +10,7 @@ from django.core import serializers
 import re
 import json as jsonlib
 
+# errorpage
 def error_page(request):
     if request.user.is_authenticated():
         logged_in = True
@@ -27,6 +28,8 @@ def index(request):
     context_dict = {'logged_in': logged_in}
     return render(request, 'italiansushi/index.html', context_dict)
 
+# receiving view for creating a new user acct
+# redirects to main page upon success, error page if failure
 def createuser(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
@@ -40,16 +43,16 @@ def createuser(request):
             if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
                 return HttpResponseRedirect('/?createuser=bademail')
             # if there is already a user with that acct -- matching username or email. 
-            # note: the username check is actually redundant
+            # note: the username check is actually redundant 
+            #       because the form.is_valid will have already checked it
             user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
             if user_exists:
                 user = authenticate(username=username, password=password, email=email)
                 if user is not None:
                     django_login(request, user)
-                    return HttpResponseRedirect('/?login=sucess')
+                    return HttpResponseRedirect('/?login=success')
                 else:
-                    print "Error, a user with that username or email already exists"
-                    return HttpResponseRedirect('/?createuser=useremailtaken')
+                    return HttpResponseRedirect('/?createuser=usernameoremailtaken')
             else:
                 # Create user
                 user = User(username=username, password=password, email=email)
@@ -61,12 +64,17 @@ def createuser(request):
                 user = authenticate(username=username, password=password, email=email)
                 django_login(request, user)
                 return HttpResponseRedirect('/?createuser=success')
-        else: # note: this will check if a user with that username already exists!!
-            print 'invalid profile'
-            print form.errors
-            return HttpResponseRedirect('/?createuser=formfailure')
+        else:
+            print 'invalid createuser form'
+            print form.errors 
+            user_exists = User.objects.filter(request.POST['username'])
+            if user_exists:
+                return HttpResponseRedirect('/?createuser=usernameoremailtaken')
+            return HttpResponseRedirect('/error/?createuser=formfailure')
     return HttpResponseRedirect('/')
 
+# receiving view for logging into the website
+# redirects to index page upon success, error page if failure
 def site_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -84,10 +92,13 @@ def site_login(request):
                         return HttpResponseRedirect('/?login=success')
             return HttpResponseRedirect('/?login=nouser')
         else:
+            print 'invalid login form'
             print form.errors
-            return HttpResponseRedirect('/?login=formfailure')
+            return HttpResponseRedirect('/error/?login=formfailure')
     return HttpResponseRedirect('/')
 
+# receiving view for uploading a file
+# redirects to main page if success, error page if failure
 @login_required
 def receive_upload(request):
     MAX_UPLOADS = 10
@@ -98,11 +109,6 @@ def receive_upload(request):
             jsonfile = request.FILES['json']
             json = jsonfile.read()
             filetype = jsonfile.content_type
-            # print data
-            # print jsonfile
-            # print json
-            # print jsonfile.content_type
-            # print jsonfile.size
 
             ## insert function: validate_json(jsonfile)
             ## jsonfile.name 
@@ -118,12 +124,13 @@ def receive_upload(request):
             user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
             savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
             if savedcount >= MAX_UPLOADS:
-                return HttpResponse('Received file, but cannot add more error because limit is 10')
+                return HttpResponseRedirect('/?upload=limitreached')
 
             # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
             name28 = jsonfile.name[:-5][0:28] 
             name32 = name28
-            # make sure the file name is not taken 
+
+            # make sure the file name is not taken -- generate a new filename if not taken 
             if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
                 startindex = 1
                 foundname = False
@@ -144,15 +151,16 @@ def receive_upload(request):
             # else:
             #     return HttpResponseRedirect('/?upload=notjson')
         else: 
+            print "invalid receive upload form"
             print form.errors
-            return HttpResponseRedirect('/?upload=formfailure')
+            return HttpResponseRedirect('/error/?upload=formfailure')
     return HttpResponseRedirect('/')
 
 # for viewing an itemset
 @login_required
 def view_itemset(request):
     user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-    url = request.path # or request.get_full_path()
+    url = request.path
     user = url.split('/')[1]
     filename = url.split('/')[-1][:-5]
     if request.user.username == user:
@@ -160,9 +168,6 @@ def view_itemset(request):
         if itemset:
             json = itemset[0].json
             parsed = jsonlib.loads(json)
-            print parsed['blocks']
-            # parsed = jsonlib.loads(json)
-            # pretty = jsonlib.dumps(parsed, indent=4)
             return HttpResponse(json, content_type="application/json")
     return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
     
@@ -182,8 +187,7 @@ def preview_items(itemset, max_items):
     return ls
 
 
-# ajax backend for items list
-# TODO more complex kind to preview different parts
+# ajax backend for displaying items list
 @login_required
 def get_items(request):
     user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
@@ -196,6 +200,7 @@ def get_items(request):
         response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
     return JsonResponse(response_data)
 
+# ajax backed for deleting an item set
 @login_required
 def delete_itemset(request):
     if request.method == "POST":
@@ -209,9 +214,13 @@ def delete_itemset(request):
             if request.user.username == user and itemToDelete:
                 itemToDelete[0].delete()
                 return HttpResponse("deleted " + name + " successfully")
-    return HttpResponse("error")
+        else:
+            print "invalid delete itemset form"
+            print form.errors
+            return HttpResponse('form error')
+    return HttpResponse("/")
 
-
+# logout view
 @login_required
 def site_logout(request):
     logout(request)

@@ -10,6 +10,7 @@ class LoginProfile(models.Model):
     def __unicode__(self):
         return self.user.username
 
+# ItemSets
 class ItemSet(models.Model):
 
     owner = models.ForeignKey(LoginProfile)
