@@ -123,8 +123,14 @@ def validate_json(inputfile):
             # and contains an items dict list 
                 # which includes item id as a string  # TODO validate string ID
     }
-    # this check isn't working on windows. find out why
+
+    # this check isn't working on windows. TODO find out why
     # if inputfile.content_type != "application/json": return None
+
+    # -5: gives the .json extension assuming it is there
+    if len(name) < 5 or name[-5:] != '.json':
+        print "Not a json extension"
+        return None
     if size > 6000: 
         print "Input file size is too big"
         return None
@@ -201,11 +207,11 @@ def receive_upload(request):
 
             new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
             new_itemset.save()
-            print "New json in database: (name, owner, json) "
-            print new_itemset.name
-            print new_itemset.owner
-            print new_itemset.json
-            print "User saved count " +  str(savedcount)
+            # print "New json in database: (name, owner, json) "
+            # print new_itemset.name
+            # print new_itemset.owner
+            # print new_itemset.json
+            # print "User saved count " +  str(savedcount)
             return HttpResponseRedirect('/?upload=success')
         else: 
             print "invalid receive upload form"

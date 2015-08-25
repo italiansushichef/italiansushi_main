@@ -164,26 +164,6 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
   margin-bottom: 0px;
 }
 
-/*.btn-file {
-    position: relative;
-    overflow: hidden;
-}
-.btn-file input[type=file] {
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
-    outline: none;
-    background: white;
-    cursor: inherit;
-    display: block;
-}*/
-
 .footer {
     /*border-top:#000 25px solid;*/
     padding: 10px;
@@ -199,4 +179,13 @@ div.bootbox.modal.fade.in {
 }
 div.bootbox.modal.fade.in + div {
     z-index:1060;
+}
+
+.bot-page-alert {
+  position: fixed;
+  left:2%;
+  bottom: -2%;
+  z-index:9999;
+  width:350px;
+  visibility:hidden;
 }
