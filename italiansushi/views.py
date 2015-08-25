@@ -39,18 +39,24 @@ def createuser(request):
             # repassword = data['repassword'] # TODO
             username = data['username']
             email = data['email']
-            ## validate email and username
-            if not re.match(r'[^@]+@[^@]+\.[^@]+', email):
-                return HttpResponseRedirect('/?createuser=bademail')
+            ## validate username is at most 32 characters, at least 3 characters
+            if len(username) > 32 or len(username) < 3:
+                return HttpResponseRedirect('/?createuser=badusername')
+            ## validate password is at least 8 characters
+            if len(password) < 8 or len(password) > 32:
+                return HttpResponseRedirect('/?createuser=badpassword')
+
             # if there is already a user with that acct -- matching username or email. 
             # note: the username check is actually redundant 
             #       because the form.is_valid will have already checked it
             user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
             if user_exists:
                 user = authenticate(username=username, password=password, email=email)
+                # login user if information matches 
                 if user is not None:
                     django_login(request, user)
                     return HttpResponseRedirect('/?login=success')
+                # otherwise username or email is taken 
                 else:
                     return HttpResponseRedirect('/?createuser=usernameoremailtaken')
             else:
@@ -64,12 +70,16 @@ def createuser(request):
                 user = authenticate(username=username, password=password, email=email)
                 django_login(request, user)
                 return HttpResponseRedirect('/?createuser=success')
-        else:
+        else: # note, this checks if username is taken, also may check if email is valid already
             print 'invalid createuser form'
             print form.errors 
-            user_exists = User.objects.filter(request.POST['username'])
+            user_exists = User.objects.filter(username=request.POST['username'])
             if user_exists:
                 return HttpResponseRedirect('/?createuser=usernameoremailtaken')
+            # validate email is probably an email address -- not thorough 
+            if not re.match(r'[^@]+@[^@]+\.[^@]+', request.POST['email']):
+                return HttpResponseRedirect('/?createuser=bademail')
+            ## some other type of error
             return HttpResponseRedirect('/error/?createuser=formfailure')
     return HttpResponseRedirect('/')
 

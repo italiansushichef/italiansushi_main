@@ -25,17 +25,17 @@
 </head>
 
 
-<div class="alert alert-success fade in bot-page-alert" role="alert" hidden 
-    style="position: fixed;bottom: -10px;z-index:9999;width:300px;">
+<div class="alert alert-success fade in bot-page-alert" role="alert" 
+    style="position: fixed;bottom: -10px;z-index:9999;width:300px;visibility:hidden;"visibility:hidden;>
     <span class="glyphicon glyphicon-exclamation-sign"></span>
-    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <a href="" class="close" data-dismiss="alert">&times;</a>
     <span id="alert-success-span"></span>
 </div>
 
-<div class="alert alert-danger fade in" role="alert" hidden 
-    style="position: fixed;bottom: -10px;z-index:9999;width:300px;">
+<div class="alert alert-danger fade in" role="alert"
+    style="position: fixed;bottom: -10px;z-index:9999;width:300px;visibility:hidden;">
     <span class="glyphicon glyphicon-exclamation-sign"></span>
-    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <a href="" class="close" data-dismiss="alert">&times;</a>
     <span id="alert-danger-span"></span>
 </div>
 
@@ -235,7 +235,8 @@
                             return false;
                         }
                     }
-                }
+                },
+                onEscape: function() {},
             });
         });
 
@@ -268,7 +269,9 @@
                             return false;
                         }
                     }
-                }
+                },
+                onEscape: function() {},
+
             });
         });
         
@@ -298,6 +301,8 @@
                                     + '</div>'
                                 + '</div>'
                             + '</div>',
+                    onEscape: function() {},
+
                 });
                 var dynamictable;
                 if (items.length == 0)
@@ -360,17 +365,39 @@
                     }
                     var delete_form_id = clicked_btn.id + '_form';
                     var delete_form = document.getElementById(delete_form_id);
-                    var confirmation_message = "Are you sure you want to remove " + itemset_name + "?";
-                    bootbox.confirm(confirmation_message, function(result) {
-                        if (result) {
-                            var parentrow = $(clicked_btn.parentNode.parentNode.parentNode); // hardcoded for current structure
-                            var nextrow = parentrow.next();
-                            parentrow.remove();
-                            nextrow.remove();
-                            $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
-                                console.log(response);
-                            });
-                        }
+                    bootbox.dialog({
+                        message: '<div class="row">'
+                                    + '<div class=col-xs-12>'
+                                        + '<p> Are you sure you want to remove ' 
+                                            + '<strong>' + itemset_name + '</strong>?'
+                                        + '</p>'
+                                        + '<p>This action cannot be undone!</p>'
+                                    + '</div>'
+                                + '</div>'
+                        ,
+                        onEscape: function() {},
+                        buttons: {
+                            danger: {
+                                label: "Delete Item Set",
+                                className: "btn-danger",
+                                callback: function(){
+                                    var parentrow = $(clicked_btn.parentNode.parentNode.parentNode); // hardcoded for current structure
+                                    var nextrow = parentrow.next();
+                                    parentrow.remove();
+                                    nextrow.remove();
+                                    $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
+                                        console.log(response);
+                                    });
+                                }
+                            },
+                            main:{
+                                label: "Cancel",
+                                className: "btn-default",
+                                callback: function(){}
+
+                            },
+
+                        },
                     });
                     
                 });
@@ -415,10 +442,53 @@
             return null;
         };
 
-        console.log("upload= " + getUrlParameter('upload'));
-        console.log("login= " + getUrlParameter('login'));
-        console.log("createuser= " + getUrlParameter('createuser'));
-        console.log("logout= " + getUrlParameter('logout'));
+        var uploadstatus = getUrlParameter('upload');
+        var loginstatus = getUrlParameter('login');
+        var createuserstatus = getUrlParameter('createuser');
+        var logoutstatus = getUrlParameter('logout');
+
+        if (uploadstatus == "success")
+        {
+            document.getElementById('alert-success-span').innerHTML = "Successful file upload!"
+            $('#alert-success-span').parent().css('visibility', 'visible');
+        }
+        else if (uploadstatus == "limitreached")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
+                                                                        + " and cannot add more item sets."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }
+        else if (loginstatus=="nouser")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, we could not find a user matching those records."
+                                                                        + " Please re-enter your information to try again."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }  
+        else if (createuserstatus=="usernameoremailtaken")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, that username or email has already been taken."
+                                                                        + " Please re-enter new information to try again."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }  
+        else if (createuserstatus=="badusername")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, the username you supplied was invalid."
+                                                                        + " Usernames must be 3-32 characters long."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }  
+        else if (createuserstatus=="badpassword")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, the password you supplied was invalid."
+                                                                        + " Passwords must be 8-32 characters long."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }  
+        else if (createuserstatus=="bademail")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, the email you supplied was invalid."
+                                                                        + " Please enter a valid email to try again."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }  
+
 
     </script>
 </body>
