@@ -458,6 +458,12 @@
                                                                         + " and cannot add more item sets."
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }
+        else if (uploadstatus == "badjson")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, the file you uploaded was not recognized as a" 
+                                                                        + " a valid JSON item file. Please double-check and try again."
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }
         else if (loginstatus=="nouser")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, we could not find a user matching those records."

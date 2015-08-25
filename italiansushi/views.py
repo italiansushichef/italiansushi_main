@@ -107,6 +107,62 @@ def site_login(request):
             return HttpResponseRedirect('/error/?login=formfailure')
     return HttpResponseRedirect('/')
 
+# helper method to validate the input file as a jsonfile itemset minimally
+# return None if not json, the inputfile otherwise
+def validate_json(inputfile):
+    name = inputfile.name
+    content_type = inputfile.content_type
+    size = inputfile.size
+    # https://developer.riotgames.com/docs/item-sets
+    valid_details = {
+        "type": ["custom", "global"],
+        "map": ["any", "SR", "HA", "TT", "CS"],
+        "mode": ["any", "CLASSIC", "ARAM", "Dominion", "ODIN"],
+        # also contains a blocks dict list
+            # which contains a string "type"
+            # and contains an items dict list 
+                # which includes item id as a string  # TODO validate string ID
+    }
+
+    # this check isn't working on windows. find out why
+    # if inputfile.content_type != "application/json": return None
+    if size > 6000: 
+        print "Input file size is too big"
+        return None
+    try:
+        parsed = jsonlib.loads(inputfile.read())
+    except ValueError:
+        print "No JSON object could be decoded"
+        return None
+    except:
+        print "Other decoding error"
+        return None
+    else:
+        if "type" not in parsed or parsed["type"] not in valid_details["type"]:
+            print "Bad type field"
+            return None
+        if "map" not in parsed or parsed["map"] not in valid_details["map"]:
+            print "Bad map field"
+            return None
+        if "mode" not in parsed or parsed["mode"] not in valid_details["mode"]:
+            print "Bad mode field"
+            return None
+        if "blocks" not in parsed:
+            print "Missing blocks field"
+            return None
+        for block in parsed["blocks"]:
+            if "type" not in block or not isinstance(block["type"], basestring):
+                print "Bad type in block field"
+                return None
+            if "items" not in block:
+                print "Missing items in block field"
+                return None
+            for item in block["items"]:
+                if "id" not in item: # also validate item id
+                    print "bad item id"
+                    return None
+        return inputfile
+
 # receiving view for uploading a file
 # redirects to main page if success, error page if failure
 @login_required
@@ -117,20 +173,12 @@ def receive_upload(request):
         if form.is_valid():
             data = form.cleaned_data
             jsonfile = request.FILES['json']
+            jsonfile = validate_json(jsonfile)
+            if not jsonfile:
+                return HttpResponseRedirect('/?upload=badjson')
+
+            # Read and save contents of file
             json = jsonfile.read()
-            filetype = jsonfile.content_type
-
-            ## insert function: validate_json(jsonfile)
-            ## jsonfile.name 
-            ## jsonfile.content_type -- check if it is "application/json"
-            ## jsonfile.size -- 
-            ## jsonfile.read() -- content
-            ## if it is not content_type json, return None
-            ## if it is not appropriate size, return None
-            ## if the content does not match a itemset, return None
-            ## else return jsonfile
-
-            # if filetype == "application/json":
             user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
             savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
             if savedcount >= MAX_UPLOADS:
@@ -158,8 +206,6 @@ def receive_upload(request):
             print new_itemset.json
             print "User saved count " +  str(savedcount)
             return HttpResponseRedirect('/?upload=success')
-            # else:
-            #     return HttpResponseRedirect('/?upload=notjson')
         else: 
             print "invalid receive upload form"
             print form.errors
