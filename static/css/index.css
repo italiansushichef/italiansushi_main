@@ -192,3 +192,11 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
     text-align: center;
     font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
+
+/* Disables the child bootbox's */
+div.bootbox.modal.fade.in {
+    z-index:1070;
+}
+div.bootbox.modal.fade.in + div {
+    z-index:1060;
+}

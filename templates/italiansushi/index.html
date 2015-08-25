@@ -128,18 +128,9 @@
                             <a href="#" id="createuser-btn" class="btn btn-md btn-primary btn-side createuser-popup">
                                 Create Account</a>
                             {% elif logged_in %}
-                            <!-- <h5 style="margin-top: 0;color:#55518a">Welcome {{ user.username }}! Select an item set JSON file
-                            to upload and store to your account. </h5> -->
                             <form method="POST" enctype="multipart/form-data" action="/upload/">
                                 {% csrf_token %}
                                 <input type="file" style="margin-bottom:5px" name="json" required/>
-                                <!-- <span class="btn btn-default btn-file">
-                                    Browse <input type="file">
-                                </span> -->
-                                <!-- <label class="btn btn-primary" for="my-file-selector">
-                                    <input id="my-file-selector" type="file" style="display:none;">
-                                    Browse
-                                </label> -->
                                 <input type="submit" name="submit" value="Upload" class="btn btn-md btn-primary btn-side"/>
                                 <a href="#" id="viewfiles-btn" class="btn btn-md btn-primary btn-side viewfiles-popup">
                                 View Uploaded Sets</a>
