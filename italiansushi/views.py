@@ -292,6 +292,26 @@ def delete_itemset(request):
             return HttpResponse('form error')
     return HttpResponse("/")
 
+# ajax backend for autocompleting a champion name
+def autocomplete_champ(request):
+    data = None
+    response = {"ac-match":[],}
+    query = ""
+    if request.method == "GET":
+        query = request.GET['query']
+    with open('static/json-data/champls.json', 'r') as champfile:
+        data = jsonlib.load(champfile)
+    if query == "":
+        return response
+    q = re.compile(query, re.IGNORECASE)
+    # match is from first character, search is from entire string
+    for champ in data["data"].itervalues():
+        rematch = q.match(champ["name"])
+        if rematch != None and rematch.group() != "":
+            response["ac-match"].append(champ["name"])
+    response["ac-match"].sort()
+    return JsonResponse(response)
+
 # logout view
 @login_required
 def site_logout(request):

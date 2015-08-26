@@ -21,6 +21,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <!-- <script type="text/javascript" src="{% static "js/bootstrap.min.js" %}"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{% static "js/bootbox.min.js" %}"></script>
 
 </head>
@@ -28,13 +30,13 @@
 
 <div class="alert alert-success fade in bot-page-alert" role="alert">
     <span class="glyphicon glyphicon-exclamation-sign"></span>
-    <a href="" class="close" data-dismiss="alert">&times;</a>
+    <a class="close" data-dismiss="alert">&times;</a>
     <span id="alert-success-span"></span>
 </div>
 
 <div class="alert alert-danger fade in bot-page-alert" role="alert">
     <span class="glyphicon glyphicon-exclamation-sign"></span>
-    <a href="" class="close" data-dismiss="alert">&times;</a>
+    <a class="close" data-dismiss="alert">&times;</a>
     <span id="alert-danger-span"></span>
 </div>
 
@@ -149,6 +151,24 @@
                             <h5 class="color-header">
                                 Enter your champion and lane opponent to get an item set customized for your matchup.
                             </h5>
+                            <div class="ui-widget col-sm-4">
+                                <input class="champ-input" id="champ1" placeholder=" Your Champion"/>
+                            </div>
+                            <div class="ui-widget col-sm-4">
+                                <input class="champ-input" id="champ2" placeholder=" Lane Opponent"/>
+                            </div>
+                            <div class="col-sm-3 col-sm-offset-0 col-xs-6 col-xs-offset-3">
+                                <select id="matchup-lane" class="form-control">
+                                    <option value="MID">mid</option>
+                                    <option value="TOP">top</option>        
+                                    <option value="JNG">jungle</option>
+                                    <option value="BOT">bot</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-offset-1 col-sm-offset-1 col-sm-10 col-xs-8 btn-top-bot-margins">
+                                <a id="matchup-popup-btn" class="btn btn-md btn-primary matchup-popup">
+                                Generate Item Set</a>
+                            </div>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
@@ -216,8 +236,8 @@
                                 + '<div class="form-box">'
                                     + '<form id="login-form" class="form-login" method="POST" action="/login/">'
                                         + "{% csrf_token %}" 
-                                        + '<input type="text" name="usernameoremail" class="form-control" placeholder="Username or Email" required autofocus>'
-                                        + '<input type="password" name="password" class="form-control" placeholder="Password" required>'
+                                        + '<input type="text" name="usernameoremail" class="form-control" placeholder="Username or Email" required autofocus/>'
+                                        + '<input type="password" name="password" class="form-control" placeholder="Password" required/>'
                                         + '<button type="submit" class="hide" id="submit-login-form"></button>'
                                     + '</form>'
                                 + '</div>'
@@ -248,9 +268,9 @@
                                 + '<div class="form-box">'
                                     + '<form id="createuser-form" class="form-login" method="POST" action="/createuser/">'
                                         + "{% csrf_token %}" 
-                                        + '<input type="text" name="username" class="form-control" placeholder="Username" required autofocus>'
-                                        + '<input type="text" name="email" class="form-control" placeholder="Email" required>'
-                                        + '<input type="password" name="password" class="form-control" placeholder="Password" required>'
+                                        + '<input type="text" name="username" class="form-control" placeholder="Username" required autofocus/>'
+                                        + '<input type="text" name="email" class="form-control" placeholder="Email" required/>'
+                                        + '<input type="password" name="password" class="form-control" placeholder="Password" required/>'
                                         // + '<input type="password" name="repassword" class="form-control" placeholder="Re-enter Password" required>'
                                         + '<button type="submit" class="hide" id="submit-createuser-form"></button>'
                                     + '</form>'
@@ -419,6 +439,53 @@
                     document.getElementById('item_row:' + num_id).innerHTML = itemshtml;
                 });
             });       
+        });
+        
+        $("#champ1").autocomplete({
+            source: function(request, response) {
+                var query = $("#champ1").val();
+                $.get('/ac-champ/', {query: query}, function(matchls){
+                    response(matchls["ac-match"]);
+                });
+            }
+        });
+
+        $("#champ2").autocomplete({
+            source: function(request, response) {
+                var query = $("#champ2").val();
+                $.get('/ac-champ/', {query: query}, function(matchls){
+                    response(matchls["ac-match"]);
+                });
+            }
+        });
+
+        $('.matchup-popup').click(function(e){
+            e.preventDefault();
+            console.log("matchup-popup-btn clicked");
+            var champ1 = $("#champ1").val();
+            var champ2 = $("#champ2").val();
+            var lane = $("#matchup-lane").val();
+            console.log("Champ1: " + champ1 + " champ2: " + champ2 + " lane: " + lane);
+            bootbox.dialog({
+                
+                message: '<div class="row">'
+                            + '<div class="col-xs-12">'
+                                + '<h1 class="text-center form-title"> Matchup Backend TODO </h1>'
+                                + '<div class="form-box">'
+                                    + '<form id="createuser-form" class="form-login" method="POST" action="/createuser/">'
+                                        + "{% csrf_token %}" 
+                                        + '<input type="text" name="champ1" class="form-control hide" required/>'
+                                        + '<input type="text" name="champ2" class="form-control hide" required/>'
+                                        + '<input type="text" name="lane" class="form-control hide" required/>'
+                                        // + '<input type="password" name="repassword" class="form-control" placeholder="Re-enter Password" required>'
+                                        + '<button type="submit" class="hide" id="submit-createuser-form"></button>'
+                                    + '</form>'
+                                + '</div>'
+                            + '</div>'
+                        + '</div>',
+                onEscape: function() {},
+
+            });
         });
 
         /* gets the URL parameters, i.e. http://dummy.com/?technology=jquery&blog=jquerybyexample 
