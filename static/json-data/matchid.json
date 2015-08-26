@@ -1,0 +1,2387 @@
+{
+    "matches": [
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1440486390203, 
+            "matchId": 1930094547, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1440483777627, 
+            "matchId": 1930083053, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1440401804383, 
+            "matchId": 1929092581, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1440386999337, 
+            "matchId": 1928917854, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1440384900127, 
+            "matchId": 1928894078, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1440382415573, 
+            "matchId": 1928855558, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1440335913737, 
+            "matchId": 1928079689, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1440333324714, 
+            "matchId": 1928085728, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1440330994383, 
+            "matchId": 1928074040, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1440327968375, 
+            "matchId": 1928080283, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "JUNGLE", 
+            "champion": 19, 
+            "platformId": "NA1", 
+            "timestamp": 1440325602591, 
+            "matchId": 1928048806, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "NONE", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1440323548228, 
+            "matchId": 1928038962, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 86, 
+            "platformId": "NA1", 
+            "timestamp": 1440320243464, 
+            "matchId": 1928050672, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1440189919143, 
+            "matchId": 1926412305, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 222, 
+            "platformId": "NA1", 
+            "timestamp": 1440012311853, 
+            "matchId": 1924224559, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1439974142134, 
+            "matchId": 1924006412, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1439971093661, 
+            "matchId": 1923986738, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 21, 
+            "platformId": "NA1", 
+            "timestamp": 1439969188843, 
+            "matchId": 1923983052, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1439693434897, 
+            "matchId": 1920563506, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1437978596023, 
+            "matchId": 1900267259, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 222, 
+            "platformId": "NA1", 
+            "timestamp": 1437976121024, 
+            "matchId": 1900237358, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1437906410259, 
+            "matchId": 1899206041, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1437903459275, 
+            "matchId": 1899210373, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1437901278365, 
+            "matchId": 1899190683, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1437873733160, 
+            "matchId": 1898819514, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 222, 
+            "platformId": "NA1", 
+            "timestamp": 1437870155415, 
+            "matchId": 1898709296, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1437433946470, 
+            "matchId": 1892913227, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1437218701565, 
+            "matchId": 1890412989, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1437123326532, 
+            "matchId": 1889323703, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "JUNGLE", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1435711586706, 
+            "matchId": 1872419628, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "NONE", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1435483412088, 
+            "matchId": 1869785091, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1434479493771, 
+            "matchId": 1858263923, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1433821074918, 
+            "matchId": 1850734339, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1433811820218, 
+            "matchId": 1850598142, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 67, 
+            "platformId": "NA1", 
+            "timestamp": 1433793058807, 
+            "matchId": 1850336823, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1433756485878, 
+            "matchId": 1850001024, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1433754097606, 
+            "matchId": 1849991371, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1433710676183, 
+            "matchId": 1849391790, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433673034173, 
+            "matchId": 1849100895, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 67, 
+            "platformId": "NA1", 
+            "timestamp": 1433668029540, 
+            "matchId": 1849044540, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1433573860374, 
+            "matchId": 1847866653, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433570057568, 
+            "matchId": 1847822695, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433491181499, 
+            "matchId": 1846855518, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1433368892092, 
+            "matchId": 1845125566, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433310560578, 
+            "matchId": 1844738521, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433290626386, 
+            "matchId": 1844430629, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433287469970, 
+            "matchId": 1844341457, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433283973768, 
+            "matchId": 1844213850, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433281561734, 
+            "matchId": 1844108153, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433278490893, 
+            "matchId": 1844064531, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1433240042322, 
+            "matchId": 1843799320, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1433190565443, 
+            "matchId": 1843055472, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433184867876, 
+            "matchId": 1842948222, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1433136685829, 
+            "matchId": 1842656083, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433120367167, 
+            "matchId": 1842415359, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433116976874, 
+            "matchId": 1842364327, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1433113256253, 
+            "matchId": 1842313246, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1433109087404, 
+            "matchId": 1842245977, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1433089313480, 
+            "matchId": 1841800487, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1433061703194, 
+            "matchId": 1841585537, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1433059092084, 
+            "matchId": 1841559552, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1433042827906, 
+            "matchId": 1841361271, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1432954432288, 
+            "matchId": 1840123951, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1432949043962, 
+            "matchId": 1839894461, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1432908853670, 
+            "matchId": 1839357269, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1432781999870, 
+            "matchId": 1837642559, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1432778515441, 
+            "matchId": 1837495316, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1432766623615, 
+            "matchId": 1837236275, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1432715323871, 
+            "matchId": 1836941240, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1432712478709, 
+            "matchId": 1836906080, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1432704910590, 
+            "matchId": 1836855303, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 85, 
+            "platformId": "NA1", 
+            "timestamp": 1432702934278, 
+            "matchId": 1836832421, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1432683549799, 
+            "matchId": 1836328557, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 412, 
+            "platformId": "NA1", 
+            "timestamp": 1432680057019, 
+            "matchId": 1836240810, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1432627174576, 
+            "matchId": 1835913348, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1432590893635, 
+            "matchId": 1835401138, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1432548773711, 
+            "matchId": 1834843827, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1432542810786, 
+            "matchId": 1834830743, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1432541103680, 
+            "matchId": 1834810641, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1432539309751, 
+            "matchId": 1834803368, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1432537088217, 
+            "matchId": 1834759204, 
+            "queue": "RANKED_TEAM_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1432532894311, 
+            "matchId": 1834733871, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1432530573776, 
+            "matchId": 1834710874, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1432510404869, 
+            "matchId": 1834402972, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1432506946219, 
+            "matchId": 1834354459, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1432456904496, 
+            "matchId": 1833660389, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1432332825899, 
+            "matchId": 1831997498, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 85, 
+            "platformId": "NA1", 
+            "timestamp": 1432157469285, 
+            "matchId": 1830213139, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1432153356023, 
+            "matchId": 1830108638, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1432099528543, 
+            "matchId": 1829593294, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1432074018000, 
+            "matchId": 1829232262, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1432069796333, 
+            "matchId": 1829186291, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1431977172707, 
+            "matchId": 1828092419, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1431973049927, 
+            "matchId": 1828051108, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1431892290983, 
+            "matchId": 1827070447, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1431492492642, 
+            "matchId": 1822291378, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 122, 
+            "platformId": "NA1", 
+            "timestamp": 1431473146717, 
+            "matchId": 1821959939, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1431410072539, 
+            "matchId": 1821515443, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1431380119809, 
+            "matchId": 1820851196, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1431377579711, 
+            "matchId": 1820812708, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1431374102300, 
+            "matchId": 1820764531, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1431062370735, 
+            "matchId": 1817076227, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1431058753055, 
+            "matchId": 1817032195, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1430983122160, 
+            "matchId": 1816296176, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1430799464818, 
+            "matchId": 1814101094, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1430783886043, 
+            "matchId": 1813867184, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1430727646328, 
+            "matchId": 1813503098, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430725194463, 
+            "matchId": 1813438584, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1430722336604, 
+            "matchId": 1813432001, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1430709176687, 
+            "matchId": 1813075735, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1430703708196, 
+            "matchId": 1812999962, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 57, 
+            "platformId": "NA1", 
+            "timestamp": 1430701271144, 
+            "matchId": 1812950716, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1430680201240, 
+            "matchId": 1812663387, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1430633798055, 
+            "matchId": 1812337092, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1430625801898, 
+            "matchId": 1812129481, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430623274036, 
+            "matchId": 1811999027, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1430620764267, 
+            "matchId": 1811953511, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430515095444, 
+            "matchId": 1810534927, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1430511352401, 
+            "matchId": 1810503138, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1430508414650, 
+            "matchId": 1810468602, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430290809675, 
+            "matchId": 1808327480, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430287884150, 
+            "matchId": 1808320133, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430253620734, 
+            "matchId": 1807690126, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1430245297068, 
+            "matchId": 1807616464, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1430087346121, 
+            "matchId": 1806122209, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430033234747, 
+            "matchId": 1805660308, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430025851597, 
+            "matchId": 1805455030, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430021605936, 
+            "matchId": 1805296151, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1430019049490, 
+            "matchId": 1805229543, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1430009125214, 
+            "matchId": 1805092934, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1429998478044, 
+            "matchId": 1804940703, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1429992513996, 
+            "matchId": 1804866793, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1429643610358, 
+            "matchId": 1801087351, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1429639982533, 
+            "matchId": 1801079989, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1429596749253, 
+            "matchId": 1800846841, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1429594337437, 
+            "matchId": 1800840955, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 57, 
+            "platformId": "NA1", 
+            "timestamp": 1429564377907, 
+            "matchId": 1800448918, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1429560221940, 
+            "matchId": 1800409443, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1429557781195, 
+            "matchId": 1800410877, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1429485996805, 
+            "matchId": 1799627906, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 69, 
+            "platformId": "NA1", 
+            "timestamp": 1429426736981, 
+            "matchId": 1799112304, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1429331526630, 
+            "matchId": 1797838605, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1429328928014, 
+            "matchId": 1797805687, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1429326392899, 
+            "matchId": 1797757624, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1429074828564, 
+            "matchId": 1795523872, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1428956994371, 
+            "matchId": 1794369818, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1428954221224, 
+            "matchId": 1794292367, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1428907055564, 
+            "matchId": 1793848295, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1428903257067, 
+            "matchId": 1793833510, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1428900122230, 
+            "matchId": 1793793982, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1428897819842, 
+            "matchId": 1793760966, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 143, 
+            "platformId": "NA1", 
+            "timestamp": 1428894596058, 
+            "matchId": 1793712266, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "JUNGLE", 
+            "champion": 57, 
+            "platformId": "NA1", 
+            "timestamp": 1428885919207, 
+            "matchId": 1793565548, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "NONE", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 143, 
+            "platformId": "NA1", 
+            "timestamp": 1428827140243, 
+            "matchId": 1793031640, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1428823729889, 
+            "matchId": 1793002866, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 85, 
+            "platformId": "NA1", 
+            "timestamp": 1428820023399, 
+            "matchId": 1792962873, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1428817741139, 
+            "matchId": 1792922568, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1428724232259, 
+            "matchId": 1791577793, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1428481246549, 
+            "matchId": 1788457945, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 85, 
+            "platformId": "NA1", 
+            "timestamp": 1428478612276, 
+            "matchId": 1788452733, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1428465099805, 
+            "matchId": 1788275676, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 85, 
+            "platformId": "NA1", 
+            "timestamp": 1428386569263, 
+            "matchId": 1787264913, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1428356234190, 
+            "matchId": 1786538329, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1428353193379, 
+            "matchId": 1786509805, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1428268926757, 
+            "matchId": 1785428915, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1428020167940, 
+            "matchId": 1781177035, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 134, 
+            "platformId": "NA1", 
+            "timestamp": 1427932074518, 
+            "matchId": 1779733944, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1427927611744, 
+            "matchId": 1779628930, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 117, 
+            "platformId": "NA1", 
+            "timestamp": 1427843411730, 
+            "matchId": 1778319409, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 143, 
+            "platformId": "NA1", 
+            "timestamp": 1427837063411, 
+            "matchId": 1778254230, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1427753794800, 
+            "matchId": 1777254649, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1427751177230, 
+            "matchId": 1777218992, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 143, 
+            "platformId": "NA1", 
+            "timestamp": 1427748192662, 
+            "matchId": 1777194394, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1427745450785, 
+            "matchId": 1777171619, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1427742614488, 
+            "matchId": 1777136569, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1427701011515, 
+            "matchId": 1776945382, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1427674212562, 
+            "matchId": 1776597834, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1427446555772, 
+            "matchId": 1773536295, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1427443935907, 
+            "matchId": 1773516239, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1426746510078, 
+            "matchId": 1765342316, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1426730030923, 
+            "matchId": 1764835892, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1426654801779, 
+            "matchId": 1764249874, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 22, 
+            "platformId": "NA1", 
+            "timestamp": 1426652155115, 
+            "matchId": 1764213339, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1426649716808, 
+            "matchId": 1764166810, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1426637242322, 
+            "matchId": 1763778607, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1426632374521, 
+            "matchId": 1763628843, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1426579765565, 
+            "matchId": 1763318822, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 127, 
+            "platformId": "NA1", 
+            "timestamp": 1426569631377, 
+            "matchId": 1763251473, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 62, 
+            "platformId": "NA1", 
+            "timestamp": 1426543220541, 
+            "matchId": 1762846322, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "JUNGLE", 
+            "champion": 19, 
+            "platformId": "NA1", 
+            "timestamp": 1426391608255, 
+            "matchId": 1760894416, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "NONE", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1426226010437, 
+            "matchId": 1758712068, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1426028933379, 
+            "matchId": 1756309320, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1426022618484, 
+            "matchId": 1756244976, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1425962541450, 
+            "matchId": 1755875984, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 103, 
+            "platformId": "NA1", 
+            "timestamp": 1425957689431, 
+            "matchId": 1755831705, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1425954493268, 
+            "matchId": 1755757422, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1425886786952, 
+            "matchId": 1754962837, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1425883045618, 
+            "matchId": 1754924720, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1425878290013, 
+            "matchId": 1754884784, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1425875188146, 
+            "matchId": 1754837028, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1425803399673, 
+            "matchId": 1754037324, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1425801293865, 
+            "matchId": 1754030992, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1425798214474, 
+            "matchId": 1753917696, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1425794824485, 
+            "matchId": 1753774646, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 122, 
+            "platformId": "NA1", 
+            "timestamp": 1425791606482, 
+            "matchId": 1753683168, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1425758460932, 
+            "matchId": 1753157014, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1425713708538, 
+            "matchId": 1752788568, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1425710240911, 
+            "matchId": 1752744829, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 115, 
+            "platformId": "NA1", 
+            "timestamp": 1425685397423, 
+            "matchId": 1752085902, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 134, 
+            "platformId": "NA1", 
+            "timestamp": 1425425793008, 
+            "matchId": 1749177590, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1425423425576, 
+            "matchId": 1749162010, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 122, 
+            "platformId": "NA1", 
+            "timestamp": 1425405304423, 
+            "matchId": 1748989728, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1425360152185, 
+            "matchId": 1748763064, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1425357465844, 
+            "matchId": 1748715356, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1425354627928, 
+            "matchId": 1748641797, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1425274527000, 
+            "matchId": 1747724472, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1425271224902, 
+            "matchId": 1747683184, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 25, 
+            "platformId": "NA1", 
+            "timestamp": 1425072043141, 
+            "matchId": 1744573483, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1424994000877, 
+            "matchId": 1743792408, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 104, 
+            "platformId": "NA1", 
+            "timestamp": 1424972603742, 
+            "matchId": 1743592966, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1424970847968, 
+            "matchId": 1743578324, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1424815067727, 
+            "matchId": 1741523642, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1424807353921, 
+            "matchId": 1741411206, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 37, 
+            "platformId": "NA1", 
+            "timestamp": 1424738176860, 
+            "matchId": 1740764810, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 201, 
+            "platformId": "NA1", 
+            "timestamp": 1424735695485, 
+            "matchId": 1740733982, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1424728441051, 
+            "matchId": 1740636876, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1424725571637, 
+            "matchId": 1740629988, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1424503520747, 
+            "matchId": 1737878117, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 34, 
+            "platformId": "NA1", 
+            "timestamp": 1424463488818, 
+            "matchId": 1737002878, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 53, 
+            "platformId": "NA1", 
+            "timestamp": 1424460814043, 
+            "matchId": 1736981198, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 89, 
+            "platformId": "NA1", 
+            "timestamp": 1424206085597, 
+            "matchId": 1734067218, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 40, 
+            "platformId": "NA1", 
+            "timestamp": 1424202532594, 
+            "matchId": 1734035540, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "TOP", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1424200748817, 
+            "matchId": 1734024741, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1423459093976, 
+            "matchId": 1724923481, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1423455892477, 
+            "matchId": 1724868951, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "MID", 
+            "champion": 50, 
+            "platformId": "NA1", 
+            "timestamp": 1423454168173, 
+            "matchId": 1724851743, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "SOLO", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 51, 
+            "platformId": "NA1", 
+            "timestamp": 1423440778899, 
+            "matchId": 1724409702, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_CARRY", 
+            "season": "SEASON2015"
+        }, 
+        {
+            "lane": "BOTTOM", 
+            "champion": 267, 
+            "platformId": "NA1", 
+            "timestamp": 1423264874679, 
+            "matchId": 1721790550, 
+            "queue": "RANKED_SOLO_5x5", 
+            "role": "DUO_SUPPORT", 
+            "season": "SEASON2015"
+        }
+    ], 
+    "endIndex": 238, 
+    "startIndex": 0, 
+    "totalGames": 238
+}
