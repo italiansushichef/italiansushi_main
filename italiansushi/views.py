@@ -117,7 +117,7 @@ def validate_json(inputfile):
     valid_details = {
         "type": ["custom", "global"],
         "map": ["any", "SR", "HA", "TT", "CS"],
-        "mode": ["any", "CLASSIC", "ARAM", "Dominion", "ODIN"],
+        "mode": ["any", "CLASSIC", "ARAM", "ODIN"],
         # also contains a blocks dict list
             # which contains a string "type"
             # and contains an items dict list 
