@@ -189,3 +189,29 @@ div.bootbox.modal.fade.in + div {
   width:350px;
   visibility:hidden;
 }
+
+/* UI Widget Overriding */
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+    font-size: 14px !important;
+    font-weight:normal !important;
+    margin-bottom: 5px;
+    height: 30px;
+}
+/* Autocomplete Popup Overriding */
+.ui-menu .ui-menu-item {
+    height:20px !important;
+    font-size:10px !important;
+}
+
+.form-control {
+  height:30px;
+}
+
+.champ-input {
+  width:150px;
+}
+
+.btn-top-bot-margins {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}

@@ -117,7 +117,7 @@ def validate_json(inputfile):
     valid_details = {
         "type": ["custom", "global"],
         "map": ["any", "SR", "HA", "TT", "CS"],
-        "mode": ["any", "CLASSIC", "ARAM", "Dominion", "ODIN"],
+        "mode": ["any", "CLASSIC", "ARAM", "ODIN"],
         # also contains a blocks dict list
             # which contains a string "type"
             # and contains an items dict list 
@@ -291,6 +291,26 @@ def delete_itemset(request):
             print form.errors
             return HttpResponse('form error')
     return HttpResponse("/")
+
+# ajax backend for autocompleting a champion name
+def autocomplete_champ(request):
+    data = None
+    response = {"ac-match":[],}
+    query = ""
+    if request.method == "GET":
+        query = request.GET['query']
+    with open('static/json-data/champls.json', 'r') as champfile:
+        data = jsonlib.load(champfile)
+    if query == "":
+        return response
+    q = re.compile(query, re.IGNORECASE)
+    # match is from first character, search is from entire string
+    for champ in data["data"].itervalues():
+        rematch = q.match(champ["name"])
+        if rematch != None and rematch.group() != "":
+            response["ac-match"].append(champ["name"])
+    response["ac-match"].sort()
+    return JsonResponse(response)
 
 # logout view
 @login_required
