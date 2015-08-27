@@ -226,6 +226,38 @@
             });
         });
 
+        // For previewing item-sets in-browser
+        var getItemPreviewHtml = function getItemPreviewHtml(jsonfile) {
+            var return_html = "";
+            var blocks = jsonfile["blocks"];
+            if (!jsonfile["blocks"])
+            {
+                return_html = '<p><strong> No items in this item set. </strong></p>';
+            }
+            else
+            {
+                for (var i = 0; i < blocks.length; i++)
+                {
+                    return_html += '<div class="row">';
+                    return_html += '<div class="col-xs-12"><strong style="font-size:10px;">' 
+                                            + blocks[i]["type"] + '</strong></div>';
+                    return_html += '<div class="col-xs-12">';
+                    var items_in_block = blocks[i]["items"];
+                    for (var j = 0; j < items_in_block.length; j++)
+                    {
+
+                        var item = items_in_block[j];
+                        return_html += '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
+                                                + item["id"] + '.png"' + ' style="height:45px;width:45px;">';
+                    }
+                    return_html += '</div>';
+                    return_html += '</div>';
+                }
+            }
+            return_html += '<br>';
+            return return_html;
+        };
+
         $('.login-popup').click(function(e){
             e.preventDefault();
             console.log("login-btn clicked");
@@ -428,30 +460,7 @@
                     else
                     {
                         var myitems_jsonfile = JSON.parse(item_jsonfiles[num_id]);
-                        var itemshtml = "";
-                        var blocks = myitems_jsonfile["blocks"];
-                        for (var i = 0; i < blocks.length; i++)
-                        {
-                            itemshtml += '<div class="row">';
-                            itemshtml += '<div class="col-xs-12"><strong style="font-size:10px;">' + blocks[i]["type"] + '</strong></div>';
-                            itemshtml += '<div class="col-xs-12">';
-                            var items_in_block = blocks[i]["items"];
-                            for (var j = 0; j < items_in_block.length; j++)
-                            {
-
-                                var item = items_in_block[j];
-                                itemshtml += '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + item["id"] + '.png"'
-                                            + ' style="height:40px;width:40px;">';
-                            }
-                            itemshtml += '</div>';
-                            itemshtml += '</div>';
-                        }
-                        itemshtml += '<br>';
-                        if (itemshtml == "")
-                        {
-                            itemshtml = '<p><strong> No items in this item set. </strong></p>';
-                        }
-                        document.getElementById('item_row:' + num_id).innerHTML = itemshtml;
+                        document.getElementById('item_row:' + num_id).innerHTML = getItemPreviewHtml(myitems_jsonfile);
                     }
 
                 });
@@ -485,6 +494,8 @@
             var id2;
             var matchuppanel_html = "";
             var matchup_jsonfile;
+            var matchup_fileid;
+            var matchup_filename;
             $.when($.ajax({
                 url: "matchup_generate_item/",
                 type: "POST",
@@ -534,6 +545,8 @@
                     if (json['jsonfile'])
                     {
                         matchup_jsonfile = JSON.parse(json['jsonfile']);
+                        matchup_fileid = json['jsonfile_id']
+                        matchup_filename = json['jsonfile_name']
                     }
                     else
                     {
@@ -577,10 +590,49 @@
                 if (matchup_jsonfile)
                 {
                     console.log(matchup_jsonfile);
+                    matchuppanel_html = '<table class="table"><col width="70%"><col width="10%"><col width="10%"><col width="10%">';
+                    // Head
+                    matchuppanel_html += '<thead>';
+                    matchuppanel_html += '<tr><th>ItemSet</th>';
+                    matchuppanel_html += '<th class="text-center">Save</th>';
+                    matchuppanel_html += '<th class="text-center">Download</th>';
+                    matchuppanel_html += '<th class="text-center">Delete</th></tr>';
+                    matchuppanel_html += '</thead>';
+                    // Body
+                    matchuppanel_html += '<tbody>' ;
+
+                    matchuppanel_html += '<tr id="hdr_' + matchup_fileid + '">';
+                    matchuppanel_html += '<td>' + matchup_filename + '</td>';
+                    matchuppanel_html += '<td class="text-center">'
+                                        + '<button type="submit" class="btn btn-primary btn-save-item"'
+                                        + 'id="save:' + matchup_fileid + '"">'
+                                        + '<span class="fa fa-bookmark"></span></button></form></td>';
+
+                    matchuppanel_html += '<td class="text-center"><a href="/{{user.username}}/' + matchup_filename + '.json"' 
+                                        + ' type="submit" class="btn btn-success"' 
+                                        + 'id="dl:' + matchup_fileid + '" target="_blank">'
+                                        + '<span class="fa fa-download"></span></a></td>';
+
+                    matchuppanel_html += '<td class="text-center">'
+                                        + '<form method="POST" action="" id="delete_'+ matchup_fileid +'_form">' 
+                                        + "{% csrf_token %}"
+                                        + '<input type="text" name="nameToDelete" value="'+ matchup_filename +'" hidden = true/>'
+                                        + '<input type="text" name="idToDelete" value="'+ matchup_fileid +'" hidden = true/>'
+                                        + '<input type="text" name="user" value="{{user.username}}" hidden = true/>'
+                                        + '<button type="submit" class="btn btn-danger btn-delete-item"'
+                                        + 'id="delete_' + matchup_fileid +'">'
+                                        + '<span class="fa fa-trash-o"></span></button></form></td>';
+                    matchuppanel_html += '</tr>';
+                    matchuppanel_html += '<tr id="item_row:' + matchup_fileid + '"></tr>';
+                    matchuppanel_html += '</tbody>';
+                    matchuppanel_html += '</table>';
                 }
                 document.getElementById('dynamic-matchup-panel').innerHTML = matchuppanel_html;
+                document.getElementById('item_row:' + matchup_fileid).innerHTML = getItemPreviewHtml(matchup_jsonfile);
             });
         });
+        
+
 
         /* gets the URL parameters, i.e. http://dummy.com/?technology=jquery&blog=jquerybyexample 
             -- var tech = getUrlParameter('technology'); */  

@@ -322,6 +322,7 @@ def autocomplete_champ(request):
     return JsonResponse(response)
 
 # ajax backend for generating an item
+@login_required
 def matchup_generate_item(request):
     BLANK_ID = 0
     if request.method == "POST":
@@ -355,7 +356,12 @@ def matchup_generate_item(request):
         response['valid_lane'] = valid_lane
         if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
             return JsonResponse(response)
-        
+
+        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+        item = ItemSet.objects.filter(owner=user_loginprofile, name='sample_realistic_sublime')[0]
+        response['jsonfile'] = item.json
+        response['jsonfile_id'] = item.id
+        response['jsonfile_name'] = item.name
         return JsonResponse(response)
     return HttpResponseRedirect('/')
 
