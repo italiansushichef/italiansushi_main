@@ -312,6 +312,36 @@ def autocomplete_champ(request):
     response["ac-match"].sort()
     return JsonResponse(response)
 
+def matchup_generate_item(request):
+    if request.method == "POST":
+        champdata = None
+        with open('static/json-data/champls.json', 'r') as champfile:
+            champdata = jsonlib.load(champfile)
+        valid_lanes = ['MID', 'TOP', 'JNG', 'BOT']
+        champ1 = str(request.POST['champ1'])
+        champ2 = str(request.POST['champ2'])
+        lane = str(request.POST['lane'])
+
+        # validate all data
+        champ1_id = None
+        champ2_id = None
+        for champ in champdata["data"].itervalues():
+            if champ1.lower() == champ["name"].lower():
+                champ1_id = champ["id"]
+            if champ2.lower() == champ["name"].lower():
+                champ2_id = champ["id"]
+
+        valid_lane = False
+        if lane in valid_lanes:
+            valid_lane = True
+
+        if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
+            return JsonResponse({'error':True})
+
+        response = {'champ1':champ1_id, 'champ2':champ2_id, 'lane':valid_lane}
+        return JsonResponse(response)
+    return HttpResponseRedirect('/')
+
 # logout view
 @login_required
 def site_logout(request):

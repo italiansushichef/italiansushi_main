@@ -466,25 +466,50 @@
             var champ2 = $("#champ2").val();
             var lane = $("#matchup-lane").val();
             console.log("Champ1: " + champ1 + " champ2: " + champ2 + " lane: " + lane);
-            bootbox.dialog({
-                
-                message: '<div class="row">'
-                            + '<div class="col-xs-12">'
-                                + '<h1 class="text-center form-title"> Matchup Backend TODO </h1>'
-                                + '<div class="form-box">'
-                                    + '<form id="createuser-form" class="form-login" method="POST" action="/createuser/">'
-                                        + "{% csrf_token %}" 
-                                        + '<input type="text" name="champ1" class="form-control hide" required/>'
-                                        + '<input type="text" name="champ2" class="form-control hide" required/>'
-                                        + '<input type="text" name="lane" class="form-control hide" required/>'
-                                        // + '<input type="password" name="repassword" class="form-control" placeholder="Re-enter Password" required>'
-                                        + '<button type="submit" class="hide" id="submit-createuser-form"></button>'
-                                    + '</form>'
-                                + '</div>'
-                            + '</div>'
-                        + '</div>',
-                onEscape: function() {},
+            var id1;
+            var id2;
+            $.when($.ajax({
+                url: "matchup_generate_item/",
+                type: "POST",
+                data: {'champ1': champ1, 'champ2': champ2, 'lane': lane, 
+                        'csrfmiddlewaretoken': "{{ csrf_token }}"},
 
+                success : function(json) {
+                    console.log(json);
+
+                    if (json['error'])
+                    {
+                        console.log('error');
+                    }
+                    else
+                    {
+                        console.log("success");
+                    }
+                },
+
+                error : function(xhr, errmsg, err){
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            })).then(function(){
+                bootbox.dialog({
+                    
+                    message: '<div class="row">'
+                                + '<div class="col-xs-12">'
+                                    + '<h1 class="text-center form-title"> Lane Matchup Item Set Generator</h1>'
+                                    + '<div class="col-xs-6 col-sm-5">'
+                                        + '<label>Your Champ:</label>' + champ1
+                                    + '</div>'
+                                    + '<div class="col-xs-6 col-sm-5">'
+                                        + '<label>Opponent:</label>' + champ2
+                                    + '</div>'
+                                    + '<div class="col-xs-2">'
+                                        + '<label>Lane:</label>' + lane
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>',
+                    onEscape: function() {},
+
+                });
             });
         });
 

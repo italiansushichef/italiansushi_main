@@ -10,6 +10,7 @@ urlpatterns = patterns('',
         url(r'^view-items/$', views.get_items, name='get_items'),
         url(r'^delete-itemset/$', views.delete_itemset, name='delete_itemset'),
         url(r'^error/$', views.error_page, name='error'),
-        url(r'ac-champ/$', views.autocomplete_champ, name='autocomplete_champ'),
+        url(r'^ac-champ/$', views.autocomplete_champ, name='autocomplete_champ'),
+        url(r'^matchup_generate_item/$', views.matchup_generate_item, name='matchup_generate_item'),
         url(r'^.*\.json$', views.view_itemset, name='view_itemset'),
         )
