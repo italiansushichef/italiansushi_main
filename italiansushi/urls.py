@@ -12,4 +12,5 @@ urlpatterns = patterns('',
         url(r'^error/$', views.error_page, name='error'),
         url(r'ac-champ/$', views.autocomplete_champ, name='autocomplete_champ'),
         url(r'^.*\.json$', views.view_itemset, name='view_itemset'),
+        url(r'^about/$', views.about_page, name = 'about')
         )
