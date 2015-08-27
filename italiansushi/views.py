@@ -272,12 +272,13 @@ def get_items(request):
     for i in range(0, len(item_ls)):
         response_data[i] = {}
         response_data[i]["filename"] = str(item_ls[i].name)
-        response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
+        #response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
         # preview_ls = preview_items(item_ls[i], 15) # for debugging only
         # if not preview_ls:
         #     item_ls[i].delete()
         # else:
         #     response_data[i]["item_ids"] = preview_ls
+        response_data[i]["jsonfile"] = item_ls[i].json
     return JsonResponse(response_data)
 
 # ajax backed for deleting an item set
@@ -309,8 +310,8 @@ def autocomplete_champ(request):
         query = request.GET['query']
     with open('static/json-data/champls.json', 'r') as champfile:
         data = jsonlib.load(champfile)
-    if query == "":
-        return response
+    if query == "" or query == None:
+        return JsonResponse(response)
     q = re.compile(query, re.IGNORECASE)
     # match is from first character, search is from entire string
     for champ in data["data"].itervalues():
@@ -320,12 +321,15 @@ def autocomplete_champ(request):
     response["ac-match"].sort()
     return JsonResponse(response)
 
+# ajax backend for generating an item
 def matchup_generate_item(request):
+    BLANK_ID = 0
     if request.method == "POST":
+        response = {'jsonfile':None}
         champdata = None
         with open('static/json-data/champls.json', 'r') as champfile:
             champdata = jsonlib.load(champfile)
-        valid_lanes = ['MID', 'TOP', 'JNG', 'BOT']
+        valid_lanes = ['mid', 'top', 'jungle', 'bot']
         champ1 = str(request.POST['champ1'])
         champ2 = str(request.POST['champ2'])
         lane = str(request.POST['lane'])
@@ -342,11 +346,16 @@ def matchup_generate_item(request):
         valid_lane = False
         if lane in valid_lanes:
             valid_lane = True
-
+        if not champ1_id and champ1 == "":
+            champ1_id = BLANK_ID
+        if not champ2_id and champ2 == "":
+            champ2_id = BLANK_ID
+        response['champ1_id'] = champ1_id
+        response['champ2_id'] = champ2_id
+        response['valid_lane'] = valid_lane
         if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
-            return JsonResponse({'error':True})
-
-        response = {'champ1':champ1_id, 'champ2':champ2_id, 'lane':valid_lane}
+            return JsonResponse(response)
+        
         return JsonResponse(response)
     return HttpResponseRedirect('/')
 

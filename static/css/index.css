@@ -230,3 +230,7 @@ div.bootbox.modal.fade.in + div {
   margin-top: 5px;
   margin-bottom: 10px;
 }
+
+.label {
+  margin-right: 3px;
+}

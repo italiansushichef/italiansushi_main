@@ -160,10 +160,10 @@
                             </div>
                             <div class="col-sm-3 col-sm-offset-0 col-xs-6 col-xs-offset-3">
                                 <select id="matchup-lane" class="form-control">
-                                    <option value="MID">mid</option>
-                                    <option value="TOP">top</option>        
-                                    <option value="JNG">jungle</option>
-                                    <option value="BOT">bot</option>
+                                    <option value="mid">mid</option>
+                                    <option value="top">top</option>        
+                                    <option value="jungle">jungle</option>
+                                    <option value="bot">bot</option>
                                 </select>
                             </div>
                             <div class="col-xs-offset-1 col-sm-offset-1 col-sm-10 col-xs-8 btn-top-bot-margins">
@@ -297,17 +297,15 @@
             e.preventDefault();
             // console.log("viewfiles-btn clicked");
             var items = [];
-            var item_ids = []; 
+            var item_jsonfiles = []; 
             $.when($.get('/view-items/', function(result){
                 numitems = result.number;
                 for (var i = 0; i < numitems; i++)
                 {
-                    items.push(result[i]["filename"]);
-                    item_ids[i] = result[i]["item_ids"]
+                    items[i] = result[i]["filename"];
+                    item_jsonfiles[i] = result[i]["jsonfile"];
                 }
-                // console.log("items before " + items);
             })).then(function(){
-                // console.log("items after1 " + items);
                 bootbox.dialog({
                     
                     message: '<div class="row">'
@@ -425,19 +423,37 @@
                     var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!                
                     var clicked_btn_id = id.split('_');
                     var num_id = clicked_btn_id[clicked_btn_id.length - 1];
-                    console.log(num_id);
-                    var myitems_id = item_ids[num_id];
-                    var itemshtml = "";
-                    for (var i = 0; i < myitems_id.length; i++)
+                    if (document.getElementById('item_row:' + num_id).innerHTML != "")
+                        document.getElementById('item_row:' + num_id).innerHTML = "";
+                    else
                     {
-                        console.log(myitems_id[i]);
-                        itemshtml += '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + myitems_id[i] + '.png">';
+                        var myitems_jsonfile = JSON.parse(item_jsonfiles[num_id]);
+                        var itemshtml = "";
+                        var blocks = myitems_jsonfile["blocks"];
+                        for (var i = 0; i < blocks.length; i++)
+                        {
+                            itemshtml += '<div class="row">';
+                            itemshtml += '<div class="col-xs-12"><strong style="font-size:10px;">' + blocks[i]["type"] + '</strong></div>';
+                            itemshtml += '<div class="col-xs-12">';
+                            var items_in_block = blocks[i]["items"];
+                            for (var j = 0; j < items_in_block.length; j++)
+                            {
+
+                                var item = items_in_block[j];
+                                itemshtml += '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + item["id"] + '.png"'
+                                            + ' style="height:40px;width:40px;">';
+                            }
+                            itemshtml += '</div>';
+                            itemshtml += '</div>';
+                        }
+                        itemshtml += '<br>';
+                        if (itemshtml == "")
+                        {
+                            itemshtml = '<p><strong> No items in this item set. </strong></p>';
+                        }
+                        document.getElementById('item_row:' + num_id).innerHTML = itemshtml;
                     }
-                    if (itemshtml == "")
-                    {
-                        itemshtml = '<p><strong> No items in this item set. </strong></p>';
-                    }
-                    document.getElementById('item_row:' + num_id).innerHTML = itemshtml;
+
                 });
             });       
         });
@@ -462,13 +478,13 @@
 
         $('.matchup-popup').click(function(e){
             e.preventDefault();
-            console.log("matchup-popup-btn clicked");
             var champ1 = $("#champ1").val();
             var champ2 = $("#champ2").val();
             var lane = $("#matchup-lane").val();
-            console.log("Champ1: " + champ1 + " champ2: " + champ2 + " lane: " + lane);
             var id1;
             var id2;
+            var matchuppanel_html = "";
+            var matchup_jsonfile;
             $.when($.ajax({
                 url: "matchup_generate_item/",
                 type: "POST",
@@ -477,40 +493,92 @@
 
                 success : function(json) {
                     console.log(json);
-
-                    if (json['error'])
+                    if (json['champ1_id'] == 0) 
+                        {
+                            champ1 = "None";
+                            id1 = json['champ1_id'];
+                        }
+                    else if (!json['champ1_id']) // None or null 
                     {
-                        console.log('error');
+                        champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
+                    }
+                    else
+                    {   
+                        id1 = json['champ1_id']; 
+                    }
+
+                    if (json['champ2_id'] == 0) 
+                        {
+                            champ2 = "None";
+                            id2 = json['champ2_id'];
+                        }
+                    else if (!json['champ2_id']) // None or null 
+                    {
+                        champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
+                    }
+                    else
+                    {   
+                        id2 = json['champ2_id']; 
+                    }
+
+                    if (json['champ2_id'] == 0 && json['champ1_id'] == 0)
+                    {
+                        champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
+                        champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
+                    }
+
+                    if (!json['valid_lane'])
+                        lane = '<strong style="color:red;">' + lane + '</strong>';
+
+
+                    if (json['jsonfile'])
+                    {
+                        matchup_jsonfile = JSON.parse(json['jsonfile']);
                     }
                     else
                     {
-                        console.log("success");
+                        matchuppanel_html = '<h4> Unable to generate an itemset. Please fix inputs and try again. </h4>';
                     }
                 },
 
                 error : function(xhr, errmsg, err){
                     console.log(xhr.status + ": " + xhr.responseText);
+                    champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
+                    champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
+                    lane = '<strong style="color:red;">' + lane + '</strong>';
+                    matchuppanel_html = '<h4> An error on the backend occurred. To report, please email italiansushichef@gmail.com </h4>';
                 }
+
             })).then(function(){
                 bootbox.dialog({
-                    
                     message: '<div class="row">'
                                 + '<div class="col-xs-12">'
                                     + '<h1 class="text-center form-title"> Lane Matchup Item Set Generator</h1>'
-                                    + '<div class="col-xs-6 col-sm-5">'
-                                        + '<label>Your Champ:</label>' + champ1
+                                    + '<div class="col-xs-6 col-sm-offset-1 col-sm-4">'
+                                        + '<span class="label label-primary">Your Champion</span>' + champ1
                                     + '</div>'
-                                    + '<div class="col-xs-6 col-sm-5">'
-                                        + '<label>Opponent:</label>' + champ2
+                                    + '<div class="col-xs-6 col-sm-4">'
+                                        + '<span class="label label-primary">Your Opponent</span>' + champ2
                                     + '</div>'
-                                    + '<div class="col-xs-2">'
-                                        + '<label>Lane:</label>' + lane
+                                    + '<div class="col-xs-3">'
+                                        + '<span class="label label-primary">Lane</span>' + lane
+                                    + '</div>'
+                                    + '<div class="col-xs-12">'
+                                        + '<div class="panel panel-default">'
+                                            + '<div class ="panel-body" id="dynamic-matchup-panel">'
+                                            + '</div>'
+                                        + '</div>'
                                     + '</div>'
                                 + '</div>'
                             + '</div>',
                     onEscape: function() {},
 
                 });
+                if (matchup_jsonfile)
+                {
+                    console.log(matchup_jsonfile);
+                }
+                document.getElementById('dynamic-matchup-panel').innerHTML = matchuppanel_html;
             });
         });
 
