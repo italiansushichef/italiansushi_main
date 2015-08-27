@@ -13,4 +13,5 @@ urlpatterns = patterns('',
         url(r'^ac-champ/$', views.autocomplete_champ, name='autocomplete_champ'),
         url(r'^matchup_generate_item/$', views.matchup_generate_item, name='matchup_generate_item'),
         url(r'^.*\.json$', views.view_itemset, name='view_itemset'),
+        url(r'^about/$', views.about_page, name = 'about')
         )
