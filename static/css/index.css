@@ -214,10 +214,10 @@ div.bootbox.modal.fade.in + div {
 
 /* UI Widget Overriding */
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-    font-size: 14px !important;
+    font-size: 12px !important;
     font-weight:normal !important;
     margin-bottom: 5px;
-    height: 30px;
+    height: 24px;
 }
 /* Autocomplete Popup Overriding */
 .ui-menu .ui-menu-item {
@@ -226,7 +226,8 @@ div.bootbox.modal.fade.in + div {
 }
 
 .form-control {
-  height:30px;
+  height:24px;
+  font-size:12px;
 }
 
 .champ-input {
@@ -242,6 +243,3 @@ div.bootbox.modal.fade.in + div {
   margin-right: 3px;
 }
 
-.btn-top-margin {
-  margin-top: 32px;
-}

@@ -10,6 +10,20 @@ from django.core import serializers
 import re
 import json as jsonlib
 
+# help func, returns champid if champname works, 0 if champname is empty, None otherwise
+def getChampId(champname):
+    BLANK_ID = 0
+    if champname == '': return BLANK_ID
+    with open('static/json-data/champls.json', 'r') as champfile:
+        champdata = jsonlib.load(champfile)
+    for champ in champdata["data"].itervalues():
+        if champname.lower() == champ["name"].lower():
+            return champ["id"]
+    return None
+
+def checkValidLane(lane):
+    valid_lanes = ['', 'M', 'T', 'J', 'B']
+    return lane in valid_lanes
 
 def under_maxuploads(loginprofile):
     MAX_UPLOADS = 10
@@ -351,6 +365,14 @@ def receive_upload(request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             data = form.cleaned_data
+            champ1 = request.POST['champ1']
+            champ2 = request.POST['champ2']
+            lane = request.POST['lane']
+            champ1_id = getChampId(champ1)
+            champ2_id = getChampId(champ2)
+            valid_lane = checkValidLane(lane)
+            if (not champ1_id and champ1 != "") or (not champ2_id and champ2 != "") or not valid_lane:
+                return HttpResponseRedirect('/?upload=formfailure')
             jsonfile = request.FILES['json']
             contents = validate_json(jsonfile)
             if not contents:
@@ -365,13 +387,9 @@ def receive_upload(request):
 
             name32 = get_validname(user_loginprofile,jsonfile.name)
 
-            new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
+            new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32, champ_for=champ1_id, 
+                                    champ_against=champ2_id, lane=lane)
             new_itemset.save()
-            # print "New json in database: (name, owner, json) "
-            # print new_itemset.name
-            # print new_itemset.owner
-            # print new_itemset.json
-            # print "User saved count " +  str(savedcount)
             return HttpResponseRedirect('/?upload=success')
         else: 
             print "invalid receive upload form"
@@ -474,6 +492,8 @@ def autocomplete_champ(request):
     response["ac-match"].sort()
     return JsonResponse(response)
 
+
+
 # ajax backend for generating an item
 def matchup_generate_item(request):
     BLANK_ID = 0
@@ -486,27 +506,16 @@ def matchup_generate_item(request):
             champdata = None
             with open('static/json-data/champls.json', 'r') as champfile:
                 champdata = jsonlib.load(champfile)
-            valid_lanes = ['mid', 'top', 'jungle', 'bot']
+            valid_lanes = ['', 'M', 'T', 'J', 'B']
             champ1 = str(data['champ1'])
             champ2 = str(data['champ2'])
             lane = str(data['lane'])
 
             # validate all data
-            champ1_id = None
-            champ2_id = None
-            for champ in champdata["data"].itervalues():
-                if champ1.lower() == champ["name"].lower():
-                    champ1_id = champ["id"]
-                if champ2.lower() == champ["name"].lower():
-                    champ2_id = champ["id"]
-
-            valid_lane = False
-            if lane in valid_lanes:
-                valid_lane = True
-            if not champ1_id and champ1 == "":
-                champ1_id = BLANK_ID
-            if not champ2_id and champ2 == "":
-                champ2_id = BLANK_ID
+            champ1_id = getChampId(champ1)
+            champ2_id = getChampId(champ2)
+            valid_lane = checkValidLane(lane)
+            
             response['champ1_id'] = champ1_id
             response['champ2_id'] = champ2_id
             response['valid_lane'] = valid_lane

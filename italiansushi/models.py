@@ -17,8 +17,8 @@ class ItemSet(models.Model):
     json = JSONField()
     name = models.CharField(max_length=32, default='noname.json')
     created_at = models.DateTimeField(auto_now_add=True)
-    champ_for = models.CharField(max_length=32, default='')
-    champ_against = models.CharField(max_length=32, default='')
+    champ_for = models.PositiveSmallIntegerField(default=0)   # champid
+    champ_against = models.PositiveSmallIntegerField(default=0) # champid
     LANE_CHOICES = (
     	('M', 'mid'),
     	('T', 'top'),
@@ -33,6 +33,6 @@ class ItemSet(models.Model):
     		ownername = self.owner.user.username
     	else:
     		ownername = "tmp"
-    	return self.name + " owner: " + ownername + " for: " + self.champ_for + \
-    			" against: " + self.champ_against + " lane: " + self.lane 
+    	return self.name + " owner: " + ownername + " for: " + str(self.champ_for) + \
+    			" against: " + str(self.champ_against) + " lane: " + self.lane 
 

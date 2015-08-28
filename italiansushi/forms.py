@@ -33,6 +33,9 @@ class LoginSaveForm(forms.Form):
 
 # For uploading items
 class FileForm(forms.Form):
+    champ1 = forms.CharField(max_length=32, required=False)
+    champ2 = forms.CharField(max_length=32, required=False)
+    lane = forms.CharField(max_length=1, required=False)
     json = forms.FileField(
         label='Select a file',
         help_text='max. 42 megabytes'

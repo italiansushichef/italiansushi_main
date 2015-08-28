@@ -136,10 +136,30 @@
 
                             <form method="POST" enctype="multipart/form-data" action="/upload/">
                                 {% csrf_token %}
+                                <div class="col-xs-12">
                                 <input type="file" style="margin-bottom:5px" name="json" required/>
-                                <input type="submit" name="submit" value="Upload" class="btn btn-md btn-primary btn-side"/>
-                                <a href="#" id="viewfiles-btn" class="btn btn-md btn-primary btn-side viewfiles-popup">
-                                View Uploaded Sets</a>
+                                </div>
+                                <div class="ui-widget col-sm-4">
+                                    <input class="champ-input" id="upload_champ1" name="champ1" placeholder="Champion For"/>
+                                </div>
+                                <div class="ui-widget col-sm-4">
+                                    <input class="champ-input" id="upload_champ2" name="champ2" placeholder="Champion Against"/>
+                                </div>
+                                <div class="col-sm-3 col-sm-offset-0 col-xs-12 col-xs-offset">
+                                    <select id="form-lane" class="form-control" name="lane">
+                                        <option value="">any lane</option>
+                                        <option value="M">mid</option>
+                                        <option value="T">top</option>        
+                                        <option value="J">jungle</option>
+                                        <option value="B">bot</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12">
+                                    <input type="submit" name="submit" value="Upload" class="btn btn-md btn-primary btn-side"/>
+                                    <a href="#" id="viewfiles-btn" class="btn btn-md btn-primary btn-side viewfiles-popup">
+                                    View Uploaded Sets</a>
+                                </div>
+                                
                             </form>
 
                             {% endif %}
@@ -160,10 +180,11 @@
                             </div>
                             <div class="col-sm-3 col-sm-offset-0 col-xs-6 col-xs-offset-3">
                                 <select id="matchup-lane" class="form-control">
-                                    <option value="mid">mid</option>
-                                    <option value="top">top</option>        
-                                    <option value="jungle">jungle</option>
-                                    <option value="bot">bot</option>
+                                    <option value="">any lane</option>
+                                    <option value="M">mid</option>
+                                    <option value="T">top</option>        
+                                    <option value="J">jungle</option>
+                                    <option value="B">bot</option>
                                 </select>
                             </div>
                             <div class="col-xs-offset-1 col-sm-offset-1 col-sm-10 col-xs-8 btn-top-bot-margins">
@@ -257,6 +278,18 @@
             return_html += '<br>';
             return return_html;
         };
+
+        var autocompleteForId = function autocompleteForId(idstring) {
+            $(idstring).autocomplete({
+                source: function(request, response) {
+                    var query = $(idstring).val();
+                    $.get('/ac-champ/', {query: query}, function(matchls){
+                        response(matchls["ac-match"]);
+                    });
+                }
+            });
+        };
+        
 
         $('.login-popup').click(function(e){
             e.preventDefault();
@@ -464,29 +497,27 @@
             });       
         });
         
-        $("#champ1").autocomplete({
-            source: function(request, response) {
-                var query = $("#champ1").val();
-                $.get('/ac-champ/', {query: query}, function(matchls){
-                    response(matchls["ac-match"]);
-                });
-            }
-        });
-
-        $("#champ2").autocomplete({
-            source: function(request, response) {
-                var query = $("#champ2").val();
-                $.get('/ac-champ/', {query: query}, function(matchls){
-                    response(matchls["ac-match"]);
-                });
-            }
-        });
+        autocompleteForId("#champ1");
+        autocompleteForId("#champ2");
+        autocompleteForId("#upload_champ1");
+        autocompleteForId("#upload_champ2");
 
         $('.matchup-popup').click(function(e){
             e.preventDefault();
             var champ1 = $("#champ1").val();
             var champ2 = $("#champ2").val();
-            var lane = $("#matchup-lane").val();
+            var raw_lane = $("#matchup-lane").val();
+            var lane;
+            if (raw_lane == "")
+                lane = "any lane"
+            else if (raw_lane == "M")
+                lane = "mid"
+            else if (raw_lane == "B")
+                lane = "bot"
+            else if (raw_lane == "T")
+                lane = "top"
+            else if (raw_lane == "J")
+                lane = "jungle"
             var id1;
             var id2;
             var matchuppanel_html = "";
@@ -496,7 +527,7 @@
             $.when($.ajax({
                 url: "matchup_generate_item/",
                 type: "POST",
-                data: {'champ1': champ1, 'champ2': champ2, 'lane': lane, 
+                data: {'champ1': champ1, 'champ2': champ2, 'lane': raw_lane, 
                         'csrfmiddlewaretoken': "{{ csrf_token }}"},
 
                 success : function(json) {
@@ -743,48 +774,54 @@
         else if (uploadstatus == "limitreached" || savestatus == "limitreached")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
-                                                                        + " and cannot add more item sets."
+                                                                        + " and cannot add more item sets.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }
         else if (uploadstatus == "badjson")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, the file you uploaded was not recognized as a" 
-                                                                        + " a valid JSON item file. Please double-check and try again."
+                                                                        + " a valid JSON item file. Please double-check and try again.";
+            $('#alert-danger-span').parent().css('visibility', 'visible');
+        }
+        else if (uploadstatus == "formfailure")
+        {
+            document.getElementById('alert-danger-span').innerHTML = "Sorry, there was an error with your form." 
+                                                                        + " Please double-check and try again.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }
         else if (loginstatus=="nouser")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, we could not find a user matching those records."
-                                                                        + " Please re-enter your information to try again."
+                                                                        + " Please re-enter your information to try again.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }  
         else if (createuserstatus=="usernameoremailtaken")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, that username or email has already been taken."
-                                                                        + " Please re-enter new information to try again."
+                                                                        + " Please re-enter new information to try again.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }  
         else if (createuserstatus=="badusername")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, the username you supplied was invalid."
-                                                                        + " Usernames must be 3-32 characters long."
+                                                                        + " Usernames must be 3-32 characters long.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }  
         else if (createuserstatus=="badpassword")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, the password you supplied was invalid."
-                                                                        + " Passwords must be 8-32 characters long."
+                                                                        + " Passwords must be 8-32 characters long.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }  
         else if (createuserstatus=="bademail")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, the email you supplied was invalid."
-                                                                        + " Please enter a valid email to try again."
+                                                                        + " Please enter a valid email to try again.";
             $('#alert-danger-span').parent().css('visibility', 'visible');
         }
         else if (savestatus=="success")
         {
-            document.getElementById('alert-success-span').innerHTML = "Matchup itemset added to your account successfully!"
+            document.getElementById('alert-success-span').innerHTML = "Matchup itemset added to your account successfully!";
             $('#alert-success-span').parent().css('visibility', 'visible');
         }
 
