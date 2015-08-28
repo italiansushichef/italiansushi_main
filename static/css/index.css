@@ -142,7 +142,14 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
 
 .form-title {
   color: #555;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 400;
+  display: block;
+}
+
+.form-title-smaller {
+  color: #555;
+  font-size: 14px;
   font-weight: 400;
   display: block;
 }
@@ -233,4 +240,8 @@ div.bootbox.modal.fade.in + div {
 
 .label {
   margin-right: 3px;
+}
+
+.btn-top-margin {
+  margin-top: 32px;
 }

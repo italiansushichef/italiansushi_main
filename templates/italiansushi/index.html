@@ -601,13 +601,12 @@
                     matchuppanel_html += '<td class="text-center">'
                                         + '<form method="POST" id="save_'+ matchup_fileid +'_form">' 
                                         + "{% csrf_token %}"
-                                        + '<input type="text" name="filenameToSave" value="'+ matchup_filename +'" hidden = true/>'
                                         + '<input type="number" name="idToSave" value="'+ matchup_fileid +'" hidden = true/>'
                                         + '<button type="submit" class="btn btn-primary btn-save-item"'
                                         + 'id="login-save:' + matchup_fileid +'">'
                                         + '<span class="fa fa-bookmark"></span></button></form></td>';
 
-                    matchuppanel_html += '<td class="text-center"><a href="/{{user.username}}/' + matchup_filename + '.json"' 
+                    matchuppanel_html += '<td class="text-center"><a href="/tmp/' + matchup_filename + '.json"' 
                                         + ' type="submit" class="btn btn-success"' 
                                         + 'id="dl:' + matchup_fileid + '" target="_blank">'
                                         + '<span class="fa fa-download"></span></a></td>';
@@ -634,6 +633,7 @@
                             {
                                 document.getElementById('alert-success-span').innerHTML = "ItemSet added to your items successfully!"
                                 $('#alert-success-span').parent().css('visibility', 'visible');
+                                $('#alert-danger-span').parent().css('visibility', 'hidden');
                                 $(".btn-save-item").attr("disabled","disabled");
                             }
                             else if (json["max_uploads_reached"])
@@ -641,12 +641,14 @@
                                 document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
                                                                         + " and cannot add more item sets."
                                 $('#alert-danger-span').parent().css('visibility', 'visible');
+                                $('#alert-success-span').parent().css('visibility', 'hidden');
                                 $(".btn-save-item").attr("disabled","disabled");
                             }
                             else 
                             {
-                                document.getElementById('alert-danger-span').innerHTML = "Sorry, somethign went wrong. Refresh and try again."
+                                document.getElementById('alert-danger-span').innerHTML = "Sorry, something went wrong. Refresh and try again."
                                 $('#alert-danger-span').parent().css('visibility', 'visible');
+                                $('#alert-success-span').parent().css('visibility', 'hidden');
                                 $(".btn-save-item").attr("disabled","disabled");
                             }
                         },
@@ -654,39 +656,55 @@
                             console.log(xhr.status + ": " + xhr.responseText);
                         },
                     });
+                    {% else %}
+                    bootbox.dialog({
+                        message: '<div class="row">'
+                                    + '<div class="col-xs-12">'
+                                        + '<h1 class="text-center form-title">' 
+                                            + 'Create or login to your free user account to save this item set.&nbsp'
+                                            + 'Please note this account is separate from your Riot League of Legends account. </h1>'
+                                        + '<h1 class="text-center form-title"><strong>'+ matchup_filename +'</strong>'
+                                        + '&nbsp;will be automatically added</h1>'
+                                        + '<div class="row">'
+
+                                            + '<div class="col-xs-12 col-sm-6 form-box">'
+                                                + '<h1 class="text-center form-title-smaller">Create a free account</h1>'
+                                                + '<form id="createuser-form" class="form-login" method="POST" action="/createuser-and-save/">'
+                                                    + "{% csrf_token %}" 
+                                                    + '<input type="text" name="username" class="form-control"' 
+                                                        + 'placeholder="Username" required autofocus/>'
+                                                    + '<input type="text" name="email" class="form-control" placeholder="Email" required/>'
+                                                    + '<input type="password" name="password" class="form-control"' 
+                                                        + 'placeholder="Password" required/>'
+                                                    + '<input type="number" name="idToSave" value="'+ matchup_fileid 
+                                                        +'" hidden=true required/>'
+                                                    + '<button type="submit" class="btn btn-primary center-block" id="submit-createuser-form">'
+                                                        + 'Create Free Account</button>'
+                                                + '</form>'
+                                            + '</div>'
+
+                                            + '<div class="col-xs-12 col-sm-6 form-box">'
+                                                + '<h1 class="text-center form-title-smaller">Sign in to existing account</h1>'
+                                                + '<form id="login-form" class="form-login" method="POST" action="/login-and-save/">'
+                                                    + "{% csrf_token %}" 
+                                                    + '<input type="text" name="usernameoremail" class="form-control"'
+                                                        +  ' placeholder="Username or Email" required autofocus/>'
+                                                    + '<input type="password" name="password" class="form-control"' 
+                                                        + ' placeholder="Password" required/>'
+                                                    + '<input type="number" name="idToSave" value="'+ matchup_fileid 
+                                                        +'" hidden=true required/>'
+                                                    + '<button type="submit" class="btn btn-primary center-block"'
+                                                        +  ' id="submit-createuser-form">'
+                                                    + 'Login</button>'
+                                                + '</form>'
+                                            + '</div>'
+
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>',
+                        onEscape: function() {},
+                    });
                     {% endif %}
-                //     bootbox.dialog({
-                //         message: '<div class="row">'
-                //                     + '<div class=col-xs-12>'
-                //                         + '<p> Are you sure you want to remove ' 
-                //                             + '<strong>' + itemset_name + '</strong>?'
-                //                         + '</p>'
-                //                         + '<p>This action cannot be undone!</p>'
-                //                     + '</div>'
-                //                 + '</div>'
-                //         ,
-                //         onEscape: function() {},
-                //         buttons: {
-                //             danger: {
-                //                 label: "Delete Item Set",
-                //                 className: "btn-danger",
-                //                 callback: function(){
-                //                     var parentrow = $(clicked_btn.parentNode.parentNode.parentNode); // hardcoded for current structure
-                //                     var nextrow = parentrow.next();
-                //                     parentrow.remove();
-                //                     nextrow.remove();
-                //                     $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
-                //                         console.log(response);
-                //                     });
-                //                 }
-                //             },
-                //             main:{
-                //                 label: "Cancel",
-                //                 className: "btn-default",
-                //                 callback: function(){}
-                //             },
-                //         },
-                //     });
                 });
             });
         });
@@ -715,13 +733,14 @@
         var loginstatus = getUrlParameter('login');
         var createuserstatus = getUrlParameter('createuser');
         var logoutstatus = getUrlParameter('logout');
+        var savestatus = getUrlParameter('save');
 
         if (uploadstatus == "success")
         {
             document.getElementById('alert-success-span').innerHTML = "File upload successful!"
             $('#alert-success-span').parent().css('visibility', 'visible');
         }
-        else if (uploadstatus == "limitreached")
+        else if (uploadstatus == "limitreached" || savestatus == "limitreached")
         {
             document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
                                                                         + " and cannot add more item sets."
@@ -762,8 +781,12 @@
             document.getElementById('alert-danger-span').innerHTML = "Sorry, the email you supplied was invalid."
                                                                         + " Please enter a valid email to try again."
             $('#alert-danger-span').parent().css('visibility', 'visible');
-        }  
-
+        }
+        else if (savestatus=="success")
+        {
+            document.getElementById('alert-success-span').innerHTML = "Matchup itemset added to your account successfully!"
+            $('#alert-success-span').parent().css('visibility', 'visible');
+        }
 
     </script>
 </body>

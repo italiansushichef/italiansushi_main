@@ -10,6 +10,29 @@ from django.core import serializers
 import re
 import json as jsonlib
 
+
+def under_maxuploads(loginprofile):
+    MAX_UPLOADS = 10
+    savedcount = len(ItemSet.objects.filter(owner=loginprofile))
+    return savedcount < MAX_UPLOADS
+
+def get_validname(user_loginprofile,filename):
+    # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
+    name28 = filename[:-5][0:28] 
+    name32 = name28
+
+    # make sure the file name is not taken -- generate a new filename if not taken 
+    if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
+        startindex = 1
+        foundname = False
+        while not foundname:
+            name32 = name28 + '(' + str(startindex) + ')' 
+            if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
+                startindex += 1
+            else:
+                foundname = True
+    return name32
+
 def about_page(request):
     if request.user.is_authenticated():
         logged_in = True
@@ -48,7 +71,7 @@ def createuser(request):
             username = data['username']
             email = data['email']
             ## validate username is at most 32 characters, at least 3 characters
-            if len(username) > 32 or len(username) < 3:
+            if len(username) > 32 or len(username) < 3 or username=="tmp":
                 return HttpResponseRedirect('/?createuser=badusername')
             ## validate password is at least 8 characters
             if len(password) < 8 or len(password) > 32:
@@ -91,6 +114,103 @@ def createuser(request):
             return HttpResponseRedirect('/error/?createuser=formfailure')
     return HttpResponseRedirect('/')
 
+# receiving view for creating a new user acct, and then saving the file
+# redirects to main page upon success, error page if failure
+def createuser_save(request):
+    if request.method == "POST":
+        form = CreateUserSaveForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            password = data['password']
+            # repassword = data['repassword'] # TODO
+            username = data['username']
+            email = data['email']
+            ## validate username is at most 32 characters, at least 3 characters
+            if len(username) > 32 or len(username) < 3 or username=="tmp":
+                return HttpResponseRedirect('/?createuser=badusername&save=failure')
+            ## validate password is at least 8 characters
+            if len(password) < 8 or len(password) > 32:
+                return HttpResponseRedirect('/?createuser=badpassword&save=failure')
+
+            # if there is already a user with that acct -- matching username or email. 
+            # note: the username check is actually redundant 
+            #       because the form.is_valid will have already checked it
+            user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
+            if user_exists:
+                user = authenticate(username=username, password=password, email=email)
+                # login user if information matches 
+                if user is not None:
+                    django_login(request, user)
+                    idToSave = data['idToSave']
+                    # Save ItemSet to the User 
+                    user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+
+                    if not under_maxuploads(user_loginprofile):
+                        return HttpResponseRedirect('/?login=success&save=limitreached')
+
+                    itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
+                    # validate id exists
+                    if not itemToCopy:
+                        return HttpResponseRedirect('/?login=success&save=badItemSet')
+                    else:
+                        itemToCopy = itemToCopy[0]
+
+                    # Make a copy
+                    filenameToSave = itemToCopy.name
+                    filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+                    itemToCopy.pk = None
+                    itemToCopy.owner = user_loginprofile
+                    itemToCopy.name = filenameToSave
+                    itemToCopy.save()
+                    return HttpResponseRedirect('/?login=success&save=success')
+                # otherwise username or email is taken 
+                else:
+                    return HttpResponseRedirect('/?createuser=usernameoremailtaken&save=failure')
+            else:
+                # Create user
+                user = User(username=username, password=password, email=email)
+                user.set_password(password)
+                user.save()
+                # Create profile
+                profile = LoginProfile(user=user)
+                profile.save()
+                user = authenticate(username=username, password=password, email=email)
+                django_login(request, user)
+                idToSave = data['idToSave']
+                # Save ItemSet to the User 
+                user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+
+                if not under_maxuploads(user_loginprofile):
+                    return HttpResponseRedirect('/?createuser=success&save=limitreached')
+
+                itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
+                # validate id exists
+                if not itemToCopy:
+                    return HttpResponseRedirect('/?createuser=success&save=badItemSet')
+                else:
+                    itemToCopy = itemToCopy[0]
+
+                # Make a copy
+                filenameToSave = itemToCopy.name
+                filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+                itemToCopy.pk = None
+                itemToCopy.owner = user_loginprofile
+                itemToCopy.name = filenameToSave
+                itemToCopy.save()
+                return HttpResponseRedirect('/?createuser=success&save=success')
+        else: # note, this checks if username is taken, also may check if email is valid already
+            print 'invalid createuser form'
+            print form.errors 
+            user_exists = User.objects.filter(username=request.POST['username'])
+            if user_exists:
+                return HttpResponseRedirect('/?createuser=usernameoremailtaken&save=failure')
+            # validate email is probably an email address -- not thorough 
+            if not re.match(r'[^@]+@[^@]+\.[^@]+', request.POST['email']):
+                return HttpResponseRedirect('/?createuser=bademail&save=failure')
+            ## some other type of error
+            return HttpResponseRedirect('/error/?createuser=formfailure&save=failure')
+    return HttpResponseRedirect('/')
+
 # receiving view for logging into the website
 # redirects to index page upon success, error page if failure
 def site_login(request):
@@ -113,6 +233,51 @@ def site_login(request):
             print 'invalid login form'
             print form.errors
             return HttpResponseRedirect('/error/?login=formfailure')
+    return HttpResponseRedirect('/')
+
+# receiving view for logging into the website
+# redirects to index page upon success, error page if failure
+def site_login_save(request):
+    if request.method == "POST":
+        form = LoginSaveForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            password = data['password']
+            usernameoremail = data['usernameoremail']
+            found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
+            # from list of possible users, try to authenticate
+            if found_user:
+                for possible_user in found_user:
+                    user = authenticate(username=possible_user, password=password)
+                    if user is not None:
+                        django_login(request, user)
+                        idToSave = data['idToSave']
+                        # Save ItemSet to the User 
+                        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+
+                        if not under_maxuploads(user_loginprofile):
+                            return HttpResponseRedirect('/?login=success&save=limitreached')
+
+                        itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
+                        # validate id exists
+                        if not itemToCopy:
+                            return HttpResponseRedirect('/?login=success&save=badItemSet')
+                        else:
+                            itemToCopy = itemToCopy[0]
+
+                        # Make a copy
+                        filenameToSave = itemToCopy.name
+                        filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+                        itemToCopy.pk = None
+                        itemToCopy.owner = user_loginprofile
+                        itemToCopy.name = filenameToSave
+                        itemToCopy.save()
+                        return HttpResponseRedirect('/?login=success&save=success')
+            return HttpResponseRedirect('/?login=nouser&save=failure')
+        else:
+            print 'invalid login form'
+            print form.errors
+            return HttpResponseRedirect('/error/?login=formfailure&save=failure')
     return HttpResponseRedirect('/')
 
 # helper method to validate the input file as a jsonfile itemset minimally
@@ -177,27 +342,6 @@ def validate_json(inputfile):
                     return None
         return contents
 
-def under_maxuploads(loginprofile):
-    MAX_UPLOADS = 10
-    savedcount = len(ItemSet.objects.filter(owner=loginprofile))
-    return savedcount < MAX_UPLOADS
-
-def get_validname(user_loginprofile,filename):
-    # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
-    name28 = filename[:-5][0:28] 
-    name32 = name28
-
-    # make sure the file name is not taken -- generate a new filename if not taken 
-    if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
-        startindex = 1
-        foundname = False
-        while not foundname:
-            name32 = name28 + '(' + str(startindex) + ')' 
-            if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
-                startindex += 1
-            else:
-                foundname = True
-    return name32
 
 # receiving view for uploading a file
 # redirects to main page if success, error page if failure
@@ -236,18 +380,19 @@ def receive_upload(request):
     return HttpResponseRedirect('/')
 
 # for viewing an itemset
-@login_required
 def view_itemset(request):
-    user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
     url = request.path
     user = url.split('/')[1]
     filename = url.split('/')[-1][:-5]
     if request.user.username == user:
+        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
         itemset = ItemSet.objects.filter(owner=user_loginprofile, name=filename)
-        if itemset:
-            json = itemset[0].json
-            parsed = jsonlib.loads(json)
-            return HttpResponse(json, content_type="application/json")
+    elif user == 'tmp':
+        itemset = ItemSet.objects.filter(owner=None, name=filename)
+    if itemset:
+        json = itemset[0].json
+        parsed = jsonlib.loads(json)
+        return HttpResponse(json, content_type="application/json")
     return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
     
 
@@ -330,12 +475,12 @@ def autocomplete_champ(request):
     return JsonResponse(response)
 
 # ajax backend for generating an item
-@login_required
 def matchup_generate_item(request):
     BLANK_ID = 0
     if request.method == "POST":
         form = GenerateItemSetForm(request.POST)
         if form.is_valid():
+
             data = form.cleaned_data
             response = {'jsonfile':None}
             champdata = None
@@ -367,9 +512,7 @@ def matchup_generate_item(request):
             response['valid_lane'] = valid_lane
             if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
                 return JsonResponse(response)
-
-            user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-            item = ItemSet.objects.filter(owner=user_loginprofile, name='sample_realistic_sublime')[0]
+            item = ItemSet.objects.filter(owner=None, name='sample_realistic_sublime')[0]
             response['jsonfile'] = item.json
             response['jsonfile_id'] = item.id
             response['jsonfile_name'] = item.name
@@ -385,7 +528,6 @@ def matchup_save_file(request):
         form = SaveItemSetForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            filenameToSave = data['filenameToSave'] 
             idToSave = data['idToSave']
             # Save ItemSet to the User 
             user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
@@ -393,9 +535,16 @@ def matchup_save_file(request):
             if not under_maxuploads(user_loginprofile):
                 return JsonResponse({'max_uploads_reached':True})
 
-            filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
-            itemToCopy = ItemSet.objects.filter(id=idToSave)[0]
+            itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
+            # validate id exists
+            if not itemToCopy:
+                return JsonResponse({'success':False})
+            else:
+                itemToCopy = itemToCopy[0]
+
             # Make a copy
+            filenameToSave = itemToCopy.name
+            filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
             itemToCopy.pk = None
             itemToCopy.owner = user_loginprofile
             itemToCopy.name = filenameToSave

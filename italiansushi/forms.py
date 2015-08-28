@@ -11,10 +11,25 @@ class CreateUserForm(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password')
 
+# for creating new users
+class CreateUserSaveForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+    # repassword = forms.CharField(widget=forms.PasswordInput())
+    idToSave = forms.IntegerField()
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
 # for logging in
 class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
     usernameoremail = forms.CharField()
+
+# for logging in and saving
+class LoginSaveForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+    usernameoremail = forms.CharField()
+    idToSave = forms.IntegerField()
 
 # For uploading items
 class FileForm(forms.Form):
@@ -36,5 +51,4 @@ class GenerateItemSetForm(forms.Form):
 
 # For saving items to your profile
 class SaveItemSetForm(forms.Form):
-    filenameToSave = forms.CharField(max_length=32)
     idToSave = forms.IntegerField()

@@ -29,6 +29,10 @@ class ItemSet(models.Model):
     lane = models.CharField(max_length=1, choices=LANE_CHOICES, default='')
 
     def __unicode__(self):
-    	return self.name + " owner: " + self.owner.user.username + " for: " + self.champ_for + \
+    	if self.owner:
+    		ownername = self.owner.user.username
+    	else:
+    		ownername = "tmp"
+    	return self.name + " owner: " + ownername + " for: " + self.champ_for + \
     			" against: " + self.champ_against + " lane: " + self.lane 
 
