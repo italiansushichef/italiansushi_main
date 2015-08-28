@@ -177,11 +177,32 @@ def validate_json(inputfile):
                     return None
         return contents
 
+def under_maxuploads(loginprofile):
+    MAX_UPLOADS = 10
+    savedcount = len(ItemSet.objects.filter(owner=loginprofile))
+    return savedcount < MAX_UPLOADS
+
+def get_validname(user_loginprofile,filename):
+    # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
+    name28 = filename[:-5][0:28] 
+    name32 = name28
+
+    # make sure the file name is not taken -- generate a new filename if not taken 
+    if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
+        startindex = 1
+        foundname = False
+        while not foundname:
+            name32 = name28 + '(' + str(startindex) + ')' 
+            if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
+                startindex += 1
+            else:
+                foundname = True
+    return name32
+
 # receiving view for uploading a file
 # redirects to main page if success, error page if failure
 @login_required
 def receive_upload(request):
-    MAX_UPLOADS = 10
     if request.method == "POST":
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -195,23 +216,10 @@ def receive_upload(request):
             json = contents
             user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
             savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
-            if savedcount >= MAX_UPLOADS:
+            if not under_maxuploads(user_loginprofile):
                 return HttpResponseRedirect('/?upload=limitreached')
 
-            # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
-            name28 = jsonfile.name[:-5][0:28] 
-            name32 = name28
-
-            # make sure the file name is not taken -- generate a new filename if not taken 
-            if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
-                startindex = 1
-                foundname = False
-                while not foundname:
-                    name32 = name28 + '(' + str(startindex) + ')' 
-                    if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
-                        startindex += 1
-                    else:
-                        foundname = True
+            name32 = get_validname(user_loginprofile,jsonfile.name)
 
             new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32)
             new_itemset.save()
@@ -326,44 +334,78 @@ def autocomplete_champ(request):
 def matchup_generate_item(request):
     BLANK_ID = 0
     if request.method == "POST":
-        response = {'jsonfile':None}
-        champdata = None
-        with open('static/json-data/champls.json', 'r') as champfile:
-            champdata = jsonlib.load(champfile)
-        valid_lanes = ['mid', 'top', 'jungle', 'bot']
-        champ1 = str(request.POST['champ1'])
-        champ2 = str(request.POST['champ2'])
-        lane = str(request.POST['lane'])
+        form = GenerateItemSetForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            response = {'jsonfile':None}
+            champdata = None
+            with open('static/json-data/champls.json', 'r') as champfile:
+                champdata = jsonlib.load(champfile)
+            valid_lanes = ['mid', 'top', 'jungle', 'bot']
+            champ1 = str(data['champ1'])
+            champ2 = str(data['champ2'])
+            lane = str(data['lane'])
 
-        # validate all data
-        champ1_id = None
-        champ2_id = None
-        for champ in champdata["data"].itervalues():
-            if champ1.lower() == champ["name"].lower():
-                champ1_id = champ["id"]
-            if champ2.lower() == champ["name"].lower():
-                champ2_id = champ["id"]
+            # validate all data
+            champ1_id = None
+            champ2_id = None
+            for champ in champdata["data"].itervalues():
+                if champ1.lower() == champ["name"].lower():
+                    champ1_id = champ["id"]
+                if champ2.lower() == champ["name"].lower():
+                    champ2_id = champ["id"]
 
-        valid_lane = False
-        if lane in valid_lanes:
-            valid_lane = True
-        if not champ1_id and champ1 == "":
-            champ1_id = BLANK_ID
-        if not champ2_id and champ2 == "":
-            champ2_id = BLANK_ID
-        response['champ1_id'] = champ1_id
-        response['champ2_id'] = champ2_id
-        response['valid_lane'] = valid_lane
-        if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
+            valid_lane = False
+            if lane in valid_lanes:
+                valid_lane = True
+            if not champ1_id and champ1 == "":
+                champ1_id = BLANK_ID
+            if not champ2_id and champ2 == "":
+                champ2_id = BLANK_ID
+            response['champ1_id'] = champ1_id
+            response['champ2_id'] = champ2_id
+            response['valid_lane'] = valid_lane
+            if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
+                return JsonResponse(response)
+
+            user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+            item = ItemSet.objects.filter(owner=user_loginprofile, name='sample_realistic_sublime')[0]
+            response['jsonfile'] = item.json
+            response['jsonfile_id'] = item.id
+            response['jsonfile_name'] = item.name
             return JsonResponse(response)
-
-        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-        item = ItemSet.objects.filter(owner=user_loginprofile, name='sample_realistic_sublime')[0]
-        response['jsonfile'] = item.json
-        response['jsonfile_id'] = item.id
-        response['jsonfile_name'] = item.name
-        return JsonResponse(response)
+        else:
+            print form.errors
+            return JsonResponse({'jsonfile':None})
     return HttpResponseRedirect('/')
+
+@login_required
+def matchup_save_file(request):
+    if request.method == "POST":
+        form = SaveItemSetForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            filenameToSave = data['filenameToSave'] 
+            idToSave = data['idToSave']
+            # Save ItemSet to the User 
+            user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
+
+            if not under_maxuploads(user_loginprofile):
+                return JsonResponse({'max_uploads_reached':True})
+
+            filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+            itemToCopy = ItemSet.objects.filter(id=idToSave)[0]
+            # Make a copy
+            itemToCopy.pk = None
+            itemToCopy.owner = user_loginprofile
+            itemToCopy.name = filenameToSave
+            itemToCopy.save()
+            return JsonResponse({'success':True})
+        else:
+            print form.errors
+            return JsonResponse({'success':False})
+    return HttpResponseRedirect('/')
+
 
 # logout view
 @login_required

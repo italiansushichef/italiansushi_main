@@ -384,7 +384,7 @@
                                         + '<span class="fa fa-download"></span></a></td>';
 
                         dynamictable += '<td class="text-center">'
-                                        + '<form method="POST" action="" id="{{user.username}}_delete_'+items[i]+'_form">' 
+                                        + '<form method="POST" id="{{user.username}}_delete_'+items[i]+'_form">' 
                                         + "{% csrf_token %}"
                                         + '<input type="text" name="name" value="'+items[i]+'" hidden = true/>'
                                         + '<input type="text" name="user" value="{{user.username}}" hidden = true/>'
@@ -442,12 +442,9 @@
                                 label: "Cancel",
                                 className: "btn-default",
                                 callback: function(){}
-
                             },
-
                         },
                     });
-                    
                 });
                 
                 $('.btn-preview-item').click(function(e){
@@ -503,7 +500,6 @@
                         'csrfmiddlewaretoken': "{{ csrf_token }}"},
 
                 success : function(json) {
-                    console.log(json);
                     if (json['champ1_id'] == 0) 
                         {
                             champ1 = "None";
@@ -576,7 +572,7 @@
                                     + '<div class="col-xs-3">'
                                         + '<span class="label label-primary">Lane</span>' + lane
                                     + '</div>'
-                                    + '<div class="col-xs-12">'
+                                    + '<div class="col-xs-12" style="margin-top:5px;">'
                                         + '<div class="panel panel-default">'
                                             + '<div class ="panel-body" id="dynamic-matchup-panel">'
                                             + '</div>'
@@ -589,46 +585,109 @@
                 });
                 if (matchup_jsonfile)
                 {
-                    console.log(matchup_jsonfile);
-                    matchuppanel_html = '<table class="table"><col width="70%"><col width="10%"><col width="10%"><col width="10%">';
+                    matchuppanel_html = '<table class="table"><col width="80%"><col width="10%"><col width="10%">';
                     // Head
                     matchuppanel_html += '<thead>';
                     matchuppanel_html += '<tr><th>ItemSet</th>';
                     matchuppanel_html += '<th class="text-center">Save</th>';
                     matchuppanel_html += '<th class="text-center">Download</th>';
-                    matchuppanel_html += '<th class="text-center">Delete</th></tr>';
                     matchuppanel_html += '</thead>';
                     // Body
                     matchuppanel_html += '<tbody>' ;
-
                     matchuppanel_html += '<tr id="hdr_' + matchup_fileid + '">';
+
                     matchuppanel_html += '<td>' + matchup_filename + '</td>';
+
                     matchuppanel_html += '<td class="text-center">'
+                                        + '<form method="POST" id="save_'+ matchup_fileid +'_form">' 
+                                        + "{% csrf_token %}"
+                                        + '<input type="text" name="filenameToSave" value="'+ matchup_filename +'" hidden = true/>'
+                                        + '<input type="number" name="idToSave" value="'+ matchup_fileid +'" hidden = true/>'
                                         + '<button type="submit" class="btn btn-primary btn-save-item"'
-                                        + 'id="save:' + matchup_fileid + '"">'
+                                        + 'id="login-save:' + matchup_fileid +'">'
                                         + '<span class="fa fa-bookmark"></span></button></form></td>';
 
                     matchuppanel_html += '<td class="text-center"><a href="/{{user.username}}/' + matchup_filename + '.json"' 
                                         + ' type="submit" class="btn btn-success"' 
                                         + 'id="dl:' + matchup_fileid + '" target="_blank">'
                                         + '<span class="fa fa-download"></span></a></td>';
-
-                    matchuppanel_html += '<td class="text-center">'
-                                        + '<form method="POST" action="" id="delete_'+ matchup_fileid +'_form">' 
-                                        + "{% csrf_token %}"
-                                        + '<input type="text" name="nameToDelete" value="'+ matchup_filename +'" hidden = true/>'
-                                        + '<input type="text" name="idToDelete" value="'+ matchup_fileid +'" hidden = true/>'
-                                        + '<input type="text" name="user" value="{{user.username}}" hidden = true/>'
-                                        + '<button type="submit" class="btn btn-danger btn-delete-item"'
-                                        + 'id="delete_' + matchup_fileid +'">'
-                                        + '<span class="fa fa-trash-o"></span></button></form></td>';
+                    
                     matchuppanel_html += '</tr>';
                     matchuppanel_html += '<tr id="item_row:' + matchup_fileid + '"></tr>';
                     matchuppanel_html += '</tbody>';
                     matchuppanel_html += '</table>';
                 }
                 document.getElementById('dynamic-matchup-panel').innerHTML = matchuppanel_html;
-                document.getElementById('item_row:' + matchup_fileid).innerHTML = getItemPreviewHtml(matchup_jsonfile);
+                if (matchup_jsonfile)
+                    document.getElementById('item_row:' + matchup_fileid).innerHTML = getItemPreviewHtml(matchup_jsonfile);
+
+                $('.btn-save-item').click(function(e){
+                    e.preventDefault();
+                    var save_form = document.getElementById('save_' + matchup_fileid + '_form');
+                    {% if logged_in %}
+                    $.ajax({
+                        url: "matchup-save-file/",
+                        type: "POST",
+                        data: $(save_form).serialize(),
+                        success : function(json) {
+                            if (json["success"]) 
+                            {
+                                document.getElementById('alert-success-span').innerHTML = "ItemSet added to your items successfully!"
+                                $('#alert-success-span').parent().css('visibility', 'visible');
+                                $(".btn-save-item").attr("disabled","disabled");
+                            }
+                            else if (json["max_uploads_reached"])
+                            {
+                                document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
+                                                                        + " and cannot add more item sets."
+                                $('#alert-danger-span').parent().css('visibility', 'visible');
+                                $(".btn-save-item").attr("disabled","disabled");
+                            }
+                            else 
+                            {
+                                document.getElementById('alert-danger-span').innerHTML = "Sorry, somethign went wrong. Refresh and try again."
+                                $('#alert-danger-span').parent().css('visibility', 'visible');
+                                $(".btn-save-item").attr("disabled","disabled");
+                            }
+                        },
+                        error : function(xhr, errmsg, err){
+                            console.log(xhr.status + ": " + xhr.responseText);
+                        },
+                    });
+                    {% endif %}
+                //     bootbox.dialog({
+                //         message: '<div class="row">'
+                //                     + '<div class=col-xs-12>'
+                //                         + '<p> Are you sure you want to remove ' 
+                //                             + '<strong>' + itemset_name + '</strong>?'
+                //                         + '</p>'
+                //                         + '<p>This action cannot be undone!</p>'
+                //                     + '</div>'
+                //                 + '</div>'
+                //         ,
+                //         onEscape: function() {},
+                //         buttons: {
+                //             danger: {
+                //                 label: "Delete Item Set",
+                //                 className: "btn-danger",
+                //                 callback: function(){
+                //                     var parentrow = $(clicked_btn.parentNode.parentNode.parentNode); // hardcoded for current structure
+                //                     var nextrow = parentrow.next();
+                //                     parentrow.remove();
+                //                     nextrow.remove();
+                //                     $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
+                //                         console.log(response);
+                //                     });
+                //                 }
+                //             },
+                //             main:{
+                //                 label: "Cancel",
+                //                 className: "btn-default",
+                //                 callback: function(){}
+                //             },
+                //         },
+                //     });
+                });
             });
         });
         

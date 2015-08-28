@@ -17,7 +17,18 @@ class ItemSet(models.Model):
     json = JSONField()
     name = models.CharField(max_length=32, default='noname.json')
     created_at = models.DateTimeField(auto_now_add=True)
+    champ_for = models.CharField(max_length=32, default='')
+    champ_against = models.CharField(max_length=32, default='')
+    LANE_CHOICES = (
+    	('M', 'mid'),
+    	('T', 'top'),
+    	('B', 'bot'),
+    	('J', 'jungle'),
+    	('', 'any')
+    )
+    lane = models.CharField(max_length=1, choices=LANE_CHOICES, default='')
 
     def __unicode__(self):
-    	return self.name + " owner: " + self.owner.user.username
+    	return self.name + " owner: " + self.owner.user.username + " for: " + self.champ_for + \
+    			" against: " + self.champ_against + " lane: " + self.lane 
 

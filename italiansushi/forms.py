@@ -27,3 +27,14 @@ class FileForm(forms.Form):
 class DeleteItemSetForm(forms.Form):
     name = forms.CharField(max_length=32)
     user = forms.CharField(max_length=None)
+
+# For generating itemsets
+class GenerateItemSetForm(forms.Form):
+    champ1 = forms.CharField(max_length=128, required=False)
+    champ2 = forms.CharField(max_length=128, required=False)
+    lane = forms.CharField(max_length=16, required=False)
+
+# For saving items to your profile
+class SaveItemSetForm(forms.Form):
+    filenameToSave = forms.CharField(max_length=32)
+    idToSave = forms.IntegerField()
