@@ -25,23 +25,23 @@ def checkValidLane(lane):
     valid_lanes = ['', 'M', 'T', 'J', 'B']
     return lane in valid_lanes
 
-def under_maxuploads(loginprofile):
+def under_maxuploads(user):
     MAX_UPLOADS = 10
-    savedcount = len(ItemSet.objects.filter(owner=loginprofile))
+    savedcount = len(ItemSet.objects.filter(owner=user))
     return savedcount < MAX_UPLOADS
 
-def get_validname(user_loginprofile,filename):
+def get_validname(user,filename):
     # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
     name28 = filename[:-5][0:28] 
     name32 = name28
 
     # make sure the file name is not taken -- generate a new filename if not taken 
-    if ItemSet.objects.filter(owner=user_loginprofile, name=name28):
+    if ItemSet.objects.filter(owner=user, name=name28):
         startindex = 1
         foundname = False
         while not foundname:
             name32 = name28 + '(' + str(startindex) + ')' 
-            if ItemSet.objects.filter(owner=user_loginprofile, name=name32):
+            if ItemSet.objects.filter(owner=user, name=name32):
                 startindex += 1
             else:
                 foundname = True
@@ -109,9 +109,6 @@ def createuser(request):
                 user = User(username=username, password=password, email=email)
                 user.set_password(password)
                 user.save()
-                # Create profile
-                profile = LoginProfile(user=user)
-                profile.save()
                 user = authenticate(username=username, password=password, email=email)
                 django_login(request, user)
                 return HttpResponseRedirect('/?createuser=success')
@@ -156,10 +153,8 @@ def createuser_save(request):
                 if user is not None:
                     django_login(request, user)
                     idToSave = data['idToSave']
-                    # Save ItemSet to the User 
-                    user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
 
-                    if not under_maxuploads(user_loginprofile):
+                    if not under_maxuploads(user):
                         return HttpResponseRedirect('/?login=success&save=limitreached')
 
                     itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
@@ -171,10 +166,11 @@ def createuser_save(request):
 
                     # Make a copy
                     filenameToSave = itemToCopy.name
-                    filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+                    filenameToSave = get_validname(request.user, filenameToSave + '.json')
                     itemToCopy.pk = None
-                    itemToCopy.owner = user_loginprofile
+                    itemToCopy.owner = request.user
                     itemToCopy.name = filenameToSave
+                    itemToCopy.user_upvotes = None
                     itemToCopy.save()
                     return HttpResponseRedirect('/?login=success&save=success')
                 # otherwise username or email is taken 
@@ -185,16 +181,13 @@ def createuser_save(request):
                 user = User(username=username, password=password, email=email)
                 user.set_password(password)
                 user.save()
-                # Create profile
-                profile = LoginProfile(user=user)
-                profile.save()
                 user = authenticate(username=username, password=password, email=email)
                 django_login(request, user)
                 idToSave = data['idToSave']
                 # Save ItemSet to the User 
-                user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
 
-                if not under_maxuploads(user_loginprofile):
+
+                if not under_maxuploads(user):
                     return HttpResponseRedirect('/?createuser=success&save=limitreached')
 
                 itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
@@ -206,10 +199,11 @@ def createuser_save(request):
 
                 # Make a copy
                 filenameToSave = itemToCopy.name
-                filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+                filenameToSave = get_validname(user, filenameToSave + '.json')
                 itemToCopy.pk = None
-                itemToCopy.owner = user_loginprofile
+                itemToCopy.owner = user
                 itemToCopy.name = filenameToSave
+                itemToCopy.user_upvotes = None
                 itemToCopy.save()
                 return HttpResponseRedirect('/?createuser=success&save=success')
         else: # note, this checks if username is taken, also may check if email is valid already
@@ -267,9 +261,8 @@ def site_login_save(request):
                         django_login(request, user)
                         idToSave = data['idToSave']
                         # Save ItemSet to the User 
-                        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
 
-                        if not under_maxuploads(user_loginprofile):
+                        if not under_maxuploads(user):
                             return HttpResponseRedirect('/?login=success&save=limitreached')
 
                         itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
@@ -281,10 +274,11 @@ def site_login_save(request):
 
                         # Make a copy
                         filenameToSave = itemToCopy.name
-                        filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+                        filenameToSave = get_validname(user, filenameToSave + '.json')
                         itemToCopy.pk = None
-                        itemToCopy.owner = user_loginprofile
+                        itemToCopy.owner = user
                         itemToCopy.name = filenameToSave
+                        itemToCopy.user_upvotes = None
                         itemToCopy.save()
                         return HttpResponseRedirect('/?login=success&save=success')
             return HttpResponseRedirect('/?login=nouser&save=failure')
@@ -380,14 +374,13 @@ def receive_upload(request):
 
             # Save contents of file
             json = contents
-            user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-            savedcount = len(ItemSet.objects.filter(owner=user_loginprofile))
-            if not under_maxuploads(user_loginprofile):
+            savedcount = len(ItemSet.objects.filter(owner=request.user))
+            if not under_maxuploads(request.user):
                 return HttpResponseRedirect('/?upload=limitreached')
 
-            name32 = get_validname(user_loginprofile,jsonfile.name)
+            name32 = get_validname(request.user,jsonfile.name)
 
-            new_itemset = ItemSet(json=json, owner=user_loginprofile, name=name32, champ_for=champ1_id, 
+            new_itemset = ItemSet(json=json, owner=request.user, name=name32, champ_for=champ1_id, 
                                     champ_against=champ2_id, lane=lane)
             new_itemset.save()
             return HttpResponseRedirect('/?upload=success')
@@ -402,9 +395,8 @@ def view_itemset(request):
     url = request.path
     user = url.split('/')[1]
     filename = url.split('/')[-1][:-5]
-    if request.user.username == user:
-        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
-        itemset = ItemSet.objects.filter(owner=user_loginprofile, name=filename)
+    if request.user.is_authenticated() and request.user.username == user:
+        itemset = ItemSet.objects.filter(owner=request.user, name=filename)
     elif user == 'tmp':
         itemset = ItemSet.objects.filter(owner=None, name=filename)
     if itemset:
@@ -436,9 +428,8 @@ def preview_items(itemset, max_items):
 # ajax backend for displaying items list
 @login_required
 def get_items(request):
-    user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
     response_data = {}
-    item_ls = ItemSet.objects.filter(owner=user_loginprofile)
+    item_ls = ItemSet.objects.filter(owner=request.user)
     response_data["number"] = len(item_ls)
     for i in range(0, len(item_ls)):
         response_data[i] = {}
@@ -456,13 +447,12 @@ def get_items(request):
 @login_required
 def delete_itemset(request):
     if request.method == "POST":
-        user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
         form = DeleteItemSetForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             name = data['name']
             user = data['user']
-            itemToDelete = ItemSet.objects.filter(owner=user_loginprofile, name=name)
+            itemToDelete = ItemSet.objects.filter(owner=request.user, name=name)
             if request.user.username == user and itemToDelete:
                 itemToDelete[0].delete()
                 return HttpResponse("deleted " + name + " successfully")
@@ -539,9 +529,8 @@ def matchup_save_file(request):
             data = form.cleaned_data
             idToSave = data['idToSave']
             # Save ItemSet to the User 
-            user_loginprofile = LoginProfile.objects.filter(user=request.user)[0]
 
-            if not under_maxuploads(user_loginprofile):
+            if not under_maxuploads(request.user):
                 return JsonResponse({'max_uploads_reached':True})
 
             itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
@@ -553,10 +542,11 @@ def matchup_save_file(request):
 
             # Make a copy
             filenameToSave = itemToCopy.name
-            filenameToSave = get_validname(user_loginprofile, filenameToSave + '.json')
+            filenameToSave = get_validname(request.user, filenameToSave + '.json')
             itemToCopy.pk = None
-            itemToCopy.owner = user_loginprofile
+            itemToCopy.owner = request.user
             itemToCopy.name = filenameToSave
+            itemToCopy.user_upvotes = None
             itemToCopy.save()
             return JsonResponse({'success':True})
         else:

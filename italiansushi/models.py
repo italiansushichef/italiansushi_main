@@ -2,22 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from jsonfield import JSONField
 
-# Login User Profiles
-class LoginProfile(models.Model):
-
-    # Linking LoginProfile to User model instance
-    user = models.OneToOneField(User)
-    def __unicode__(self):
-        return self.user.username
-
 # ItemSets
 class ItemSet(models.Model):
 
-    owner = models.ForeignKey(LoginProfile, null=True)
+    owner = models.ForeignKey(User, null=True, default=None, related_name="owner_of_itemset")
     json = JSONField()
     name = models.CharField(max_length=32, default='noname.json')
     created_at = models.DateTimeField(auto_now_add=True)
-    champ_for = models.PositiveSmallIntegerField(default=0)   # champid
+    champ_for = models.PositiveSmallIntegerField(default=0)     # champid
     champ_against = models.PositiveSmallIntegerField(default=0) # champid
     LANE_CHOICES = (
     	('M', 'mid'),
@@ -27,12 +19,17 @@ class ItemSet(models.Model):
     	('', 'any')
     )
     lane = models.CharField(max_length=1, choices=LANE_CHOICES, default='')
+    users_upvotes = models.ManyToManyField(User,blank=True, default=None, related_name="users_who_upvoted")
 
     def __unicode__(self):
     	if self.owner:
-    		ownername = self.owner.user.username
+    		ownername = self.owner.username
     	else:
     		ownername = "tmp"
-    	return self.name + " owner: " + ownername + " for: " + str(self.champ_for) + \
-    			" against: " + str(self.champ_against) + " lane: " + self.lane 
+    	if users_upvotes:
+    		upvotes = len(users_upvotes)
+    	else:
+    		upvotes = 0
+    	return self.name + "|owner: " + ownername + "|for: " + str(self.champ_for) + \
+    			"|against: " + str(self.champ_against) + "|lane: " + self.lane + "|upvotes: " + str(upvotes)
 

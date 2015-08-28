@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from italiansushi.models import LoginProfile, ItemSet
+from italiansushi.models import *
 from jsonfield import JSONField
 
 # for creating new users
