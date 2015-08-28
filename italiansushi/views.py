@@ -10,7 +10,7 @@ from django.core import serializers
 import re
 import json as jsonlib
 
-# help func, returns champid if champname works, 0 if champname is empty, None otherwise
+# helper func, returns champid if champname works, 0 if champname is empty, None otherwise
 def getChampId(champname):
     BLANK_ID = 0
     if champname == '': return BLANK_ID
@@ -47,30 +47,28 @@ def get_validname(user,filename):
                 foundname = True
     return name32
 
+def save_itemset(itemToCopy, user):
+    # Make a copy and save it to user
+    filenameToSave = itemToCopy.name
+    filenameToSave = get_validname(user, filenameToSave + '.json')
+    itemToCopy.pk = None
+    itemToCopy.owner = user
+    itemToCopy.name = filenameToSave
+    itemToCopy.user_upvotes = None
+    itemToCopy.save()
+
 def about_page(request):
-    if request.user.is_authenticated():
-        logged_in = True
-    else:
-        logged_in = False
-    context_dict = {'logged_in': logged_in}
+    context_dict = {'logged_in': request.user.is_authenticated()}
     return render(request, 'italiansushi/about.html', context_dict)
 
 # errorpage
 def error_page(request):
-    if request.user.is_authenticated():
-        logged_in = True
-    else:
-        logged_in = False
-    context_dict = {'logged_in': logged_in}
+    context_dict = {'logged_in': request.user.is_authenticated()}
     return render(request, 'italiansushi/error.html', context_dict)
 
 # homepage
 def index(request):
-    if request.user.is_authenticated():
-        logged_in = True
-    else:
-        logged_in = False
-    context_dict = {'logged_in': logged_in}
+    context_dict = {'logged_in': request.user.is_authenticated()}
     return render(request, 'italiansushi/index.html', context_dict)
 
 # receiving view for creating a new user acct
@@ -164,14 +162,7 @@ def createuser_save(request):
                     else:
                         itemToCopy = itemToCopy[0]
 
-                    # Make a copy
-                    filenameToSave = itemToCopy.name
-                    filenameToSave = get_validname(request.user, filenameToSave + '.json')
-                    itemToCopy.pk = None
-                    itemToCopy.owner = request.user
-                    itemToCopy.name = filenameToSave
-                    itemToCopy.user_upvotes = None
-                    itemToCopy.save()
+                    save_itemset(itemToCopy, request.user)
                     return HttpResponseRedirect('/?login=success&save=success')
                 # otherwise username or email is taken 
                 else:
@@ -185,11 +176,8 @@ def createuser_save(request):
                 django_login(request, user)
                 idToSave = data['idToSave']
                 # Save ItemSet to the User 
-
-
                 if not under_maxuploads(user):
                     return HttpResponseRedirect('/?createuser=success&save=limitreached')
-
                 itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
                 # validate id exists
                 if not itemToCopy:
@@ -273,13 +261,7 @@ def site_login_save(request):
                             itemToCopy = itemToCopy[0]
 
                         # Make a copy
-                        filenameToSave = itemToCopy.name
-                        filenameToSave = get_validname(user, filenameToSave + '.json')
-                        itemToCopy.pk = None
-                        itemToCopy.owner = user
-                        itemToCopy.name = filenameToSave
-                        itemToCopy.user_upvotes = None
-                        itemToCopy.save()
+                        save_itemset(itemToCopy, request.user)
                         return HttpResponseRedirect('/?login=success&save=success')
             return HttpResponseRedirect('/?login=nouser&save=failure')
         else:
@@ -541,13 +523,7 @@ def matchup_save_file(request):
                 itemToCopy = itemToCopy[0]
 
             # Make a copy
-            filenameToSave = itemToCopy.name
-            filenameToSave = get_validname(request.user, filenameToSave + '.json')
-            itemToCopy.pk = None
-            itemToCopy.owner = request.user
-            itemToCopy.name = filenameToSave
-            itemToCopy.user_upvotes = None
-            itemToCopy.save()
+            save_itemset(itemToCopy, request.user)
             return JsonResponse({'success':True})
         else:
             print form.errors
