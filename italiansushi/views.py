@@ -530,6 +530,14 @@ def matchup_save_file(request):
             return JsonResponse({'success':False})
     return HttpResponseRedirect('/')
 
+def load_item_info(request):
+    if request.method == "GET":
+        data = None
+        with open('static/json-data/items_full.json', 'r') as itemfile:
+            data = jsonlib.load(itemfile)
+        if data:
+            return JsonResponse(data)
+    return JsonResponse({})
 
 # logout view
 @login_required

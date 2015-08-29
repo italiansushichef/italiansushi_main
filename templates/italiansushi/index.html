@@ -101,7 +101,7 @@
                       <h4 class="fa fa-gamepad"></h4><br/>Lane Matchup Generator
                     </a>
                     <a href="#" class="list-group-item text-center">
-                      <h4 class="fa fa-home"></h4><br/>Feature3
+                      <h4 class="fa fa-cogs"></h4><br/>Build a Custom Item Set
                     </a>
                     <a href="#" class="list-group-item text-center">
                       <h4 class="fa fa-cutlery"></h4><br/>Feature4
@@ -195,9 +195,19 @@
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="fa fa-home color-icon"></h1>
-                          <h2 class="color-header">Coming Soon</h2>
-                          <h3 class="color-header">Build a custom item sets</h3>
+                            <h1 class="fa fa-cogs color-icon"></h1>
+                            <h2 class="color-header">Build a custom item set</h2>
+                            <h5 class="color-header">Design an item set, or edit an existing item set.</h5>
+                            <div class="row">
+                                <div class="col-xs-12 btn-top-bot-margins">
+                                <a id="build-popup-btn" class="btn btn-md btn-primary build-popup">
+                                    Build an Item Set</a>
+                                </div>
+                            <div class="col-xs-12 btn-top-bot-margins">
+                                <a id="editview-popup-btn" class="btn btn-md btn-primary viewfiles-popup">
+                                    Edit Existing Sets</a>
+                                </div>
+                            </div>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
@@ -737,6 +747,195 @@
                     });
                     {% endif %}
                 });
+            });
+        });
+
+// var getItemPreviewHtml = function getItemPreviewHtml(jsonfile) {
+//             var return_html = "";
+//             var blocks = jsonfile["blocks"];
+//             if (!jsonfile["blocks"])
+//             {
+//                 return_html = '<p><strong> No items in this item set. </strong></p>';
+//             }
+//             else
+//             {
+//                 for (var i = 0; i < blocks.length; i++)
+//                 {
+//                     return_html += '<div class="row">';
+//                     return_html += '<div class="col-xs-12"><strong style="font-size:10px;">' 
+//                                             + blocks[i]["type"] + '</strong></div>';
+//                     return_html += '<div class="col-xs-12">';
+//                     var items_in_block = blocks[i]["items"];
+//                     for (var j = 0; j < items_in_block.length; j++)
+//                     {
+
+//                         var item = items_in_block[j];
+//                         return_html += '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
+//                                                 + item["id"] + '.png"' + ' style="height:45px;width:45px;">';
+//                     }
+//                     return_html += '</div>';
+//                     return_html += '</div>';
+//                 }
+//             }
+//             return_html += '<br>';
+//             return return_html;
+//         };
+
+//        var autocompleteForId = function autocompleteForId(idstring) {
+    //     $(idstring).autocomplete({
+    //         source: function(request, response) {
+    //             var query = $(idstring).val();
+    //             $.get('/ac-champ/', {query: query}, function(matchls){
+    //                 response(matchls["ac-match"]);
+    //             });
+    //         }
+    //     });
+    // };
+
+        $('.build-popup').click(function(e){
+            var item_info;
+            $.when($.get('/load-item-info/', function(result){
+                item_info = result;
+            })).then(function(){
+                e.preventDefault();
+                var block_count = 0;
+                bootbox.dialog({   
+                    message: '<div class="row">'
+                                + '<div class="col-xs-12">'
+                                    + '<h1 class="text-center form-title"> Design an Item Set to Download </h1>'
+                                    + '<hr>'
+                                    + '<div class="row" id="add-block-row"><div class="col-xs-12">'
+                                        + '<button type="button" class="btn btn-default btn-add-block">'
+                                            +  '<span class="fa fa-plus"></span>&nbsp;Add a block'
+                                            + '</button>'
+                                    + '</div></div>'
+                                + '</div>'
+                            + '</div>',
+                    onEscape: function() {},
+                });
+
+                $('.btn-add-block').click(function(e){
+                    e.preventDefault();
+                    var block_id = block_count;
+                    block_count += 1;
+                    var new_block_html = '<div class="row" id="block_' + block_id + '">';
+
+                    new_block_html += '<div class="col-xs-12">'
+                                        + '<strong style="font-size:12px;">'
+                                            + '<span id="title-span_'+ block_id + '">Block: ' + block_id + '</span></strong>'
+                                        + '<span id="title-edit-span_' + block_id + '" style="display:none;font-size:12px;">'
+                                            + '<input type="text" id="title-edit-input_'+ block_id +'"></input>' 
+                                        + '</span>'
+                                            + '&nbsp;&nbsp;'
+                                            + '<button type="button" class="btn btn-default btn-xs' 
+                                                + ' btn-edit-block-title" id="editblock_' + block_id + '">'
+                                            +  '<span class="fa fa-edit"></span>'
+                                            + '</button>&nbsp;'
+                                            + '<button type="button" class="btn btn-danger btn-xs' 
+                                                + ' btn-delete-block" id="deleteblock_' + block_id + '">'
+                                            +  '<span class="fa fa-trash-o"></span>'
+                                            + '</button>'
+                                    + '</div>';
+
+                    new_block_html += '<div class="col-sm-7 col-xs-10 item-block">';
+                    new_block_html +=   '<button type="button" class="btn btn-primary btn-md' 
+                                              + ' btn-add-block-item" id="additemblock_' + block_id + '">'
+                                              +  '<span class="fa fa-plus"></span>'
+                                        + '</button>';
+
+                    new_block_html +=   '<div class="item-add-block" style="display:none;">';
+                    new_block_html +=   '<div class="ui-widget" style="float:left;clear:both;">'
+                                                + '<input type="text" class="item-input" id="additeminput_' + block_id + '" '
+                                                    + 'placeholder="Search by Name or Category"/>&nbsp;&nbsp;'
+                                                + '</div>';
+                    new_block_html +=   '<button type="button" class="btn btn-success btn-md' 
+                                              + ' btn-add-item-confirm" id="additemconfirm_' + block_id + '">'
+                                              +  '<span class="fa fa-check"></span>'
+                                              + '</button>';
+                    new_block_html +=   '</div>';
+                    new_block_html += '</div>';
+
+
+                    new_block_html += '</div>';
+                    $('#add-block-row').before(new_block_html);
+
+                    $('.btn-delete-block').click(function(e){
+                        e.preventDefault();
+                        block_count -= 1;
+                        var html_id = (e.currentTarget.id || e.srcEvent.id);
+                        var id = html_id.split('_')[1];
+                        $('#block_' + id).remove();
+                    });
+
+                    $('.btn-edit-block-title').click(function(e){
+                        e.preventDefault();
+                        var html_id = (e.currentTarget.id || e.srcEvent.id);
+                        var id = html_id.split('_')[1];
+                        if($('#title-span_' + id).is(':visible')) {
+                            $('#title-span_' + id).hide();
+                            $('#title-edit-input_' + id).val($('#title-span_' + id).text());
+                            $('#title-edit-span_' + id).show();
+                        }
+                        else {
+                            $('#title-edit-span_' + id).hide();
+                            $('#title-span_' + id).html($('#title-edit-input_' + id).val());
+                            $('#title-span_' + id).show();
+
+                        }
+                    });
+
+                    $('.btn-add-block-item').click(function(e){
+                        e.preventDefault();
+                        var html_id = (e.currentTarget.id || e.srcEvent.id);
+                        var block_id = html_id.split('_')[1];
+                        // $('#additeminput_' + block_id).val('');
+                        $('#additemblock_' + block_id).hide();
+                        $('#additemconfirm_' + block_id).parent().show();
+                        $('#additeminput_' + block_id).autocomplete({
+                            source: function(request, callback) {
+                                var query = $('#additeminput_' + block_id).val().toLowerCase();
+                                var namematch = [];
+                                var tagmatch = [];
+                                for (var itemkey in item_info["data"]){
+                                    var item = item_info["data"][itemkey];
+                                    if (item["name"].toLowerCase().indexOf(query) > -1){   
+                                        namematch.push({'label':item["name"], 'id':item["id"]});
+                                    }
+                                    else {
+                                        for (var i in item["tags"]){
+                                            if (item["tags"][i].toLowerCase().indexOf(query) > -1){
+                                                tagmatch.push({'label':item["name"], 'id':item["id"]});
+                                                break;
+                                            }  
+                                        }
+                                    }
+                                }
+                                namematch.sort();
+                                tagmatch.sort();
+                                //var responsels = namematch + tagmatch;
+                                var responsels = namematch.concat(tagmatch);
+                                callback(responsels);
+                            },   
+                        });
+                        $('#additeminput_' + block_id).data('ui-autocomplete')._renderItem = function (ul, item) {
+                                var $li = $('<li>'), $img = $('<img>');
+                                $img.attr({
+                                    src: 'http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + item.id + '.png',
+                                    style: "height:25px;width:25px;",
+                                    alt: item.label
+                                });
+
+                                $li.attr('data-value', item.label);
+                                $li.append('<a href="">');
+                                $li.find('a').append($img).append('&nbsp;').append(item.label);    
+
+                                return $li.appendTo(ul);
+                        };
+
+                    });
+
+                });
+
             });
         });
         
