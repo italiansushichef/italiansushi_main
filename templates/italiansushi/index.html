@@ -841,6 +841,7 @@
             })).then(function(){
 
                 var block_count = 0; // keeps track of how many item blocks there are
+                var unique_block_count = 0; // same as above, but doesnt decrement
                 // Initial bootbox pop, TODO: Title of Item Set
                 bootbox.dialog({   
                     message: '<div class="row">'
@@ -865,7 +866,8 @@
                 var updateBlockJsonFromHtml = function updateBlockJsonFromHtml(id) {
                     var block_json = {
                         'type': $('#title-span_' + id).html(),
-                        'items': []
+                        'items': [],
+                        'id': id
                     };
                     // Possibly use in future: Updates Items in Block from the HTML
                     // var individ_items = $("#block_" + id).find(".item-icon-container");
@@ -891,7 +893,7 @@
                     for (var b = 0; b < itemset_json['blocks'].length; b++)
                     {
                         var block = itemset_json['blocks'][b];
-                        if (block['type'] == blocktitle)
+                        if (block['id'] == block_id)
                         {
                             return block;
                         }
@@ -924,8 +926,9 @@
                 $('.btn-add-block').click(function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    var block_id = block_count;
+                    var block_id = unique_block_count;
                     block_count += 1;
+                    unique_block_count += 1;
                     var new_block_html = '<div class="row" id="block_' + block_id + '">';
 
                     new_block_html += '<div class="col-xs-12">'
