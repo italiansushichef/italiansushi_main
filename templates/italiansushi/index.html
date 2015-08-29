@@ -881,6 +881,10 @@
                                             + '</button>'
                                     + '</div></div>'
                                 + '</div>'
+                                + '<button type="button" class="btn btn-success btn-md' 
+                                  + ' " id="view-itemset_json">'
+                                  +  '<span class="fa fa-check">ClicktoConsoleLogItemSetJson</span>'
+                                  + '</button>'
                             + '</div>',
                     onEscape: function() {},
                 });
@@ -920,6 +924,13 @@
                         }
                     }
                 };
+
+                 $('#view-itemset_json').click(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    console.log(itemset_json);
+                });
+                    
 
                 $('.btn-add-block').click(function(e){
                     e.preventDefault();
@@ -964,12 +975,10 @@
                     new_block_html +=   '</div>';
                     new_block_html += '</div>';
 
-
                     new_block_html += '</div>';
 
-                    
+
                     $('#add-block-row').before(new_block_html);
-                    console.log(block_id);
                     updateBlockJsonFromHtml(block_id);
 
                     $('.btn-delete-block').click(function(e){
