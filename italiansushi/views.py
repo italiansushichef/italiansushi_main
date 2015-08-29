@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 import re
 import json as jsonlib
+import json
 
 # helper func, returns champid if champname works, 0 if champname is empty, None otherwise
 def getChampId(champname):
@@ -287,6 +288,9 @@ def validate_json(inputfile):
                 # which includes item id as a string  # TODO validate string ID
     }
 
+    with open('static/json-data/items_full.json') as data_file:    
+        valid_items = json.load(data_file)
+
     # this check isn't working on windows. TODO find out why
     # if inputfile.content_type != "application/json": return None
 
@@ -328,7 +332,10 @@ def validate_json(inputfile):
                 return None
             for item in block["items"]:
                 if "id" not in item: # also validate item id
-                    print "bad item id"
+                    print "no item id read"
+                    return None
+                if item["id"] not in valid_items['data']:
+                    print "invalid item id"
                     return None
         return contents
 
