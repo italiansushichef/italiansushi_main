@@ -295,16 +295,68 @@
             return return_html;
         };
 
-        var autocompleteForId = function autocompleteForId(idstring) {
-            $(idstring).autocomplete({
-                source: function(request, response) {
-                    var query = $(idstring).val();
-                    $.get('/ac-champ/', {query: query}, function(matchls){
-                        response(matchls["ac-match"]);
+        var champ_data;
+        $.when($.get('/load-champ-info/', function(result){
+            champ_data = result;
+        })).then(function(){
+            var autocompleteForId = function autocompleteForId(idstring) {
+                $(idstring).autocomplete({
+                    source: function(request, response) {
+                        var query = $(idstring).val().toLowerCase();
+                        var matchls = [];
+                        for (var champkey in champ_data["data"])
+                        {
+                            var champ = champ_data["data"][champkey];
+                            if (champ["name"].toLowerCase().indexOf(query) == 0 
+                                || champ["key"].toLowerCase().indexOf(query) == 0
+                                || champ["id"].toString().toLowerCase().indexOf(query) == 0) {
+                                    matchls.push({'label':champ["name"], 'key':champ["key"]});
+                            }
+                        }
+
+                        function compare(a,b) {
+                            if (a.label < b.label)
+                                return -1;
+                            if (a.label > b.label)
+                                return 1;
+                            return 0;
+                        }
+
+                        matchls.sort(compare);
+                        response(matchls);
+                    }
+                });
+
+                $(idstring).data('ui-autocomplete')._renderItem = function (ul, item) {
+                    var $li = $('<li>'), $img = $('<img>');
+                    $img.attr({
+                        src: 'http://ddragon.leagueoflegends.com/cdn/5.16.1/img/champion/' + item.key + '.png',
+                        style: "height:25px;width:25px;",
+                        alt: item.label
                     });
-                }
-            });
-        };
+
+                    $li.attr('data-value', item.label);
+                    $li.append('<a>');
+                    $li.find('a').append($img).append('&nbsp;').append(item.label);    
+
+                    return $li.appendTo(ul);
+                };
+            };
+            autocompleteForId("#champ1");
+            autocompleteForId("#champ2");
+            autocompleteForId("#upload_champ1");
+            autocompleteForId("#upload_champ2");
+        });
+        // var autocompleteForId = function autocompleteForId(idstring) {
+        //     $(idstring).autocomplete({
+        //         source: function(request, response) {
+        //             var query = $(idstring).val();
+        //             $.get('/ac-champ/', {query: query}, function(matchls){
+        //                 response(matchls["ac-match"]);
+        //             });
+        //         }
+        //     });
+        // };
         
 
         $('.login-popup').click(function(e){
@@ -513,10 +565,7 @@
             });       
         });
         
-        autocompleteForId("#champ1");
-        autocompleteForId("#champ2");
-        autocompleteForId("#upload_champ1");
-        autocompleteForId("#upload_champ2");
+
 
         $('.matchup-popup').click(function(e){
             e.preventDefault();
@@ -787,17 +836,6 @@
 //             return return_html;
 //         };
 
-//        var autocompleteForId = function autocompleteForId(idstring) {
-    //     $(idstring).autocomplete({
-    //         source: function(request, response) {
-    //             var query = $(idstring).val();
-    //             $.get('/ac-champ/', {query: query}, function(matchls){
-    //                 response(matchls["ac-match"]);
-    //             });
-    //         }
-    //     });
-    // };
-
         $('.build-popup').click(function(e){
             var item_info;
             $.when($.get('/load-item-info/', function(result){
@@ -902,10 +940,32 @@
                                 var query = $('#additeminput_' + block_id).val().toLowerCase();
                                 var namematch = [];
                                 var tagmatch = [];
+                                var tree = item_info["tree"];
+                                var headerTags = [];
+                                for (var headerkey in tree){
+                                    if (tree[headerkey]["header"].toLowerCase().indexOf(query) == 0 
+                                        && query.length > 2)
+                                    {
+                                        console.log(query);
+                                        headerTags = tree[headerkey]["tags"];
+                                        for (var i = 0; i < headerTags.length; i++)
+                                            headerTags[i] = headerTags[i].toUpperCase();
+                                        break;
+                                    }
+                                }
                                 for (var itemkey in item_info["data"]){
                                     var item = item_info["data"][itemkey];
                                     if (item["name"].toLowerCase().indexOf(query) > -1){   
                                         namematch.push({'label':item["name"], 'id':item["id"]});
+                                    }
+                                    else if (headerTags.length > 0) {
+
+                                        for (var i in item["tags"]){
+                                            if (headerTags.indexOf(item["tags"][i].toUpperCase()) > -1){
+                                                tagmatch.push({'label':item["name"], 'id':item["id"]});
+                                                break;
+                                            }
+                                        }  
                                     }
                                     else {
                                         for (var i in item["tags"]){
@@ -916,8 +976,15 @@
                                         }
                                     }
                                 }
-                                namematch.sort();
-                                tagmatch.sort();
+                                function compare(a,b) {
+                                    if (a.label < b.label)
+                                        return -1;
+                                    if (a.label > b.label)
+                                        return 1;
+                                    return 0;
+                                }
+                                namematch.sort(compare);
+                                tagmatch.sort(compare);
                                 //var responsels = namematch + tagmatch;
                                 var responsels = namematch.concat(tagmatch);
                                 callback(responsels);
@@ -932,7 +999,7 @@
                                 });
 
                                 $li.attr('data-value', item.label);
-                                $li.append('<a href="">');
+                                $li.append('<a>');
                                 $li.find('a').append($img).append('&nbsp;').append(item.label);    
 
                                 return $li.appendTo(ul);

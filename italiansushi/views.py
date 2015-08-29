@@ -464,6 +464,14 @@ def autocomplete_champ(request):
     response["ac-match"].sort()
     return JsonResponse(response)
 
+def load_champ_info(request):
+    if request.method == "GET":
+        data = None
+        with open('static/json-data/champls.json', 'r') as itemfile:
+            data = jsonlib.load(itemfile)
+        if data:
+            return JsonResponse(data)
+    return JsonResponse({})
 
 
 # ajax backend for generating an item
