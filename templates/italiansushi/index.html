@@ -145,20 +145,26 @@
                                 <div class="col-xs-12">
                                 <input type="file" style="margin-bottom:5px" name="json" required/>
                                 </div>
-                                <div class="ui-widget col-sm-4">
-                                    <input class="champ-input" id="upload_champ1" name="champ1" placeholder="Champion For"/>
-                                </div>
-                                <div class="ui-widget col-sm-4">
-                                    <input class="champ-input" id="upload_champ2" name="champ2" placeholder="Champion Against"/>
-                                </div>
-                                <div class="col-sm-3 col-sm-offset-0 col-xs-12 col-xs-offset">
-                                    <select id="form-lane" class="form-control" name="lane">
-                                        <option value="">any lane</option>
-                                        <option value="M">mid</option>
-                                        <option value="T">top</option>        
-                                        <option value="J">jungle</option>
-                                        <option value="B">bot</option>
-                                    </select>
+                                <a href="#" onclick="more(this);" style= "float:right">Advanced Options</a>
+                                <div id="advancedOptions" style="display: none;">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <div class="ui-widget col-sm-4">
+                                        <input class="champ-input" id="upload_champ1" name="champ1" placeholder="Champion For"/>
+                                    </div>
+                                    <div class="ui-widget col-sm-4">
+                                        <input class="champ-input" id="upload_champ2" name="champ2" placeholder="Champion Against"/>
+                                    </div>
+                                    <div class="col-sm-3 col-sm-offset-0 col-xs-12 col-xs-offset">
+                                        <select id="form-lane" class="form-control" name="lane">
+                                            <option value="">any lane</option>
+                                            <option value="M">mid</option>
+                                            <option value="T">top</option>
+                                            <option value="J">jungle</option>
+                                            <option value="B">bot</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-xs-12">
                                     <input type="submit" name="submit" value="Upload" class="btn btn-md btn-primary btn-side"/>
@@ -294,6 +300,19 @@
             return_html += '<br>';
             return return_html;
         };
+    
+    
+        function more(obj) {
+            var content = document.getElementById("advancedOptions");
+        
+            if (content.style.display == "none") {
+                content.style.display = "";
+                obj.innerHTML = "Less Options";
+            } else {
+                content.style.display = "none";
+                obj.innerHTML = "Advanced Options";
+            }
+        }
 
         var champ_data;
         $.when($.get('/load-champ-info/', function(result){
