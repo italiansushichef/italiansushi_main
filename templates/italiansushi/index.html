@@ -986,9 +986,8 @@
                         e.stopImmediatePropagation();
                         block_count -= 1;
                         var html_id = (e.currentTarget.id || e.srcEvent.id);
-
+                        var block_id = html_id.split('_')[1];
                         var block_title = $('#title-span_' + block_id).html();
-                        console.log(block_title);
                         for (var b = 0; b < itemset_json['blocks'].length; b++)
                         {
                             var block = itemset_json['blocks'][b];
@@ -1182,9 +1181,48 @@
                             }
                             $('#additemblock_' + block_id).show();
                             $('#additemconfirm_' + block_id).parent().hide();
-                            return;
                         }
+                        $('.delete-item-overlay').click(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            var html_id = $(e.target).parent().attr('id');
+                            var block_id = html_id.split('_')[4];
+                            var item_id = html_id.split('_')[2];
+                            var block_title = $('#title-span_' + block_id).html();
+                            for (var b = 0; b < itemset_json['blocks'].length; b++)
+                            {
+                                var block = itemset_json['blocks'][b];
+                                if (block['type'] == block_title)
+                                {
+                                    for (var i = 0; i < block['items'].length; i++)
+                                    {
+                                        var item = block['items'][i];
+                                        if (item['id'] == String(item_id))
+                                        {
+                                            if (item['count'] <= 1)
+                                            {
+                                                block['items'].splice(i, 1);
+                                                $(e.target).parent().remove();
+                                            }
+                                            else
+                                            {
+                                                item['count'] -= 1;
+                                                if (item['count'] == 1)
+                                                    $(e.target).parent().find('.item-quantity-overlay').html('');
+                                                else
+                                                    $(e.target).parent().find('.item-quantity-overlay').html(item['count']);
+                                                $(e.target).parent().attr('data-value', item['count']);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        });
                     });
+                    
+
                     
 
                 });
