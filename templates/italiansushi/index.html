@@ -824,38 +824,12 @@
             });
         });
 
-// var getItemPreviewHtml = function getItemPreviewHtml(jsonfile) {
-//             var return_html = "";
-//             var blocks = jsonfile["blocks"];
-//             if (!jsonfile["blocks"])
-//             {
-//                 return_html = '<p><strong> No items in this item set. </strong></p>';
-//             }
-//             else
-//             {
-//                 for (var i = 0; i < blocks.length; i++)
-//                 {
-//                     return_html += '<div class="row">';
-//                     return_html += '<div class="col-xs-12"><strong style="font-size:10px;">' 
-//                                             + blocks[i]["type"] + '</strong></div>';
-//                     return_html += '<div class="col-xs-12">';
-//                     var items_in_block = blocks[i]["items"];
-//                     for (var j = 0; j < items_in_block.length; j++)
-//                     {
-
-//                         var item = items_in_block[j];
-//                         return_html += '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
-//                                                 + item["id"] + '.png"' + ' style="height:45px;width:45px;">';
-//                     }
-//                     return_html += '</div>';
-//                     return_html += '</div>';
-//                 }
-//             }
-//             return_html += '<br>';
-//             return return_html;
-//         };
-
+        // Bootbox popup for building a custom item set
         $('.build-popup').click(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            // get item_info from the server (list of items and all their information)
+            // create itemset_json which keeps track of the itemset being built, following Riot Item Set Docs
             var item_info;
             var itemset_json = {'title':"Custom Itahm Set Page", 
                                 'type':'global',
@@ -866,10 +840,8 @@
                 item_info = result;
             })).then(function(){
 
-                
-
-                e.preventDefault();
-                var block_count = 0;
+                var block_count = 0; // keeps track of how many item blocks there are
+                // Initial bootbox pop, TODO: Title of Item Set
                 bootbox.dialog({   
                     message: '<div class="row">'
                                 + '<div class="col-xs-12">'
@@ -888,50 +860,67 @@
                             + '</div>',
                     onEscape: function() {},
                 });
-
+                
+                // Helper function: Adds an empty block with block_id=id to the itemset_json
                 var updateBlockJsonFromHtml = function updateBlockJsonFromHtml(id) {
                     var block_json = {
                         'type': $('#title-span_' + id).html(),
                         'items': []
                     };
-                    var individ_items = $("#block_" + id).find(".item-icon-container");
-                    for (var i = 0; i < individ_items.length; i++)
-                    {
-                        console.log(individ_items[i]);
-                        var itemid = individ_items[i].id.split('_')[2].toString();
-                        var itemcount = $(individ_items[i]).data('value');
-                        console.log(itemcount);
-                        var item_json = {
-                            'id': itemid,
-                            'count': itemcount,
-                        }
-                        block_json['items'].push(item_json);
-                    }
+                    // Possibly use in future: Updates Items in Block from the HTML
+                    // var individ_items = $("#block_" + id).find(".item-icon-container");
+                    // for (var i = 0; i < individ_items.length; i++)
+                    // {
+                    //     console.log(individ_items[i]);
+                    //     var itemid = individ_items[i].id.split('_')[2].toString();
+                    //     var itemcount = $(individ_items[i]).data('value');
+                    //     console.log(itemcount);
+                    //     var item_json = {
+                    //         'id': itemid,
+                    //         'count': itemcount,
+                    //     }
+                    //     block_json['items'].push(item_json);
+                    // }
                     itemset_json['blocks'].push(block_json);
-                    console.log(itemset_json);
                 };
-
 
                 // TODO: fix bug with duplicate names
-                var deleteBlockJson = function deleteBlockJson(id){
-                    var blocktitle = $('#title-span_' + id).html();
-                    for (var i = 0; i < itemset_json['blocks'].length; i++)
+                // Helper function: Returns the block from itemset_json with id=block_id, or null if none found
+                var getBlock = function getBlock(block_id){
+                    var blocktitle = $('#title-span_' + block_id).html();
+                    for (var b = 0; b < itemset_json['blocks'].length; b++)
                     {
-                        var block = itemset_json['blocks'][i];
+                        var block = itemset_json['blocks'][b];
                         if (block['type'] == blocktitle)
                         {
-                            itemset_json['blocks'].splice(i, 1);
+                            return block;
                         }
                     }
+                    return null;
                 };
 
-                 $('#view-itemset_json').click(function(e){
+                // Helper function: Returns the item from itemset_json with block_id, item_id , or null if none found
+                var getItem = function getItem(block_id, item_id){
+                    var block = getBlock(block_id);
+                    for (var i = 0; i < block['items'].length; i++)
+                    {
+                        var item = block['items'][i];
+                        if (item['id'] == String(item_id))
+                        {
+                            return item
+                        }
+                    }
+                    return null;
+                }
+
+                // For debugging only, to log the current itemset_json to console
+                $('#view-itemset_json').click(function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     console.log(itemset_json);
-                });
-                    
+                });       
 
+                // Event for user adding a new block, TODO: block-values 
                 $('.btn-add-block').click(function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -977,10 +966,11 @@
 
                     new_block_html += '</div>';
 
-
+                    // Add the block to html and json
                     $('#add-block-row').before(new_block_html);
                     updateBlockJsonFromHtml(block_id);
 
+                    // Event for user deleting the block. Decrement count, remove from html and itemset_json
                     $('.btn-delete-block').click(function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -988,18 +978,14 @@
                         var html_id = (e.currentTarget.id || e.srcEvent.id);
                         var block_id = html_id.split('_')[1];
                         var block_title = $('#title-span_' + block_id).html();
-                        for (var b = 0; b < itemset_json['blocks'].length; b++)
-                        {
-                            var block = itemset_json['blocks'][b];
-                            if (block['type'] == block_title)
-                            {   
-                                itemset_json['blocks'].splice(b, 1);
-                                break;
-                            }
-                        }
+                        var block = getBlock(block_id);
+                        var index = itemset_json['blocks'].indexOf(block);
+                        itemset_json['blocks'].splice(index, 1);
                         $('#block_' + block_id).remove();
                     });
 
+                    // Event for user editing block title, toggling the display span and the input span.
+                    // Updates from the input span if appropriate
                     $('.btn-edit-block-title').click(function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -1012,22 +998,15 @@
                         }
                         else {
                             $('#title-edit-span_' + block_id).hide();
-                            var curr_block_title = $('#title-span_' + block_id).html();
                             var new_block_title = $('#title-edit-input_' + block_id).val();
-                            for (var b = 0; b < itemset_json['blocks'].length; b++)
-                            {
-                                var block = itemset_json['blocks'][b];
-                                if (block['type'] == curr_block_title)
-                                {   
-                                    block['type'] = new_block_title;
-                                    break;
-                                }
-                            }
+                            var block = getBlock(block_id);
+                            block['type'] = new_block_title;
                             $('#title-span_' + block_id).html(new_block_title);
                             $('#title-span_' + block_id).show();
                         }
                     });
 
+                    // Event for clicking to add a new item to a block -- this handles the autocomplete
                     $('.btn-add-block-item').click(function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -1091,6 +1070,7 @@
                                 callback(responsels);
                             },   
                         });
+                        // Needed to add images to the autocomplete
                         $('#additeminput_' + block_id).data('ui-autocomplete')._renderItem = function (ul, item) {
                                 var $li = $('<li>'), $img = $('<img>');
                                 $img.attr({
@@ -1107,13 +1087,17 @@
                         };
                     });
 
+                    // For shaking an HTML element
                     function shakeElement(id) {
                        var l = 8;  
                        for( var i = 0; i < 10; i++ )   
                          $(id).animate( { 'margin-left': "+=" + ( l = -l ) + 'px' }, 50);
                          $(id).css("color", "red");  
-                     };
+                    };
 
+                    // Event for confirming to add item to block. First validate that the item to add exists.
+                    // Then check if it's already in block of itemset_json. Update HTML and itemset_json appropriately.
+                    // Or if it doesn't exist add new html and new item to itemset_json.
                     $('.btn-add-item-confirm').click(function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -1133,28 +1117,7 @@
                         }
                         else 
                         {
-                            var item_exists = false;
-                            var block_title = $('#title-span_' + block_id).html();
-                            for (var b = 0; b < itemset_json['blocks'].length; b++)
-                            {
-                                var block = itemset_json['blocks'][b];
-                                if (block['type'] == block_title)
-                                {   
-                                    for (var i = 0; i < block['items'].length; i++)
-                                    {
-                                        var item = block['items'][i];
-                                        if (item['id'] == String(additem_id))
-                                        {
-                                            item_exists = true; 
-                                            item['count'] += 1;
-                                            $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
-                                            $('#itemimg_id_'+additem_id+'_block_'+block_id).find('.item-quantity-overlay').html(item['count']);
-                                            break;
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
+                            var item_exists = getItem(block_id, additem_id);
                             if (!item_exists)
                             {
                                 var newItemHtml = '<div id="itemimg_id_'+additem_id 
@@ -1168,61 +1131,49 @@
                                     'id': String(additem_id),
                                     'count': 1,
                                 }
-                                for (var b = 0; b < itemset_json['blocks'].length; b++)
-                                {
-                                    var block = itemset_json['blocks'][b];
-                                    if (block['type'] == block_title)
-                                    {
-                                        block['items'].push(item_json);
-                                        break;
-                                    }
-                                }
+                                var block = getBlock(block_id);
+                                block['items'].push(item_json);
                                 $('#additemblock_' + block_id).before(newItemHtml);
+                            }
+                            else
+                            {
+                                var item = item_exists;
+                                item['count'] += 1;
+                                $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
+                                $('#itemimg_id_'+additem_id+'_block_'+block_id).find('.item-quantity-overlay').html(item['count']);
                             }
                             $('#additemblock_' + block_id).show();
                             $('#additemconfirm_' + block_id).parent().hide();
                         }
+
+                        // Event for handling the delete-button for each item. Update itemset_json and html appropriately.
                         $('.delete-item-overlay').click(function(e){
                             e.preventDefault();
                             e.stopImmediatePropagation();
+                            console.log('clicked');
                             var html_id = $(e.target).parent().attr('id');
                             var block_id = html_id.split('_')[4];
                             var item_id = html_id.split('_')[2];
-                            var block_title = $('#title-span_' + block_id).html();
-                            for (var b = 0; b < itemset_json['blocks'].length; b++)
+
+                            var block = getBlock(block_id);
+                            var item = getItem(block_id, item_id);
+                            if (item['count'] <= 1)
                             {
-                                var block = itemset_json['blocks'][b];
-                                if (block['type'] == block_title)
-                                {
-                                    for (var i = 0; i < block['items'].length; i++)
-                                    {
-                                        var item = block['items'][i];
-                                        if (item['id'] == String(item_id))
-                                        {
-                                            if (item['count'] <= 1)
-                                            {
-                                                block['items'].splice(i, 1);
-                                                $(e.target).parent().remove();
-                                            }
-                                            else
-                                            {
-                                                item['count'] -= 1;
-                                                if (item['count'] == 1)
-                                                    $(e.target).parent().find('.item-quantity-overlay').html('');
-                                                else
-                                                    $(e.target).parent().find('.item-quantity-overlay').html(item['count']);
-                                                $(e.target).parent().attr('data-value', item['count']);
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    break;
-                                }
+                                var index = block['items'].indexOf(item);
+                                block['items'].splice(index, 1);
+                                $(e.target).parent().remove();
+                            }
+                            else
+                            {
+                                item['count'] -= 1;
+                                if (item['count'] == 1)
+                                    $(e.target).parent().find('.item-quantity-overlay').html('');
+                                else
+                                    $(e.target).parent().find('.item-quantity-overlay').html(item['count']);
+                                $(e.target).parent().attr('data-value', item['count']);
                             }
                         });
-                    });
-                    
-
+                    }); 
                     
 
                 });
