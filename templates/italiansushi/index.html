@@ -838,9 +838,17 @@
 
         $('.build-popup').click(function(e){
             var item_info;
+            var itemset_json = {'title':"Custom Itahm Set Page", 
+                                'type':'global',
+                                'map':'any',
+                                'mode':'any',
+                                'blocks':[]};
             $.when($.get('/load-item-info/', function(result){
                 item_info = result;
             })).then(function(){
+
+                
+
                 e.preventDefault();
                 var block_count = 0;
                 bootbox.dialog({   
@@ -858,18 +866,55 @@
                     onEscape: function() {},
                 });
 
+                var updateBlockJsonFromHtml = function updateBlockJsonFromHtml(id) {
+                    var block_json = {
+                        'type': $('#title-span_' + id).html(),
+                        'items': []
+                    };
+                    var individ_items = $("#block_" + id).find(".item-icon-container");
+                    for (var i = 0; i < individ_items.length; i++)
+                    {
+                        console.log(individ_items[i]);
+                        var itemid = individ_items[i].id.split('_')[2].toString();
+                        var itemcount = $(individ_items[i]).data('value');
+                        console.log(itemcount);
+                        var item_json = {
+                            'id': itemid,
+                            'count': itemcount,
+                        }
+                        block_json['items'].push(item_json);
+                    }
+                    itemset_json['blocks'].push(block_json);
+                    console.log(itemset_json);
+                };
+
+
+                // TODO: fix bug with duplicate names
+                var deleteBlockJson = function deleteBlockJson(id){
+                    var blocktitle = $('#title-span_' + id).html();
+                    for (var i = 0; i < itemset_json['blocks'].length; i++)
+                    {
+                        var block = itemset_json['blocks'][i];
+                        if (block['type'] == blocktitle)
+                        {
+                            itemset_json['blocks'].splice(i, 1);
+                        }
+                    }
+                };
+
                 $('.btn-add-block').click(function(e){
                     e.preventDefault();
+                    e.stopImmediatePropagation();
                     var block_id = block_count;
                     block_count += 1;
                     var new_block_html = '<div class="row" id="block_' + block_id + '">';
 
                     new_block_html += '<div class="col-xs-12">'
-                                        + '<strong style="font-size:12px;">'
-                                            + '<span id="title-span_'+ block_id + '">Block: ' + block_id + '</span></strong>'
-                                        + '<span id="title-edit-span_' + block_id + '" style="display:none;font-size:12px;">'
-                                            + '<input type="text" id="title-edit-input_'+ block_id +'"></input>' 
-                                        + '</span>'
+                                            + '<strong style="font-size:12px;">'
+                                                + '<span id="title-span_'+ block_id + '">Block: ' + block_id + '</span></strong>'
+                                            + '<span id="title-edit-span_' + block_id + '" style="display:none;font-size:12px;">'
+                                                + '<input type="text" id="title-edit-input_'+ block_id +'"></input>' 
+                                            + '</span>'
                                             + '&nbsp;&nbsp;'
                                             + '<button type="button" class="btn btn-default btn-xs' 
                                                 + ' btn-edit-block-title" id="editblock_' + block_id + '">'
@@ -883,7 +928,8 @@
 
                     new_block_html += '<div class="col-sm-7 col-xs-10 item-block">';
                     new_block_html +=   '<button type="button" class="btn btn-primary btn-md' 
-                                              + ' btn-add-block-item" id="additemblock_' + block_id + '">'
+                                              + ' btn-add-block-item" id="additemblock_' + block_id 
+                                              + '" style="margin-left:5px;">'
                                               +  '<span class="fa fa-plus"></span>'
                                         + '</button>';
 
@@ -901,42 +947,70 @@
 
 
                     new_block_html += '</div>';
+
+                    
                     $('#add-block-row').before(new_block_html);
+                    console.log(block_id);
+                    updateBlockJsonFromHtml(block_id);
 
                     $('.btn-delete-block').click(function(e){
                         e.preventDefault();
+                        e.stopImmediatePropagation();
                         block_count -= 1;
                         var html_id = (e.currentTarget.id || e.srcEvent.id);
-                        var id = html_id.split('_')[1];
-                        $('#block_' + id).remove();
+                        var block_id = html_id.split('_')[1];
+                        var block_title = $('#title-span_' + block_id).html();
+                        for (var b = 0; b < itemset_json['blocks'].length; b++)
+                        {
+                            var block = itemset_json['blocks'][b];
+                            if (block['type'] == block_title)
+                            {   
+                                delete block;
+                                break;
+                            }
+                        }
+                        $('#block_' + block_id).remove();
                     });
 
                     $('.btn-edit-block-title').click(function(e){
                         e.preventDefault();
+                        e.stopImmediatePropagation();
                         var html_id = (e.currentTarget.id || e.srcEvent.id);
-                        var id = html_id.split('_')[1];
-                        if($('#title-span_' + id).is(':visible')) {
-                            $('#title-span_' + id).hide();
-                            $('#title-edit-input_' + id).val($('#title-span_' + id).text());
-                            $('#title-edit-span_' + id).show();
+                        var block_id = html_id.split('_')[1];
+                        if($('#title-span_' + block_id).is(':visible')) {
+                            $('#title-span_' + block_id).hide();
+                            $('#title-edit-input_' + block_id).val($('#title-span_' + block_id).text());
+                            $('#title-edit-span_' + block_id).show();
                         }
                         else {
-                            $('#title-edit-span_' + id).hide();
-                            $('#title-span_' + id).html($('#title-edit-input_' + id).val());
-                            $('#title-span_' + id).show();
-
+                            $('#title-edit-span_' + block_id).hide();
+                            var curr_block_title = $('#title-span_' + block_id).html();
+                            var new_block_title = $('#title-edit-input_' + block_id).val();
+                            for (var b = 0; b < itemset_json['blocks'].length; b++)
+                            {
+                                var block = itemset_json['blocks'][b];
+                                if (block['type'] == curr_block_title)
+                                {   
+                                    block['type'] = new_block_title;
+                                    break;
+                                }
+                            }
+                            $('#title-span_' + block_id).html(new_block_title);
+                            $('#title-span_' + block_id).show();
                         }
                     });
 
                     $('.btn-add-block-item').click(function(e){
                         e.preventDefault();
+                        e.stopImmediatePropagation();
                         var html_id = (e.currentTarget.id || e.srcEvent.id);
                         var block_id = html_id.split('_')[1];
-                        // $('#additeminput_' + block_id).val('');
+                        $('#additeminput_' + block_id).val('');
                         $('#additemblock_' + block_id).hide();
                         $('#additemconfirm_' + block_id).parent().show();
                         $('#additeminput_' + block_id).autocomplete({
                             source: function(request, callback) {
+                                $('#additeminput_' + block_id).css("color", "black");  
                                 var query = $('#additeminput_' + block_id).val().toLowerCase();
                                 var namematch = [];
                                 var tagmatch = [];
@@ -946,7 +1020,6 @@
                                     if (tree[headerkey]["header"].toLowerCase().indexOf(query) == 0 
                                         && query.length > 2)
                                     {
-                                        console.log(query);
                                         headerTags = tree[headerkey]["tags"];
                                         for (var i = 0; i < headerTags.length; i++)
                                             headerTags[i] = headerTags[i].toUpperCase();
@@ -1004,8 +1077,86 @@
 
                                 return $li.appendTo(ul);
                         };
-
                     });
+
+                    function shakeElement(id) {
+                       var l = 8;  
+                       for( var i = 0; i < 10; i++ )   
+                         $(id).animate( { 'margin-left': "+=" + ( l = -l ) + 'px' }, 50);
+                         $(id).css("color", "red");  
+                     };
+
+                    $('.btn-add-item-confirm').click(function(e){
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        var html_id = (e.currentTarget.id || e.srcEvent.id);
+                        var block_id = html_id.split('_')[1];
+                        var query = $('#additeminput_' + block_id).val().toLowerCase();
+                        var additem_id;
+                        for (var itemkey in item_info["data"]){
+                            var item = item_info["data"][itemkey];
+                            if (item["name"].toLowerCase() == query){
+                                additem_id = item["id"];
+                                break;
+                            }
+                        }
+                        if (!additem_id){
+                            shakeElement('#additeminput_' + block_id);
+                        }
+                        else 
+                        {
+                            var item_exists = false;
+                            var block_title = $('#title-span_' + block_id).html();
+                            for (var b = 0; b < itemset_json['blocks'].length; b++)
+                            {
+                                var block = itemset_json['blocks'][b];
+                                if (block['type'] == block_title)
+                                {   
+                                    for (var i = 0; i < block['items'].length; i++)
+                                    {
+                                        var item = block['items'][i];
+                                        if (item['id'] == String(additem_id))
+                                        {
+                                            item_exists = true; 
+                                            item['count'] += 1;
+                                            $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
+                                            $('#itemimg_id_'+additem_id+'_block_'+block_id).find('.item-quantity-overlay').html(item['count']);
+                                            break;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                            if (!item_exists)
+                            {
+                                var newItemHtml = '<div id="itemimg_id_'+additem_id 
+                                                    + '_block_'+block_id+'" class="item-icon-container" data-value="1">'
+                                                    + '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
+                                                        + additem_id + '.png"' 
+                                                        + ' class="item-icon">'
+                                                        + '<span class="item-quantity-overlay"></span>'
+                                                        + '<button class="btn btn-danger btn-xxs delete-item-overlay">&times;</button></div>';
+                                var item_json = {
+                                    'id': String(additem_id),
+                                    'count': 1,
+                                }
+                                for (var b = 0; b < itemset_json['blocks'].length; b++)
+                                {
+                                    var block = itemset_json['blocks'][b];
+                                    if (block['type'] == block_title)
+                                    {
+                                        block['items'].push(item_json);
+                                        break;
+                                    }
+                                }
+                                $('#additemblock_' + block_id).before(newItemHtml);
+                            }
+                            $('#additemblock_' + block_id).show();
+                            $('#additemconfirm_' + block_id).parent().hide();
+                            return;
+                        }
+                    });
+                    
 
                 });
 

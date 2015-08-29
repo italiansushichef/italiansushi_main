@@ -257,3 +257,38 @@ div.bootbox.modal.fade.in + div {
 }
 
 .ui-autocomplete { z-index:10000 !important;}  
+
+.item-icon {
+  height:45px;
+  width:45px;
+  margin:1px 1px 1px 1px;
+  border-radius:6px;
+  border-clip:padding-box;
+}
+
+.item-icon-container {
+  display: inline-block;
+  position: relative;
+}
+
+.btn-xxs {
+  padding: 1px 1px 1px 1px;
+  font-size: 12px;
+  line-height: 0.6;
+  border-radius: 3px;
+}
+
+.delete-item-overlay{
+  position: absolute;
+  top: -2px;
+  left: -2px
+}
+
+.item-quantity-overlay{
+  color:white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+  font-size:11px;
+  position: absolute;
+  bottom: 2px;
+  right: 4px
+}
