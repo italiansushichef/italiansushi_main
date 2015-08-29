@@ -986,14 +986,15 @@
                         e.stopImmediatePropagation();
                         block_count -= 1;
                         var html_id = (e.currentTarget.id || e.srcEvent.id);
-                        var block_id = html_id.split('_')[1];
+
                         var block_title = $('#title-span_' + block_id).html();
+                        console.log(block_title);
                         for (var b = 0; b < itemset_json['blocks'].length; b++)
                         {
                             var block = itemset_json['blocks'][b];
                             if (block['type'] == block_title)
                             {   
-                                delete block;
+                                itemset_json['blocks'].splice(b, 1);
                                 break;
                             }
                         }
