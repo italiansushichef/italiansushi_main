@@ -566,8 +566,6 @@ def byteify(input):
     else:
         return input
 
-
-
 @login_required
 def custom_save_file(request):
     if request.method == "POST":
