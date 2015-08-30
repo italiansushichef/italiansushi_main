@@ -26,8 +26,8 @@ class ItemSet(models.Model):
     		ownername = self.owner.username
     	else:
     		ownername = "tmp"
-    	if users_upvotes:
-    		upvotes = len(users_upvotes)
+    	if self.users_upvotes:
+    		upvotes = 1
     	else:
     		upvotes = 0
     	return self.name + "|owner: " + ownername + "|for: " + str(self.champ_for) + \

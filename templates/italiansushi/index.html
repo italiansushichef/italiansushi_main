@@ -143,13 +143,12 @@
                             <form method="POST" enctype="multipart/form-data" action="/upload/">
                                 {% csrf_token %}
                                 <div class="col-xs-12">
-                                <input type="file" style="margin-bottom:5px" name="json" required/>
+                                <input type="file" name="json" required/>
                                 </div>
-                                <a href="#" onclick="more(this);" style= "float:right">Advanced Options</a>
-                                <div id="advancedOptions" style="display: none;">
-                                    <br>
-                                    <br>
-                                    <br>
+                                <div class="col-xs-12" style="margin-bottom:5px; font-size:12px;">
+                                    <a href="#" id="toggleAdvancedOptions">Advanced Options</a>
+                                </div>
+                                <div id="uploadAdvancedOptions" class="col-xs-12" style="display: none; margin-bottom:5px;">
                                     <div class="ui-widget col-sm-4">
                                         <input class="champ-input" id="upload_champ1" name="champ1" placeholder="Champion For"/>
                                     </div>
@@ -300,19 +299,34 @@
             return_html += '<br>';
             return return_html;
         };
+
+        var updateSuccessSpan = function updateSuccessSpan(message){
+            $('#alert-success-span').html(message);
+            $('#alert-success-span').parent().css('visibility', 'visible');
+            $('#alert-danger-span').parent().css('visibility', 'hidden');
+        };
+
+        var updateDangerSpan = function updateSuccessSpan(message){
+            $('#alert-success-span').html(message);
+            $('#alert-success-span').parent().css('visibility', 'visible');
+            $('#alert-danger-span').parent().css('visibility', 'hidden');
+        };
     
-    
-        function more(obj) {
-            var content = document.getElementById("advancedOptions");
-        
-            if (content.style.display == "none") {
-                content.style.display = "";
-                obj.innerHTML = "Less Options";
-            } else {
-                content.style.display = "none";
-                obj.innerHTML = "Advanced Options";
+
+        $('#toggleAdvancedOptions').click(function(e){
+            e.preventDefault();
+            if($('#uploadAdvancedOptions').is(':visible'))
+            {
+                $('#uploadAdvancedOptions').hide();
+                $('#toggleAdvancedOptions').html('Advanced Options');
+
             }
-        }
+            else
+            {  
+                $('#uploadAdvancedOptions').show();
+                $('#toggleAdvancedOptions').html('Less Options');
+            }
+        });
 
         var champ_data;
         $.when($.get('/load-champ-info/', function(result){
@@ -576,7 +590,7 @@
                         document.getElementById('item_row:' + num_id).innerHTML = "";
                     else
                     {
-                        var myitems_jsonfile = JSON.parse(item_jsonfiles[num_id]);
+                        var myitems_jsonfile = item_jsonfiles[num_id];
                         document.getElementById('item_row:' + num_id).innerHTML = getItemPreviewHtml(myitems_jsonfile);
                     }
 
@@ -655,7 +669,7 @@
 
                     if (json['jsonfile'])
                     {
-                        matchup_jsonfile = JSON.parse(json['jsonfile']);
+                        matchup_jsonfile = json['jsonfile'];
                         matchup_fileid = json['jsonfile_id']
                         matchup_filename = json['jsonfile_name']
                     }
@@ -746,24 +760,20 @@
                         success : function(json) {
                             if (json["success"]) 
                             {
-                                document.getElementById('alert-success-span').innerHTML = "ItemSet added to your items successfully!"
-                                $('#alert-success-span').parent().css('visibility', 'visible');
-                                $('#alert-danger-span').parent().css('visibility', 'hidden');
+                                updateSuccessSpan("ItemSet added to your items successfully!");
                                 $(".btn-save-item").attr("disabled","disabled");
                             }
                             else if (json["max_uploads_reached"])
                             {
-                                document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
-                                                                        + " and cannot add more item sets."
-                                $('#alert-danger-span').parent().css('visibility', 'visible');
-                                $('#alert-success-span').parent().css('visibility', 'hidden');
+                                var mssg = "Sorry, you have reached the item set max of 10" 
+                                                                        + " and cannot add more item sets.";
+                                updateDangerSpan(mssg);
                                 $(".btn-save-item").attr("disabled","disabled");
                             }
                             else 
                             {
-                                document.getElementById('alert-danger-span').innerHTML = "Sorry, something went wrong. Refresh and try again."
-                                $('#alert-danger-span').parent().css('visibility', 'visible');
-                                $('#alert-success-span').parent().css('visibility', 'hidden');
+                                var mssg = "Sorry, something went wrong. Refresh and try again."
+                                updateDangerSpan(mssg);
                                 $(".btn-save-item").attr("disabled","disabled");
                             }
                         },
@@ -842,12 +852,35 @@
 
                 var block_count = 0; // keeps track of how many item blocks there are
                 var unique_block_count = 0; // same as above, but doesnt decrement
-                // Initial bootbox pop, TODO: Title of Item Set
+                // Initial bootbox pop
                 bootbox.dialog({   
                     message: '<div class="row">'
                                 + '<div class="col-xs-12">'
-                                    + '<h1 class="text-center form-title"> Design an Item Set to Download </h1>'
+
+                                    + '<div class="row">'
+
+                                    + '<div class="col-xs-9 text-center form-title">'
+                                        + '<strong><span id="custom-title-span">Custom Itahm Set Page</span></strong>'
+                                    + '<span id="custom-title-edit-span" style="display:none;font-size:14px;">'
+                                        + '<input type="text" id="custom-title-edit-input"></input>' 
+                                    + '</span>'
+                                    + '&nbsp;&nbsp;'
+                                    + '<button type="button" class="btn btn-default" id="btn-edit-custom-title">'
+                                        +  '<span class="fa fa-edit"></span>'
+                                    + '</button>'
+                                    + '</div>'
+
+                                    + '<div class="text-center col-xs-1">'
+                                    + '<button class="btn btn-primary btn-save-custom" id="btn-save-custom">'
+                                    + '<span class="fa fa-bookmark"></span></button></div>'
+
+                                    + '<div class="text-center col-xs-1"><a href="#"' 
+                                    + ' type="submit" class="btn btn-success" id="btn-dl-custom" target="_blank" disabled="disabled">'
+                                    + '<span class="fa fa-download"></span></a></div>'
+
+                                    + '</div>'
                                     + '<hr>'
+
                                     + '<div class="row" id="add-block-row"><div class="col-xs-12">'
                                         + '<button type="button" class="btn btn-default btn-add-block">'
                                             +  '<span class="fa fa-plus"></span>&nbsp;Add a block'
@@ -860,6 +893,107 @@
                                   + '</button>'
                             + '</div>',
                     onEscape: function() {},
+                });
+
+                $('.btn-save-custom').click(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    {% if logged_in %}
+                    $.ajax({
+                        url: "custom-save-file/",
+                        type: "POST",
+                        data: {'itemset_json': JSON.stringify(itemset_json), 'csrfmiddlewaretoken': "{{ csrf_token }}"},
+                        success : function(json) {
+                            if (json["success"]) 
+                            {
+                                var mssg = json["filename"] + " added to your items successfully!";
+                                updateSuccessSpan(mssg);
+                            }
+                            else if (json["max_uploads_reached"])
+                            {
+                                var mssg = "Sorry, you have reached the item set max of 10" 
+                                                                        + " and cannot add more item sets.";
+                                updateDangerSpan(mssg);
+                            }
+                            else 
+                            {
+                                var mssg = "Sorry, something went wrong. Refresh and try again.";
+                                updateDangerSpan(mssg);
+                            }
+                            $(".btn-save-custom").attr("disabled","disabled");
+                        },
+                        error : function(xhr, errmsg, err){
+                            console.log(xhr.status + ": " + xhr.responseText);
+                        },
+                    });
+                    {% else %}
+                    bootbox.dialog({
+                        message: '<div class="row">'
+                                    + '<div class="col-xs-12">'
+                                        + '<h1 class="text-center form-title">' 
+                                            + 'Create or login to your free user account to save this item set.&nbsp'
+                                            + 'Please note this account is separate from your Riot League of Legends account. </h1>'
+                                        + '<h1 class="text-center form-title"><strong>'+ itemset_json['title'] +'</strong>'
+                                        + '&nbsp;will be automatically added</h1>'
+                                        + '<div class="row">'
+
+                                            + '<div class="col-xs-12 col-sm-6 form-box">'
+                                                + '<h1 class="text-center form-title-smaller">Create a free account</h1>'
+                                                + '<form id="createuser-form" class="form-login" method="POST" action="/createuser-and-save/">'
+                                                    + "{% csrf_token %}" 
+                                                    + '<input type="text" name="username" class="form-control"' 
+                                                        + 'placeholder="Username" required autofocus/>'
+                                                    + '<input type="text" name="email" class="form-control" placeholder="Email" required/>'
+                                                    + '<input type="password" name="password" class="form-control"' 
+                                                        + 'placeholder="Password" required/>'
+                                                    + '<input type="number" name="idToSave" value="'+ matchup_fileid 
+                                                        +'" hidden=true required/>'
+                                                    + '<button type="submit" class="btn btn-primary center-block" id="submit-createuser-form">'
+                                                        + 'Create Free Account</button>'
+                                                + '</form>'
+                                            + '</div>'
+
+                                            + '<div class="col-xs-12 col-sm-6 form-box">'
+                                                + '<h1 class="text-center form-title-smaller">Sign in to existing account</h1>'
+                                                + '<form id="login-form" class="form-login" method="POST" action="/login-and-save/">'
+                                                    + "{% csrf_token %}" 
+                                                    + '<input type="text" name="usernameoremail" class="form-control"'
+                                                        +  ' placeholder="Username or Email" required autofocus/>'
+                                                    + '<input type="password" name="password" class="form-control"' 
+                                                        + ' placeholder="Password" required/>'
+                                                    + '<input type="number" name="idToSave" value="'+ matchup_fileid 
+                                                        +'" hidden=true required/>'
+                                                    + '<button type="submit" class="btn btn-primary center-block"'
+                                                        +  ' id="submit-createuser-form">'
+                                                    + 'Login</button>'
+                                                + '</form>'
+                                            + '</div>'
+
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>',
+                        onEscape: function() {},
+                    });
+                    {% endif %}
+                });
+
+                // Event for user editing itemset page title, toggling the display span and the input span.
+                // Updates from the input span if appropriate
+                $('#btn-edit-custom-title').click(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if($('#custom-title-span').is(':visible')) {
+                        $('#custom-title-span').hide();
+                        $('#custom-title-edit-input').val($('#custom-title-span').text());
+                        $('#custom-title-edit-span').show();
+                    }
+                    else {
+                        $('#custom-title-edit-span').hide();
+                        var new_page_title = $('#custom-title-edit-input').val();
+                        itemset_json['title'] = new_page_title;
+                        $('#custom-title-span').html(new_page_title);
+                        $('#custom-title-span').show();
+                    }
                 });
                 
                 // Helper function: Adds an empty block with block_id=id to the itemset_json
@@ -886,7 +1020,6 @@
                     itemset_json['blocks'].push(block_json);
                 };
 
-                // TODO: fix bug with duplicate names
                 // Helper function: Returns the block from itemset_json with id=block_id, or null if none found
                 var getBlock = function getBlock(block_id){
                     var blocktitle = $('#title-span_' + block_id).html();
@@ -948,7 +1081,7 @@
                                             + '</button>'
                                     + '</div>';
 
-                    new_block_html += '<div class="col-sm-7 col-xs-10 item-block">';
+                    new_block_html += '<div class="col-sm-11 col-xs-11 item-block">';
                     new_block_html +=   '<button type="button" class="btn btn-primary btn-md' 
                                               + ' btn-add-block-item" id="additemblock_' + block_id 
                                               + '" style="margin-left:5px;">'
@@ -1212,61 +1345,60 @@
 
         if (uploadstatus == "success")
         {
-            document.getElementById('alert-success-span').innerHTML = "File upload successful!"
-            $('#alert-success-span').parent().css('visibility', 'visible');
+            updateSuccessSpan("File upload successful!");
         }
         else if (uploadstatus == "limitreached" || savestatus == "limitreached")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, you have reached the item set max of 10" 
-                                                                        + " and cannot add more item sets.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, you have reached the item set max of 10" 
+                        + " and cannot add more item sets.";
+            updateDangerSpan(mssg);
         }
         else if (uploadstatus == "badjson")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, the file you uploaded was not recognized as a" 
-                                                                        + " a valid JSON item file. Please double-check and try again.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, the file you uploaded was not recognized as a" 
+                        + " a valid JSON item file. Please double-check and try again.";
+            updateDangerSpan(mssg);
         }
         else if (uploadstatus == "formfailure")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, there was an error with your form." 
-                                                                        + " Please double-check and try again.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, there was an error with your form." 
+                        + " Please double-check and try again.";
+            updateDangerSpan(mssg);
         }
         else if (loginstatus=="nouser")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, we could not find a user matching those records."
-                                                                        + " Please re-enter your information to try again.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, we could not find a user matching those records."
+                        + " Please re-enter your information to try again.";
+            updateDangerSpan(mssg);
         }  
         else if (createuserstatus=="usernameoremailtaken")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, that username or email has already been taken."
-                                                                        + " Please re-enter new information to try again.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, that username or email has already been taken."
+                        + " Please re-enter new information to try again.";
+            updateDangerSpan(mssg);
         }  
         else if (createuserstatus=="badusername")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, the username you supplied was invalid."
-                                                                        + " Usernames must be 3-32 characters long.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, the username you supplied was invalid."
+                        + " Usernames must be 3-32 characters long.";
+            updateDangerSpan(mssg);
         }  
         else if (createuserstatus=="badpassword")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, the password you supplied was invalid."
-                                                                        + " Passwords must be 8-32 characters long.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, the password you supplied was invalid."
+                        + " Passwords must be 8-32 characters long.";
+            updateDangerSpan(mssg);
         }  
         else if (createuserstatus=="bademail")
         {
-            document.getElementById('alert-danger-span').innerHTML = "Sorry, the email you supplied was invalid."
-                                                                        + " Please enter a valid email to try again.";
-            $('#alert-danger-span').parent().css('visibility', 'visible');
+            var mssg = "Sorry, the email you supplied was invalid."
+                        + " Please enter a valid email to try again.";
+            updateDangerSpan(mssg);
         }
         else if (savestatus=="success")
         {
-            document.getElementById('alert-success-span').innerHTML = "Matchup itemset added to your account successfully!";
-            $('#alert-success-span').parent().css('visibility', 'visible');
+            var mssg = "Matchup itemset added to your account successfully!";
+            updateSuccessSpan(mssg);
         }
 
     </script>

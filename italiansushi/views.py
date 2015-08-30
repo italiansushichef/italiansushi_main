@@ -31,13 +31,17 @@ def under_maxuploads(user):
     savedcount = len(ItemSet.objects.filter(owner=user))
     return savedcount < MAX_UPLOADS
 
+# assumes a .json extension!
 def get_validname(user,filename):
     # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
     name28 = filename[:-5][0:28] 
     name32 = name28
 
+    if name32 == '':
+        name32 = 'noname'
+
     # make sure the file name is not taken -- generate a new filename if not taken 
-    if ItemSet.objects.filter(owner=user, name=name28):
+    if ItemSet.objects.filter(owner=user, name=name32):
         startindex = 1
         foundname = False
         while not foundname:
@@ -277,19 +281,6 @@ def validate_json(inputfile):
     name = inputfile.name
     content_type = inputfile.content_type
     size = inputfile.size
-    # https://developer.riotgames.com/docs/item-sets
-    valid_details = {
-        "type": ["custom", "global"],
-        "map": ["any", "SR", "HA", "TT", "CS"],
-        "mode": ["any", "CLASSIC", "ARAM", "ODIN"],
-        # also contains a blocks dict list
-            # which contains a string "type"
-            # and contains an items dict list 
-                # which includes item id as a string  # TODO validate string ID
-    }
-
-    with open('static/json-data/items_full.json') as data_file:    
-        valid_items = json.load(data_file)
 
     # this check isn't working on windows. TODO find out why
     # if inputfile.content_type != "application/json": return None
@@ -302,6 +293,23 @@ def validate_json(inputfile):
         print "Input file size is too big"
         return None
     contents = inputfile.read()
+    return validate_jsoncontents(contents)
+
+def validate_jsoncontents(contents):
+    # https://developer.riotgames.com/docs/item-sets
+    valid_details = {
+        "type": ["custom", "global"],
+        "map": ["any", "SR", "HA", "TT", "CS"],
+        "mode": ["any", "CLASSIC", "ARAM", "ODIN"],
+        # also contains a blocks dict list
+            # which contains a string "type"
+            # and contains an items dict list 
+                # which includes item id as a string  # TODO validate string ID
+    }
+
+    with open('static/json-data/items_full.json') as data_file:    
+        valid_items = jsonlib.load(data_file)
+
     try:
         parsed = jsonlib.loads(contents)
     except ValueError:
@@ -337,7 +345,7 @@ def validate_json(inputfile):
                 if item["id"] not in valid_items['data']:
                     print "invalid item id"
                     return None
-        return contents
+        return parsed
 
 
 # receiving view for uploading a file
@@ -390,8 +398,8 @@ def view_itemset(request):
         itemset = ItemSet.objects.filter(owner=None, name=filename)
     if itemset:
         json = itemset[0].json
-        parsed = jsonlib.loads(json)
-        return HttpResponse(json, content_type="application/json")
+        output = jsonlib.dumps(json, indent=4)
+        return HttpResponse(output, content_type="application/json")
     return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
     
 
@@ -543,6 +551,37 @@ def matchup_save_file(request):
         else:
             print form.errors
             return JsonResponse({'success':False})
+    return HttpResponseRedirect('/')
+
+# convert from unicode
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key):byteify(value) for key,value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+
+@login_required
+def custom_save_file(request):
+    if request.method == "POST":
+        if not under_maxuploads(request.user):
+            return JsonResponse({'max_uploads_reached':True})
+
+        contents = request.POST['itemset_json']
+        jsonToSave = validate_jsoncontents(contents)
+        if not jsonToSave:
+            return JsonResponse({'success':False})
+
+        jsonToSave = byteify(jsonToSave)
+        filename = jsonToSave['title']
+        name32 = get_validname(request.user, filename + '.json')
+        new_itemset = ItemSet(json=jsonToSave, owner=request.user, name=name32)
+            #, champ_for=champ1_id, champ_against=champ2_id, lane=lane)
+        new_itemset.save()
+        return JsonResponse({'success':True, 'filename':name32})
     return HttpResponseRedirect('/')
 
 def load_item_info(request):
