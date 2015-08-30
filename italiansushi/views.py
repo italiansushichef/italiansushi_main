@@ -460,7 +460,7 @@ def delete_itemset(request):
             itemToDelete = ItemSet.objects.filter(owner=request.user, name=name)
             if request.user.username == user and itemToDelete:
                 itemToDelete[0].delete()
-                return HttpResponse("deleted " + name + " successfully")
+                return HttpResponse("success")
         else:
             print "invalid delete itemset form"
             print form.errors

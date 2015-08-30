@@ -284,27 +284,23 @@
                 $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
             });
         });
-
-        // For previewing item-sets in-browser
+        /* ------------------------- General JS Functions -------------------------------------- */
+        // Generates the html to display for previewing item sets in-browser
         var getItemPreviewHtml = function getItemPreviewHtml(jsonfile) {
             var return_html = "";
             var blocks = jsonfile["blocks"];
-            if (!jsonfile["blocks"] || jsonfile["blocks"].length == 0)
-            {
+            if (!jsonfile["blocks"] || jsonfile["blocks"].length == 0){
                 return_html = '<p><strong> No items in this item set. </strong></p>';
             }
             else
             {
-                for (var i = 0; i < blocks.length; i++)
-                {
+                for (var i = 0; i < blocks.length; i++) {
                     return_html += '<div class="row">';
                     return_html += '<div class="col-xs-12"><strong style="font-size:10px;">' 
                                             + blocks[i]["type"] + '</strong></div>';
                     return_html += '<div class="col-xs-12">';
                     var items_in_block = blocks[i]["items"];
-                    for (var j = 0; j < items_in_block.length; j++)
-                    {
-
+                    for (var j = 0; j < items_in_block.length; j++) {
                         var item = items_in_block[j];
                         var quantity = "";
                         if (item["count"] > 1)
@@ -323,34 +319,35 @@
             return return_html;
         };
 
-        var updateSuccessSpan = function updateSuccessSpan(message){
+        // updates the success span alert with message 
+        var updateSuccessSpan = function updateSuccessSpan(message) {
             $('#alert-success-span').html(message);
             $('#alert-success-span').parent().css('visibility', 'visible');
             $('#alert-danger-span').parent().css('visibility', 'hidden');
         };
-
-        var updateDangerSpan = function updateSuccessSpan(message){
+        // updates the danger span alert with message 
+        var updateDangerSpan = function updateSuccessSpan(message) {
             $('#alert-danger-span').html(message);
             $('#alert-danger-span').parent().css('visibility', 'visible');
             $('#alert-success-span').parent().css('visibility', 'hidden');
         };
-
+        // close the success span alert 
         $('#close-success-span').click(function(e){
             e.preventDefault();
             console.log('closing success')
             $('#alert-success-span').parent().css('visibility', 'hidden');
         });
-
+        // close the danger span alert 
         $('#close-danger-span').click(function(e){
             e.preventDefault();
             console.log('closing danger')
             $('#alert-danger-span').parent().css('visibility', 'hidden');
         });
-    
-        var toggleOptions = function toggleOptions(toggleid, optionsid){
-            $(toggleid).click(function(e){
+        // Handler for toggling to show advanced options (optionsid) when (toggleid) is clicked
+        var toggleOptions = function toggleOptions(toggleid, optionsid) {
+            $(toggleid).click(function(e) {
                 e.preventDefault();
-                if ($(optionsid).is(':visible')){
+                if ($(optionsid).is(':visible')) {
                     $(optionsid).hide();
                     $(toggleid).html('Advanced Options');
                 }
@@ -360,12 +357,10 @@
                 }
             });
         };
-
         toggleOptions('#toggleAdvancedOptions', '#uploadAdvancedOptions');
         
-
-        var champ_data;
-        var autocompleteForId;
+        var champ_data;         // stores champ_data info globally
+        var autocompleteForId;  // function for champ_data autocomplete 
         $.when($.get('/load-champ-info/', function(result){
             champ_data = result;
         })).then(function(){
@@ -375,8 +370,7 @@
                         $(idstring).css("color", "black");  
                         var query = $(idstring).val().toLowerCase();
                         var matchls = [];
-                        for (var champkey in champ_data["data"])
-                        {
+                        for (var champkey in champ_data["data"]) {
                             var champ = champ_data["data"][champkey];
                             if (champ["name"].toLowerCase().indexOf(query) == 0 
                                 || champ["key"].toLowerCase().indexOf(query) == 0
@@ -397,7 +391,7 @@
                         response(matchls);
                     }
                 });
-
+                // needed to render the item images in autocomplete
                 $(idstring).data('ui-autocomplete')._renderItem = function (ul, item) {
                     var $li = $('<li>'), $img = $('<img>');
                     $img.attr({
@@ -405,11 +399,9 @@
                         style: "height:25px;width:25px;",
                         alt: item.label
                     });
-
                     $li.attr('data-value', item.label);
                     $li.append('<a>');
                     $li.find('a').append($img).append('&nbsp;').append(item.label);    
-
                     return $li.appendTo(ul);
                 };
             };
@@ -422,16 +414,15 @@
             {% endif %}
         });
 
-        // For shaking an HTML element
+        // When called will shake the HTML element id and turn its text red
         function shakeElement(id) {
            var l = 8;  
            for( var i = 0; i < 10; i++ )   
              $(id).animate( { 'margin-left': "+=" + ( l = -l ) + 'px' }, 50);
              $(id).css("color", "red");  
         };
-
-        var checkChampion = function checkChampion(id)
-        {
+        // Called to verify that the text in input (id) is valid champion name, shakes if not
+        var checkChampion = function checkChampion(id) {
             var champname = $(id).val();
             if (champname == '')
                 return ''
@@ -444,7 +435,10 @@
             shakeElement(id);
             return null;
         };
-        
+        /* ------------------------- END General JS Functions -------------------------------------- */
+
+        /* ------------------------- Upload file JS Functions -------------------------------------- */
+        // Check champion inputs before submitting for uploading       
         $('#upload-form').submit(function(e){
             var champ1 = checkChampion("#upload_champ1");
             var champ2 = checkChampion("#upload_champ2");
@@ -455,12 +449,11 @@
                 return;
             }
         });
-
+        {% if not logged_in %}
+        // For handling the login popup window
         $('.login-popup').click(function(e){
             e.preventDefault();
-            console.log("login-btn clicked");
             bootbox.dialog({
-                
                 message: '<div class="row">'
                             + '<div class="col-xs-12">'
                                 + '<h1 class="text-center form-title"> Log in to upload, save, and download item sets. </h1>'
@@ -487,22 +480,20 @@
                 onEscape: function() {},
             });
         });
-
+        // For handling the create user login popup window
         $('.createuser-popup').click(function(e){
             e.preventDefault();
-            console.log("createuser-btn clicked");
             bootbox.dialog({
-                
                 message: '<div class="row">'
                             + '<div class="col-xs-12">'
-                                + '<h1 class="text-center form-title"> Create a free user account to upload, save, and download item sets. Please note this account is separate from your Riot League of Legends account. </h1>'
+                                + '<h1 class="text-center form-title"> Create a free user account to upload, save, and download item sets. '
+                                        + 'Please note this account is separate from your Riot League of Legends account. </h1>'
                                 + '<div class="form-box">'
                                     + '<form id="createuser-form" class="form-login" method="POST" action="/createuser/">'
                                         + "{% csrf_token %}" 
                                         + '<input type="text" name="username" class="form-control" placeholder="Username" required autofocus/>'
                                         + '<input type="text" name="email" class="form-control" placeholder="Email" required/>'
                                         + '<input type="password" name="password" class="form-control" placeholder="Password" required/>'
-                                        // + '<input type="password" name="repassword" class="form-control" placeholder="Re-enter Password" required>'
                                         + '<button type="submit" class="hide" id="submit-createuser-form"></button>'
                                     + '</form>'
                                 + '</div>'
@@ -519,15 +510,16 @@
                     }
                 },
                 onEscape: function() {},
-
             });
         });
-        
+        {% endif %}
+        /* ------------------------- END Upload JS Functions -------------------------------------- */
+
+        /* ------------------------- File Manager JS Functions -------------------------------------- */
         $('.viewfiles-popup').click(function(e){
             e.preventDefault();
-            // console.log("viewfiles-btn clicked");
-            var items = [];
-            var item_jsonfiles = []; 
+            var items = [];          // stores the names of the item sets
+            var item_jsonfiles = []; // stores the json files of the item sets
             $.when($.get('/view-items/', function(result){
                 numitems = result.number;
                 for (var i = 0; i < numitems; i++)
@@ -537,7 +529,6 @@
                 }
             })).then(function(){
                 bootbox.dialog({
-                    
                     message: '<div class="row">'
                                 + '<div class="col-xs-12">'
                                     + '<h1 class="text-center form-title"> Manage Your Item Sets </h1>'
@@ -548,11 +539,10 @@
                                 + '</div>'
                             + '</div>',
                     onEscape: function() {},
-
                 });
+                // Generate the table to display the item set list
                 var dynamictable;
-                if (items.length == 0)
-                {
+                if (items.length == 0) {
                     dynamictable = '<h4> No item sets currently saved </h4>';
                 }
                 else
@@ -606,17 +596,17 @@
                     dynamictable += '</tbody>';
                     dynamictable += '</table>';
                 }
-                document.getElementById('dynamic-panel').innerHTML = dynamictable;
-                // console.log("items after2 " + items);
+                $('#dynamic-panel').html(dynamictable);
 
+                // Handling the delete btn for an item set.
                 $('.btn-delete-item').click(function(e){
                     e.preventDefault();
+                    e.stopImmediatePropagation();
                     var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!
                     var clicked_btn = document.getElementById(id);                    
                     var clicked_btn_id = clicked_btn.id.split('_');
                     var itemset_name = clicked_btn_id[2];
-                    for (var i = 3; i < clicked_btn_id.length; i++)
-                    {
+                    for (var i = 3; i < clicked_btn_id.length; i++){
                         itemset_name += "_" + clicked_btn_id[i];
                     }
                     var delete_form_id = clicked_btn.id + '_form';
@@ -642,7 +632,10 @@
                                     parentrow.remove();
                                     nextrow.remove();
                                     $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
-                                        console.log(response);
+                                        if (response == "success")
+                                            updateSuccessSpan('Item Set Deleted!')
+                                        else
+                                            updateDangerSpan('Sorry, something went wrong. Refresh and try again.')
                                     });
                                     items.splice(i, 1);
                                     item_jsonfiles.splice(i, 1);
@@ -656,41 +649,41 @@
                         },
                     });
                 });
-                
+
+                // Handing the preview btn for an item set.
                 $('.btn-preview-item').click(function(e){
                     e.preventDefault();
                     var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!                
                     var clicked_btn_id = id.split('_');
                     var num_id = clicked_btn_id[clicked_btn_id.length - 1];
+                    // tofix: Jquery functions won't work.  
                     if (document.getElementById('item_row:' + num_id).innerHTML != "")
                         document.getElementById('item_row:' + num_id).innerHTML = "";
-                    else
-                    {
+                    else {
                         var myitems_jsonfile = item_jsonfiles[num_id];
                         document.getElementById('item_row:' + num_id).innerHTML = getItemPreviewHtml(myitems_jsonfile);
                     }
                 });
 
+                // ---------------------------------- Handling the edit btn for an item set -------------------------------- 
+                // Adapted from the .btn-custom.itemset click
                 $('.btn-edit-itemset').click(function(e){
-//-------------------------------- Bootbox popup for editing a custom item set --------------------------------------------------------//
                     e.preventDefault();
                     e.stopImmediatePropagation();
-
                     var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!                
                     var clicked_btn_id = id.split('_');
                     var num_id = clicked_btn_id[clicked_btn_id.length - 1];
 
-                    // get item_info from the server (list of items and all their information)
-                    // create itemset_json which keeps track of the itemset being built, following Riot Item Set Docs
-                    var item_info;
-                    var isSaved = false;
-                    var link_filename;
+                    var item_info;       // get item_info from the server (list of items and all their information)
+                    var isSaved = false; // whether the custom set has been saved
+                    var link_filename;   // filename for the href to download
+
+                    // create itemset_json which keeps track of the itemset being built, following Riot Item Set Docs 
                     var itemset_json = jQuery.extend(true, {}, item_jsonfiles[num_id]);
-                    if (!itemset_json['title'])
-                    {
-                        itemset_json['title'] = items[i];
+                    if (!itemset_json['title']) {
+                        itemset_json['title'] = items[i]; // set title to the filename if the jsonfile doesn't have one
                     }
-                    itemset_json['title'] = itemset_json['title'] + '_edited';
+                    itemset_json['title'] = itemset_json['title'] + '_edited'; // give it a unique title 
                     $.when($.get('/load-item-info/', function(result){
                         item_info = result;
                     })).then(function(){
@@ -727,8 +720,6 @@
                                             + '<a type="submit" class="btn btn-success btn-margin-right"'
                                                     +' id="btn-dl-custom" target="_blank" disabled="disabled">'
                                             + '<span class="fa fa-download"></span></a></div>'
-
-
 
                                             + '<div class="col-xs-12" style="padding-right:10px; margin-top:5px; margin-bottom:3px; font-size:12px;">'
                                                 + '<a href="#" id="toggleCustomAdvancedOptions" class="pull-right">Advanced Options</a>'
@@ -770,12 +761,11 @@
                             onEscape: function() {},
                         });
 
-                        
-
                         toggleOptions('#toggleCustomAdvancedOptions', '#customAdvancedOptions');
                         autocompleteForId("#custom_champ1");
                         autocompleteForId("#custom_champ2");
 
+                        // Saving the edited file
                         $('.btn-save-custom').click(function(e){
                             e.preventDefault();
                             e.stopImmediatePropagation();
@@ -786,8 +776,7 @@
                                     $('#toggleCustomAdvancedOptions').click();
                                 return;
                             }
-                            if (itemset_json['blocks'].length == 0)
-                            {
+                            if (itemset_json['blocks'].length == 0) {
                                 updateDangerSpan('Must have at least one block to save it.');
                                 return;
                             }
@@ -801,6 +790,8 @@
                                 success : function(json) {
                                     if (json["success"]) 
                                     {
+                                        // Note that this won't reload the files in the open items manager tab behind this one.
+                                        // To be fixed in a later version. 
                                         var newfile = json["filename"];
                                         var mssg = newfile + " saved to your items successfully!" +
                                                     " Please close and re-open to items manager to view.";
@@ -811,14 +802,13 @@
                                         items.push(newfile);
                                         item_jsonfiles.push(itemset_json);
                                     }
-                                    else if (json["max_uploads_reached"])
-                                    {
+                                    else if (json["max_uploads_reached"]) {
+                                        // To be fixed in later version, this can't be reached right now
                                         var mssg = "Sorry, you have reached the item set max of 10" 
                                                                                 + " and cannot add more item sets.";
                                         updateDangerSpan(mssg);
                                     }
-                                    else 
-                                    {
+                                    else {
                                         var mssg = "Sorry, something went wrong. Refresh and try again.";
                                         updateDangerSpan(mssg);
                                     }
@@ -828,7 +818,8 @@
                                 },
                             });
                         });
-
+                        
+                        // For downloading the edited file, which must be saved first.
                         $('#btn-dl-custom').click(function(e){
                             if (isSaved)
                                 $('#btn-dl-custom').attr('href', '/{{user.username}}/' + link_filename + '.json');
@@ -856,7 +847,6 @@
                                 $('#custom-title-span').show();
                             }
                         });
-
                         $(".edit-input").bind("enterKey", function(e){
                             e.preventDefault();
                             e.stopImmediatePropagation();
@@ -909,7 +899,7 @@
                             return null;
                         }
 
-                        // For debugging only, to log the current itemset_json to console
+                        // For debugging only, to log the current itemset_json to console. TODO: Remove from website.
                         $('#view-itemset_json').click(function(e){
                             e.preventDefault();
                             e.stopImmediatePropagation();
@@ -1002,7 +992,7 @@
                                     $('#title-span_' + block_id).show();
                                 }
                             });
-
+                            // Enter to submit edits to titles
                             $(".edit-input").bind("enterKey", function(e){
                                 e.preventDefault();
                                 e.stopImmediatePropagation();
@@ -1028,6 +1018,7 @@
                                 $('#additemconfirm_' + block_id).parent().show();
                                 $('#additeminput_' + block_id).autocomplete({
                                     source: function(request, callback) {
+                                        // TODO: Better item organizing
                                         $('#additeminput_' + block_id).css("color", "black");  
                                         var query = $('#additeminput_' + block_id).val().toLowerCase();
                                         var namematch = [];
@@ -1076,7 +1067,6 @@
                                         }
                                         namematch.sort(compare);
                                         tagmatch.sort(compare);
-                                        //var responsels = namematch + tagmatch;
                                         var responsels = namematch.concat(tagmatch);
                                         callback(responsels);
                                     },   
@@ -1096,9 +1086,7 @@
 
                                         return $li.appendTo(ul);
                                 };
-                            });
-
-                            
+                            });     
 
                             // Event for confirming to add item to block. First validate that the item to add exists.
                             // Then check if it's already in block of itemset_json. Update HTML and itemset_json appropriately.
@@ -1123,8 +1111,7 @@
                                 else 
                                 {
                                     var item_exists = getItem(block_id, additem_id);
-                                    if (!item_exists)
-                                    {
+                                    if (!item_exists) {
                                         var newItemHtml = '<div id="itemimg_id_'+additem_id 
                                                             + '_block_'+block_id+'" class="item-icon-container" data-value="1">'
                                                             + '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
@@ -1140,8 +1127,7 @@
                                         block['items'].push(item_json);
                                         $('#additemblock_' + block_id).before(newItemHtml);
                                     }
-                                    else
-                                    {
+                                    else {
                                         var item = item_exists;
                                         item['count'] += 1;
                                         $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
@@ -1162,14 +1148,12 @@
 
                                     var block = getBlock(block_id);
                                     var item = getItem(block_id, item_id);
-                                    if (item['count'] <= 1)
-                                    {
+                                    if (item['count'] <= 1) {
                                         var index = block['items'].indexOf(item);
                                         block['items'].splice(index, 1);
                                         $(e.target).parent().remove();
                                     }
-                                    else
-                                    {
+                                    else {
                                         item['count'] -= 1;
                                         if (item['count'] == 1)
                                             $(e.target).parent().find('.item-quantity-overlay').html('');
@@ -1181,24 +1165,18 @@
                             }); 
                         });
 
-                        // update the html from the json
+                        // Run initially to update the html from the json -- load the itemset to be edited into view
                         var start_block_count = itemset_json['blocks'].length;
-                        console.log('start_block_count' + start_block_count);
-                        for (var b = 0; b < start_block_count; b++)
-                        {
+                        for (var b = 0; b < start_block_count; b++) {
                             var block = itemset_json['blocks'][b];
                             var block_id = unique_block_count;
                             block['id'] = block_id;
                             $('.btn-add-block').click();
                             $('#title-span_' + block_id).html(block['type']);
-                            for (var i = 0; i < block['items'].length; i++)
-                            {
+                            for (var i = 0; i < block['items'].length; i++) {
                                 var item = block['items'][i];
-                                console.log(item);
                                 var additem_id = item['id'];
-                                console.log(additem_id);
-                                if (additem_id)
-                                {
+                                if (additem_id) {
                                     var newItemHtml = '<div id="itemimg_id_'+additem_id 
                                                             + '_block_'+block_id+'" class="item-icon-container" data-value="1">'
                                                             + '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
@@ -1208,8 +1186,7 @@
                                                                 + '<button class="btn btn-danger btn-xxs delete-item-overlay">&times;</button></div>';
 
                                     $('#additemblock_' + block_id).before(newItemHtml);
-                                    if (item['count'] > 1)
-                                    {
+                                    if (item['count'] > 1) {
                                         $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
                                         $('#itemimg_id_'+additem_id+'_block_'+block_id).find('.item-quantity-overlay').html(item['count']);
                                     }
@@ -1218,42 +1195,38 @@
                         }
                         // Delete the empty blocks made by the click function
                         for (var b = start_block_count; b < itemset_json['blocks'].length; b++)
-                        {
                             itemset_json['blocks'].splice(b, 1);
-                        }
 
                     });
                 });
-// ---------------------------------------------------------------------------------------------------------------------//
+                // --------------------- END of popup for editing itemset file ---------------------------------//
             });       
         });
+        /* ------------------------- END of File Manager JS Functions -------------------------------------- */
 
+
+        /* ------------------------- Matchup Generator JS Functions -------------------------------------- */
         $('.matchup-popup').click(function(e){
             e.preventDefault();
             e.stopImmediatePropagation();
 
             var champ1 = checkChampion('#champ1');
             var champ2 = checkChampion('#champ2');
-            if (champ1 == null || champ2 == null)
-                return;
+            if (champ1 == null || champ2 == null)   return;
             var raw_lane = $("#matchup-lane").val();
             var lane;
-            if (raw_lane == "")
-                lane = "any lane"
-            else if (raw_lane == "M")
-                lane = "mid"
-            else if (raw_lane == "B")
-                lane = "bot"
-            else if (raw_lane == "T")
-                lane = "top"
-            else if (raw_lane == "J")
-                lane = "jungle"
-            var id1;
-            var id2;
-            var matchuppanel_html = "";
-            var matchup_jsonfile;
-            var matchup_fileid;
-            var matchup_filename;
+            // lane is for displaying in html, raw_lane is the value 
+            if (raw_lane == "")         lane = "any lane"
+            else if (raw_lane == "M")   lane = "mid"
+            else if (raw_lane == "B")   lane = "bot"
+            else if (raw_lane == "T")   lane = "top"
+            else if (raw_lane == "J")   lane = "jungle"
+            var id1; // champ1 id
+            var id2; // champ2 id
+            var matchuppanel_html = ""; // html for the matchup panel (displays the itemset)
+            var matchup_jsonfile; // jsonfile loaded from server for the matchup
+            var matchup_fileid;   // db id for the file, for saving 
+            var matchup_filename; // name of the file
             $.when($.ajax({
                 url: "/matchup_generate_item/",
                 type: "POST",
@@ -1261,55 +1234,42 @@
                         'csrfmiddlewaretoken': "{{ csrf_token }}"},
 
                 success : function(json) {
-                    if (json['champ1_id'] == 0) 
-                        {
-                            champ1 = "None";
-                            id1 = json['champ1_id'];
-                        }
+                    // Display champ names, or red if not found, or None if blank
+                    if (json['champ1_id'] == 0) {
+                        champ1 = "None";
+                        id1 = json['champ1_id'];
+                    }
                     else if (!json['champ1_id']) // None or null 
-                    {
                         champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
-                    }
                     else
-                    {   
                         id1 = json['champ1_id']; 
-                    }
 
-                    if (json['champ2_id'] == 0) 
-                        {
-                            champ2 = "None";
-                            id2 = json['champ2_id'];
-                        }
+                    if (json['champ2_id'] == 0) {
+                        champ2 = "None";
+                        id2 = json['champ2_id'];
+                    }
                     else if (!json['champ2_id']) // None or null 
-                    {
                         champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
-                    }
                     else
-                    {   
                         id2 = json['champ2_id']; 
-                    }
 
-                    if (json['champ2_id'] == 0 && json['champ1_id'] == 0)
-                    {
+                    if (json['champ2_id'] == 0 && json['champ1_id'] == 0) {
                         champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
                         champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
                     }
-
+                    // Color lane red if invalid 
                     if (!json['valid_lane'])
                         lane = '<strong style="color:red;">' + lane + '</strong>';
 
-                    if (json['jsonfile'])
-                    {
+                    if (json['jsonfile']) {
                         matchup_jsonfile = json['jsonfile'];
                         matchup_fileid = json['jsonfile_id']
                         matchup_filename = json['jsonfile_name']
                     }
                     else
-                    {
                         matchuppanel_html = '<h4> Unable to generate an itemset. Please fix inputs and try again. </h4>';
-                    }
                 },
-
+                // TODO: Remove this, debugging only
                 error : function(xhr, errmsg, err){
                     console.log(xhr.status + ": " + xhr.responseText);
                     champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
@@ -1319,6 +1279,7 @@
                 }
 
             })).then(function(){
+                // Initial popup
                 bootbox.dialog({
                     message: '<div class="row">'
                                 + '<div class="col-xs-12">'
@@ -1341,10 +1302,10 @@
                                 + '</div>'
                             + '</div>',
                     onEscape: function() {},
-
                 });
-                if (matchup_jsonfile)
-                {
+
+                // If there is a matchup file generated to display, display it
+                if (matchup_jsonfile) {
                     matchuppanel_html = '<table class="table"><col width="80%"><col width="10%"><col width="10%">';
                     // Head
                     matchuppanel_html += '<thead>';
@@ -1376,10 +1337,11 @@
                     matchuppanel_html += '</tbody>';
                     matchuppanel_html += '</table>';
                 }
-                document.getElementById('dynamic-matchup-panel').innerHTML = matchuppanel_html;
-                if (matchup_jsonfile)
+                $('#dynamic-matchup-panel').html(matchuppanel_html);
+                if (matchup_jsonfile) // To be fixed: why jquery doesnt work here
                     document.getElementById('item_row:' + matchup_fileid).innerHTML = getItemPreviewHtml(matchup_jsonfile);
 
+                // For saving the matchup file to your profile
                 $('.btn-save-item').click(function(e){
                     e.preventDefault();
                     var save_form = document.getElementById('save_' + matchup_fileid + '_form');
@@ -1390,18 +1352,15 @@
                         type: "POST",
                         data: $(save_form).serialize(),
                         success : function(json) {
-                            if (json["success"]) 
-                            {
+                            if (json["success"]) {
                                 updateSuccessSpan("ItemSet added to your items successfully!");
                             }
-                            else if (json["max_uploads_reached"])
-                            {
+                            else if (json["max_uploads_reached"]) {
                                 var mssg = "Sorry, you have reached the item set max of 10" 
                                                                         + " and cannot add more item sets.";
                                 updateDangerSpan(mssg);
                             }
-                            else 
-                            {
+                            else {
                                 var mssg = "Sorry, something went wrong. Refresh and try again."
                                 updateDangerSpan(mssg);
                             }
@@ -1411,6 +1370,7 @@
                         },
                     });
                     {% else %}
+                    // Popup to login and then save
                     bootbox.dialog({
                         message: '<div class="row">'
                                     + '<div class="col-xs-12">'
@@ -1462,16 +1422,19 @@
                 });
             });
         });
+        /* ------------------------- End Matchup JS Functions -------------------------------------- */
 
+
+
+        /* ------------------------- Custom Item Set Builder JS Functions -------------------------------------- */
         // Bootbox popup for building a custom item set
         $('.build-popup').click(function(e){
             e.preventDefault();
             e.stopImmediatePropagation();
-            // get item_info from the server (list of items and all their information)
+            var item_info;          // get item_info from the server (list of items and all their information)
+            var isSaved = false;    // Whether it has been saved yet
+            var link_filename;      // filename for downloading (opening) the file
             // create itemset_json which keeps track of the itemset being built, following Riot Item Set Docs
-            var item_info;
-            var isSaved = false;
-            var link_filename;
             var itemset_json = {'title':'Custom iTahm Set Page', 
                                 'type':'global',
                                 'map':'any',
@@ -1480,10 +1443,7 @@
             $.when($.get('/load-item-info/', function(result){
                 item_info = result;
             })).then(function(){
-
-
-
-                var block_count = 0; // keeps track of how many item blocks there are
+                var block_count = 0;        // keeps track of how many item blocks there are
                 var unique_block_count = 0; // same as above, but doesnt decrement
                 // Initial bootbox pop
                 bootbox.dialog({   
@@ -1553,10 +1513,9 @@
 
                 toggleOptions('#toggleCustomAdvancedOptions', '#customAdvancedOptions');
                 autocompleteForId("#custom_champ1");
-                autocompleteForId("#custom_champ2");
-                
-                
+                autocompleteForId("#custom_champ2");        
 
+                // For saving the custom file
                 $('.btn-save-custom').click(function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -1567,8 +1526,7 @@
                             $('#toggleCustomAdvancedOptions').click();
                         return;
                     }
-                    if (itemset_json['blocks'].length == 0)
-                    {
+                    if (itemset_json['blocks'].length == 0) {
                         updateDangerSpan('Must have at least one block to save it.');
                         return;
                     }
@@ -1581,31 +1539,29 @@
                         data: {'itemset_json': JSON.stringify(itemset_json), 'csrfmiddlewaretoken': "{{ csrf_token }}",
                                 'champ1': champ1, 'champ2': champ2, 'lane': lane},
                         success : function(json) {
-                            if (json["success"]) 
-                            {
+                            if (json["success"]) {
                                 var mssg = json["filename"] + " added to your items successfully!";
                                 updateSuccessSpan(mssg);
                                 isSaved = true;
                                 link_filename = json["filename"];
                                 $('#btn-dl-custom').attr("disabled", false);
                             }
-                            else if (json["max_uploads_reached"])
-                            {
+                            else if (json["max_uploads_reached"]) {
                                 var mssg = "Sorry, you have reached the item set max of 10" 
                                                                         + " and cannot add more item sets.";
                                 updateDangerSpan(mssg);
                             }
-                            else 
-                            {
+                            else {
                                 var mssg = "Sorry, something went wrong. Refresh and try again.";
                                 updateDangerSpan(mssg);
                             }
                         },
-                        error : function(xhr, errmsg, err){
+                        error : function(xhr, errmsg, err) {
+                            // TOD: Remove
                             console.log(xhr.status + ": " + xhr.responseText);
                         },
                     });
-                    {% else %}
+                    {% else %} // Else popup, adapted from saving matchup generated item set
                     bootbox.dialog({
                         message: '<div class="row">'
                                     + '<div class="col-xs-12">'
@@ -1652,7 +1608,7 @@
                                 + '</div>',
                         onEscape: function() {},
                     });
-
+                    // Handler for submitting the form to login and save
                     $('#custom-submit-login-form').click(function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -1663,25 +1619,21 @@
                                     'champ1': champ1, 'champ2': champ2, 'lane': lane, 'idToSave':0, 
                                     'usernameoremail': $('#custom-useremail').val(), 'password':$('#custom-password').val()},
                             success : function(json) {
+                                // Redirect after logging in 
                                 if (json["success"]) 
-                                {
                                     $(location).attr('href','/?login=success&save=success');
-                                }
                                 else if (json["max_uploads_reached"])
-                                {
                                     $(location).attr('href','/?login=success&save=limitreached');
-                                }
                                 else 
-                                {
                                     $(location).attr('href','/?login=success&save=failure');
-                                }
                             },
                             error : function(xhr, errmsg, err){
+                                // TODO: Remove
                                 console.log(xhr.status + ": " + xhr.responseText);
                             },
                         });
                     });
-
+                    // Handler for submitting the form to createuser and save
                     $('#custom-submit-createuser-form').click(function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -1694,22 +1646,20 @@
                                     'email': $('#custom-email-cu').val()},
                             success : function(json) {
                                 if (json["success"]) 
-                                {
                                     $(location).attr('href','/?createuser=success&save=success');
-                                }
                                 else 
-                                {
                                     $(location).attr('href','/?createuser=success&save=failure');
-                                }
                             },
                             error : function(xhr, errmsg, err){
+                                // TODO: Remove
                                 console.log(xhr.status + ": " + xhr.responseText);
                             },
                         });
                     }); 
                     {% endif %}
                 });
-
+                
+                // For the link to download (open) the file
                 $('#btn-dl-custom').click(function(e){
                     {% if logged_in %}
                     if (isSaved)
@@ -1741,7 +1691,7 @@
                         $('#custom-title-span').show();
                     }
                 });
-
+                // Bind enter to save the edited title
                 $(".edit-input").bind("enterKey", function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -1763,20 +1713,6 @@
                         'items': [],
                         'id': id
                     };
-                    // Possibly use in future: Updates Items in Block from the HTML
-                    // var individ_items = $("#block_" + id).find(".item-icon-container");
-                    // for (var i = 0; i < individ_items.length; i++)
-                    // {
-                    //     console.log(individ_items[i]);
-                    //     var itemid = individ_items[i].id.split('_')[2].toString();
-                    //     var itemcount = $(individ_items[i]).data('value');
-                    //     console.log(itemcount);
-                    //     var item_json = {
-                    //         'id': itemid,
-                    //         'count': itemcount,
-                    //     }
-                    //     block_json['items'].push(item_json);
-                    // }
                     itemset_json['blocks'].push(block_json);
                 };
 
@@ -1815,7 +1751,7 @@
                     console.log(itemset_json);
                 });       
 
-                // Event for user adding a new block, TODO: block-values 
+                // Event for user adding a new block
                 $('.btn-add-block').click(function(e){
                     e.preventDefault();
                     e.stopImmediatePropagation();
@@ -1892,7 +1828,7 @@
                             $('#title-edit-input_' + block_id).val($('#title-span_' + block_id).text());
                             $('#title-edit-span_' + block_id).show();
                         }
-                        else {
+                        else { // TODO: default value?
                             $('#title-edit-span_' + block_id).hide();
                             var new_block_title = $('#title-edit-input_' + block_id).val();
                             var block = getBlock(block_id);
@@ -1901,7 +1837,7 @@
                             $('#title-span_' + block_id).show();
                         }
                     });
-
+                    // Bind enter to save title edit input
                     $(".edit-input").bind("enterKey", function(e){
                         e.preventDefault();
                         e.stopImmediatePropagation();
@@ -1935,8 +1871,7 @@
                                 var headerTags = [];
                                 for (var headerkey in tree){
                                     if (tree[headerkey]["header"].toLowerCase().indexOf(query) == 0 
-                                        && query.length > 2)
-                                    {
+                                        && query.length > 2) {
                                         headerTags = tree[headerkey]["tags"];
                                         for (var i = 0; i < headerTags.length; i++)
                                             headerTags[i] = headerTags[i].toUpperCase();
@@ -1949,7 +1884,6 @@
                                         namematch.push({'label':item["name"], 'id':item["id"]});
                                     }
                                     else if (headerTags.length > 0) {
-
                                         for (var i in item["tags"]){
                                             if (headerTags.indexOf(item["tags"][i].toUpperCase()) > -1){
                                                 tagmatch.push({'label':item["name"], 'id':item["id"]});
@@ -1982,22 +1916,20 @@
                         });
                         // Needed to add images to the autocomplete
                         $('#additeminput_' + block_id).data('ui-autocomplete')._renderItem = function (ul, item) {
-                                var $li = $('<li>'), $img = $('<img>');
-                                $img.attr({
-                                    src: 'http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + item.id + '.png',
-                                    style: "height:25px;width:25px;",
-                                    alt: item.label
-                                });
+                            var $li = $('<li>'), $img = $('<img>');
+                            $img.attr({
+                                src: 'http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + item.id + '.png',
+                                style: "height:25px;width:25px;",
+                                alt: item.label
+                            });
 
-                                $li.attr('data-value', item.label);
-                                $li.append('<a>');
-                                $li.find('a').append($img).append('&nbsp;').append(item.label);    
+                            $li.attr('data-value', item.label);
+                            $li.append('<a>');
+                            $li.find('a').append($img).append('&nbsp;').append(item.label);    
 
-                                return $li.appendTo(ul);
+                            return $li.appendTo(ul);
                         };
-                    });
-
-                    
+                    });     
 
                     // Event for confirming to add item to block. First validate that the item to add exists.
                     // Then check if it's already in block of itemset_json. Update HTML and itemset_json appropriately.
@@ -2016,14 +1948,12 @@
                                 break;
                             }
                         }
-                        if (!additem_id){
+                        if (!additem_id) {
                             shakeElement('#additeminput_' + block_id);
                         }
-                        else 
-                        {
+                        else {
                             var item_exists = getItem(block_id, additem_id);
-                            if (!item_exists)
-                            {
+                            if (!item_exists) {
                                 var newItemHtml = '<div id="itemimg_id_'+additem_id 
                                                     + '_block_'+block_id+'" class="item-icon-container" data-value="1">'
                                                     + '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
@@ -2039,8 +1969,7 @@
                                 block['items'].push(item_json);
                                 $('#additemblock_' + block_id).before(newItemHtml);
                             }
-                            else
-                            {
+                            else {
                                 var item = item_exists;
                                 item['count'] += 1;
                                 $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
@@ -2051,7 +1980,7 @@
                         }
 
                         // Event for handling the delete-button for each item. Update itemset_json and html appropriately.
-                        $('.delete-item-overlay').click(function(e){
+                        $('.delete-item-overlay').click(function(e) {
                             e.preventDefault();
                             e.stopImmediatePropagation();
                             console.log('clicked');
@@ -2061,14 +1990,12 @@
 
                             var block = getBlock(block_id);
                             var item = getItem(block_id, item_id);
-                            if (item['count'] <= 1)
-                            {
+                            if (item['count'] <= 1) {
                                 var index = block['items'].indexOf(item);
                                 block['items'].splice(index, 1);
                                 $(e.target).parent().remove();
                             }
-                            else
-                            {
+                            else {
                                 item['count'] -= 1;
                                 if (item['count'] == 1)
                                     $(e.target).parent().find('.item-quantity-overlay').html('');
@@ -2078,26 +2005,23 @@
                             }
                         });
                     }); 
-                    
-
                 });
 
             });
         });
-        
+        /* ------------------------- END Custom Item Set Builder JS Functions -------------------------------------- */
 
 
+
+        /* ------------------------- Other JS Functions -------------------------------------- */
         /* gets the URL parameters, i.e. http://dummy.com/?technology=jquery&blog=jquerybyexample 
             -- var tech = getUrlParameter('technology'); */  
         var getUrlParameter = function getUrlParameter(sParam) {
-            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-                sURLVariables = sPageURL.split('&'),
-                sParameterName,
-                i;
-
+            var sPageURL = decodeURIComponent(window.location.search.substring(1));
+            var sURLVariables = sPageURL.split('&');
+            var sParameterName;
             for (var i = 0; i < sURLVariables.length; i++) {
                 sParameterName = sURLVariables[i].split('=');
-
                 if (sParameterName[0] === sParam) {
                     return sParameterName[1] === undefined ? true : sParameterName[1];
                 }
@@ -2111,68 +2035,58 @@
         var logoutstatus = getUrlParameter('logout');
         var savestatus = getUrlParameter('save');
 
-        if (uploadstatus == "success")
-        {
+        if (uploadstatus == "success") {
             updateSuccessSpan("File upload successful!");
         }
-        else if (uploadstatus == "limitreached" || savestatus == "limitreached")
-        {
+        else if (uploadstatus == "limitreached" || savestatus == "limitreached") {
             var mssg = "Sorry, you have reached the item set max of 10" 
                         + " and cannot add more item sets.";
             updateDangerSpan(mssg);
         }
-        else if (uploadstatus == "badjson")
-        {
+        else if (uploadstatus == "badjson") {
             var mssg = "Sorry, the file you uploaded was not recognized as a" 
                         + " a valid JSON item file. Please double-check and try again.";
             updateDangerSpan(mssg);
         }
-        else if (uploadstatus == "formfailure")
-        {
+        else if (uploadstatus == "formfailure") {
             var mssg = "Sorry, there was an error with your form." 
                         + " Please double-check and try again.";
             updateDangerSpan(mssg);
         }
-        else if (loginstatus=="nouser")
-        {
+        else if (loginstatus=="nouser") {
             var mssg = "Sorry, we could not find a user matching those records."
                         + " Please re-enter your information to try again.";
             updateDangerSpan(mssg);
         }  
-        else if (createuserstatus=="usernameoremailtaken")
-        {
+        else if (createuserstatus=="usernameoremailtaken") {
             var mssg = "Sorry, that username or email has already been taken."
                         + " Please re-enter new information to try again.";
             updateDangerSpan(mssg);
         }  
-        else if (createuserstatus=="badusername")
-        {
+        else if (createuserstatus=="badusername") {
             var mssg = "Sorry, the username you supplied was invalid."
                         + " Usernames must be 3-32 characters long.";
             updateDangerSpan(mssg);
         }  
-        else if (createuserstatus=="badpassword")
-        {
+        else if (createuserstatus=="badpassword") {
             var mssg = "Sorry, the password you supplied was invalid."
                         + " Passwords must be 8-32 characters long.";
             updateDangerSpan(mssg);
         }  
-        else if (createuserstatus=="bademail")
-        {
+        else if (createuserstatus=="bademail") {
             var mssg = "Sorry, the email you supplied was invalid."
                         + " Please enter a valid email to try again.";
             updateDangerSpan(mssg);
         }
-        else if (savestatus=="success")
-        {
+        else if (savestatus=="success") {
             var mssg = "Matchup itemset added to your account successfully!";
             updateSuccessSpan(mssg);
         }
-        else if (savestatus=="badItemSet")
-        {
+        else if (savestatus=="badItemSet") {
             var mssg = "Sorry, there was a problem with your item set. Please try again.";
             updateDangerSpan(mssg);
         }
+        /* ------------------------- END of Other JS Functions -------------------------------------- */
 
     </script>
 </body>
