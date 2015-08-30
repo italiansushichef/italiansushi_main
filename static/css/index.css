@@ -293,6 +293,26 @@ div.bootbox.modal.fade.in + div {
   right: 4px
 }
 
+.hr-sm {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
 .no-padding{
   padding: 0;
+}
+
+#btn-upload-submit {
+  padding-right: 10%;
+  padding-left: 10%;
+}
+
+.tab-fa-icon {
+  font-size:20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.tab-text {
+  font-size: 14px;
 }
