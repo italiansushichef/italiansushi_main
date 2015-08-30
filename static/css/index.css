@@ -292,3 +292,7 @@ div.bootbox.modal.fade.in + div {
   bottom: 2px;
   right: 4px
 }
+
+.no-padding{
+  padding: 0;
+}

@@ -156,7 +156,7 @@
                                         <input class="champ-input" id="upload_champ2" name="champ2" placeholder="Champion Against"/>
                                     </div>
                                     <div class="col-sm-3 col-sm-offset-0 col-xs-12 col-xs-offset">
-                                        <select id="form-lane" class="form-control" name="lane">
+                                        <select id="form-lane" class="form-control no-padding" name="lane">
                                             <option value="">any lane</option>
                                             <option value="M">mid</option>
                                             <option value="T">top</option>
@@ -191,7 +191,7 @@
                                 <input class="champ-input" id="champ2" placeholder=" Your Opponent"/>
                             </div>
                             <div class="col-sm-3 col-sm-offset-0 col-xs-6 col-xs-offset-3">
-                                <select id="matchup-lane" class="form-control">
+                                <select id="matchup-lane" class="form-control no-padding">
                                     <option value="">any lane</option>
                                     <option value="M">mid</option>
                                     <option value="T">top</option>        
@@ -895,6 +895,8 @@
                 item_info = result;
             })).then(function(){
 
+
+
                 var block_count = 0; // keeps track of how many item blocks there are
                 var unique_block_count = 0; // same as above, but doesnt decrement
                 // Initial bootbox pop
@@ -907,7 +909,7 @@
                                     + '<div class="col-xs-9 text-center form-title">'
                                         + '<strong><span id="custom-title-span">Custom Itahm Set Page</span></strong>'
                                     + '<span id="custom-title-edit-span" style="display:none;font-size:14px;">'
-                                        + '<input type="text" id="custom-title-edit-input"></input>' 
+                                        + '<i><input type="text" id="custom-title-edit-input" class="edit-input"></input></i>' 
                                     + '</span>'
                                     + '&nbsp;&nbsp;'
                                     + '<button type="button" class="btn btn-default" id="btn-edit-custom-title">'
@@ -934,7 +936,7 @@
                                             + '<input class="champ-input" id="custom_champ2" name="champ2" placeholder="Champion Against"/>'
                                         + '</div>'
                                         + '<div class="col-sm-3 col-sm-offset-0 col-xs-12 col-xs-offset">'
-                                            + '<select id="custom-lane" class="form-control" name="lane">'
+                                            + '<select id="custom-lane" class="form-control no-padding" name="lane">'
                                                 + '<option value="">any lane</option>'
                                                 + '<option value="M">mid</option>'
                                                 + '<option value="T">top</option>'
@@ -966,6 +968,7 @@
                 toggleOptions('#toggleCustomAdvancedOptions', '#customAdvancedOptions');
                 autocompleteForId("#custom_champ1");
                 autocompleteForId("#custom_champ2");
+                
                 
 
                 $('.btn-save-custom').click(function(e){
@@ -1153,6 +1156,20 @@
                         $('#custom-title-span').show();
                     }
                 });
+
+                $(".edit-input").bind("enterKey", function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    $('#btn-edit-custom-title').click();
+                });
+                $('.edit-input').keyup(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    if(e.keyCode == 13)
+                    {
+                      $(this).trigger("enterKey");
+                    }
+                });
                 
                 // Helper function: Adds an empty block with block_id=id to the itemset_json
                 var updateBlockJsonFromHtml = function updateBlockJsonFromHtml(id) {
@@ -1226,7 +1243,7 @@
                                             + '<strong style="font-size:12px;">'
                                                 + '<span id="title-span_'+ block_id + '">Block: ' + block_id + '</span></strong>'
                                             + '<span id="title-edit-span_' + block_id + '" style="display:none;font-size:12px;">'
-                                                + '<input type="text" id="title-edit-input_'+ block_id +'"></input>' 
+                                                + '<i><input type="text" id="title-edit-input_'+ block_id +'" class="edit-input"></input></i>' 
                                             + '</span>'
                                             + '&nbsp;&nbsp;'
                                             + '<button type="button" class="btn btn-default btn-xs' 
@@ -1297,6 +1314,20 @@
                             block['type'] = new_block_title;
                             $('#title-span_' + block_id).html(new_block_title);
                             $('#title-span_' + block_id).show();
+                        }
+                    });
+
+                    $(".edit-input").bind("enterKey", function(e){
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        $('#editblock_' + block_id).click();
+                    });
+                    $('.edit-input').keyup(function(e){
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        if(e.keyCode == 13)
+                        {
+                          $(this).trigger("enterKey");
                         }
                     });
 
