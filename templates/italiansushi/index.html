@@ -641,6 +641,8 @@
                                     $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
                                         console.log(response);
                                     });
+                                    items.splice(i, 1);
+                                    item_jsonfiles.splice(i, 1);
                                 }
                             },
                             main:{
@@ -664,8 +666,562 @@
                         var myitems_jsonfile = item_jsonfiles[num_id];
                         document.getElementById('item_row:' + num_id).innerHTML = getItemPreviewHtml(myitems_jsonfile);
                     }
-
                 });
+
+                $('.btn-edit-itemset').click(function(e){
+//-------------------------------- Bootbox popup for editing a custom item set --------------------------------------------------------//
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!                
+                    var clicked_btn_id = id.split('_');
+                    var num_id = clicked_btn_id[clicked_btn_id.length - 1];
+
+                    // get item_info from the server (list of items and all their information)
+                    // create itemset_json which keeps track of the itemset being built, following Riot Item Set Docs
+                    var item_info;
+                    var isSaved = false;
+                    var link_filename;
+                    var itemset_json = jQuery.extend(true, {}, item_jsonfiles[num_id]);
+                    if (!itemset_json['title'])
+                    {
+                        itemset_json['title'] = items[i];
+                    }
+                    itemset_json['title'] = itemset_json['title'] + '_edited';
+                    $.when($.get('/load-item-info/', function(result){
+                        item_info = result;
+                    })).then(function(){
+                        var block_count = 0;        // keeps track of how many item blocks there are
+                        var unique_block_count = 0; // same as above, but doesnt decrement
+                        // Initial bootbox pop
+                        bootbox.dialog({   
+                            message: '<div class="row">'
+                                        + '<div class="col-xs-12">'
+
+                                            + '<div class="row">'
+
+                                            + '<div class="col-xs-10 col-xs-offset-1 alert alert-info">'
+                                                + '<strong>Editing mode:</strong>'
+                                                +  ' Saving will add the itemset below to your profile, and leaves the original untouched.'
+                                                +  ' Closing the window without saving will discard all edits.'
+                                            + '</div>'
+
+                                            + '<div class="col-xs-8 col-sm-10 text-center form-title">'
+                                                + '<strong><span id="custom-title-span">' + itemset_json['title'] + '</span></strong>'
+                                            + '<span id="custom-title-edit-span" style="display:none;font-size:14px;">'
+                                                + '<i><input type="text" id="custom-title-edit-input" class="edit-input"></input></i>' 
+                                            + '</span>'
+                                            + '&nbsp;&nbsp;'
+                                            + '<button type="button" class="btn btn-default" id="btn-edit-custom-title">'
+                                                +  '<span class="fa fa-edit"></span>'
+                                            + '</button>'
+                                            + '</div>'
+
+                                            + '<div class="text-center col-xs-4 col-sm-2">'
+                                            + '<button class="btn btn-primary btn-save-custom btn-margin-right" id="btn-save-custom">'
+                                            + '<span class="fa fa-floppy-o"></span></button>'
+
+                                            + '<a type="submit" class="btn btn-success btn-margin-right"'
+                                                    +' id="btn-dl-custom" target="_blank" disabled="disabled">'
+                                            + '<span class="fa fa-download"></span></a></div>'
+
+
+
+                                            + '<div class="col-xs-12" style="padding-right:10px; margin-top:5px; margin-bottom:3px; font-size:12px;">'
+                                                + '<a href="#" id="toggleCustomAdvancedOptions" class="pull-right">Advanced Options</a>'
+                                            + '</div>'
+                                            + '<div id="customAdvancedOptions" class="col-xs-12" style="display: none;">'
+                                                + '<div class="ui-widget col-sm-4">'
+                                                    + '<input class="champ-input" id="custom_champ1" name="champ1" placeholder="Champion For"/>'
+                                                + '</div>'
+                                                + '<div class="ui-widget col-sm-4">'
+                                                    + '<input class="champ-input" id="custom_champ2" name="champ2" placeholder="Champion Against"/>'
+                                                + '</div>'
+                                                + '<div class="col-sm-3 col-sm-offset-0 col-xs-12 col-xs-offset">'
+                                                    + '<select id="custom-lane" class="form-control no-padding" name="lane">'
+                                                        + '<option value="">any lane</option>'
+                                                        + '<option value="M">mid</option>'
+                                                        + '<option value="T">top</option>'
+                                                        + '<option value="J">jungle</option>'
+                                                        + '<option value="B">bot</option>'
+                                                    + '</select>'
+                                                + '</div>'
+                                            + '</div>'
+
+                                            + '</div>'
+                                            + '<hr class="hr-sm">'
+
+                                            + '<div class="row" id="add-block-row"><div class="col-xs-12">'
+                                                + '<button type="button" class="btn btn-default btn-add-block">'
+                                                    +  '<span class="fa fa-plus"></span>&nbsp;Add a block'
+                                                    + '</button>'
+                                            + '</div></div>'
+                                        + '</div>'
+                                        + '<div class="row"><div class="col-xs-2 col-xs-offset-3">'
+                                        + '<button type="button" class="btn btn-success btn-md' 
+                                          + ' " id="view-itemset_json">'
+                                          +  '<span class="fa fa-check">ClicktoConsoleLogItemSetJson</span>'
+                                          + '</button>'
+                                        + '</div></div>'
+                                    + '</div>',
+                            onEscape: function() {},
+                        });
+
+                        
+
+                        toggleOptions('#toggleCustomAdvancedOptions', '#customAdvancedOptions');
+                        autocompleteForId("#custom_champ1");
+                        autocompleteForId("#custom_champ2");
+
+                        $('.btn-save-custom').click(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            var champ1 = checkChampion("#custom_champ1");
+                            var champ2 = checkChampion("#custom_champ2");
+                            if (champ1 == null || champ2 == null) {
+                                if(!$('#customAdvancedOptions').is(':visible'))
+                                    $('#toggleCustomAdvancedOptions').click();
+                                return;
+                            }
+                            if (itemset_json['blocks'].length == 0)
+                            {
+                                updateDangerSpan('Must have at least one block to save it.');
+                                return;
+                            }
+                            var lane = $('#custom-lane').val();
+                            $(".btn-save-custom").attr("disabled","disabled");
+                            $.ajax({
+                                url: "/custom-save-file/",
+                                type: "POST",
+                                data: {'itemset_json': JSON.stringify(itemset_json), 'csrfmiddlewaretoken': "{{ csrf_token }}",
+                                        'champ1': champ1, 'champ2': champ2, 'lane': lane},
+                                success : function(json) {
+                                    if (json["success"]) 
+                                    {
+                                        var newfile = json["filename"];
+                                        var mssg = newfile + " saved to your items successfully!" +
+                                                    " Please close and re-open to items manager to view.";
+                                        updateSuccessSpan(mssg);
+                                        isSaved = true;
+                                        link_filename = newfile;
+                                        $('#btn-dl-custom').attr("disabled", false);
+                                        items.push(newfile);
+                                        item_jsonfiles.push(itemset_json);
+                                    }
+                                    else if (json["max_uploads_reached"])
+                                    {
+                                        var mssg = "Sorry, you have reached the item set max of 10" 
+                                                                                + " and cannot add more item sets.";
+                                        updateDangerSpan(mssg);
+                                    }
+                                    else 
+                                    {
+                                        var mssg = "Sorry, something went wrong. Refresh and try again.";
+                                        updateDangerSpan(mssg);
+                                    }
+                                },
+                                error : function(xhr, errmsg, err){
+                                    console.log(xhr.status + ": " + xhr.responseText);
+                                },
+                            });
+                        });
+
+                        $('#btn-dl-custom').click(function(e){
+                            if (isSaved)
+                                $('#btn-dl-custom').attr('href', '/{{user.username}}/' + link_filename + '.json');
+                            else
+                                bootbox.alert("You must save the item set before you can download it.");
+                        });
+
+                        // Event for user editing itemset page title, toggling the display span and the input span.
+                        // Updates from the input span if appropriate
+                        $('#btn-edit-custom-title').click(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            if($('#custom-title-span').is(':visible')) {
+                                $('#custom-title-span').hide();
+                                $('#custom-title-edit-input').val($('#custom-title-span').text());
+                                $('#custom-title-edit-span').show();
+                            }
+                            else {
+                                $('#custom-title-edit-span').hide();
+                                var new_page_title = $('#custom-title-edit-input').val();
+                                if (new_page_title == '')
+                                    new_page_title = 'noname'
+                                itemset_json['title'] = new_page_title;
+                                $('#custom-title-span').html(new_page_title);
+                                $('#custom-title-span').show();
+                            }
+                        });
+
+                        $(".edit-input").bind("enterKey", function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            $('#btn-edit-custom-title').click();
+                        });
+                        $('.edit-input').keyup(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            if(e.keyCode == 13)
+                            {
+                              $(this).trigger("enterKey");
+                            }
+                        });
+                        
+                        // Helper function: Adds an empty block with block_id=id to the itemset_json
+                        var updateBlockJsonFromHtml = function updateBlockJsonFromHtml(id) {
+                            var block_json = {
+                                'type': $('#title-span_' + id).html(),
+                                'items': [],
+                                'id': id
+                            };
+                            itemset_json['blocks'].push(block_json);
+                        };
+
+                        // Helper function: Returns the block from itemset_json with id=block_id, or null if none found
+                        var getBlock = function getBlock(block_id){
+                            var blocktitle = $('#title-span_' + block_id).html();
+                            for (var b = 0; b < itemset_json['blocks'].length; b++)
+                            {
+                                var block = itemset_json['blocks'][b];
+                                if (block['id'] == block_id)
+                                {
+                                    return block;
+                                }
+                            }
+                            return null;
+                        };
+
+                        // Helper function: Returns the item from itemset_json with block_id, item_id , or null if none found
+                        var getItem = function getItem(block_id, item_id){
+                            var block = getBlock(block_id);
+                            for (var i = 0; i < block['items'].length; i++)
+                            {
+                                var item = block['items'][i];
+                                if (item['id'] == String(item_id))
+                                {
+                                    return item
+                                }
+                            }
+                            return null;
+                        }
+
+                        // For debugging only, to log the current itemset_json to console
+                        $('#view-itemset_json').click(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            console.log(itemset_json);
+                        });       
+
+                        // Event for user adding a new block, TODO: block-values 
+                        $('.btn-add-block').click(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            var block_id = unique_block_count;
+                            block_count += 1;
+                            unique_block_count += 1;
+                            var new_block_html = '<div class="row" id="block_' + block_id + '">';
+
+                            new_block_html += '<div class="col-xs-12">'
+                                                    + '<strong style="font-size:12px;">'
+                                                        + '<span id="title-span_'+ block_id + '">Block: ' + block_id + '</span></strong>'
+                                                    + '<span id="title-edit-span_' + block_id + '" style="display:none;font-size:12px;">'
+                                                        + '<i><input type="text" id="title-edit-input_'+ block_id +'" class="edit-input"></input></i>' 
+                                                    + '</span>'
+                                                    + '&nbsp;&nbsp;'
+                                                    + '<button type="button" class="btn btn-default btn-xs' 
+                                                        + ' btn-edit-block-title" id="editblock_' + block_id + '">'
+                                                    +  '<span class="fa fa-edit"></span>'
+                                                    + '</button>&nbsp;'
+                                                    + '<button type="button" class="btn btn-danger btn-xs' 
+                                                        + ' btn-delete-block" id="deleteblock_' + block_id + '">'
+                                                    +  '<span class="fa fa-trash-o"></span>'
+                                                    + '</button>'
+                                            + '</div>';
+
+                            new_block_html += '<div class="col-sm-11 col-xs-11 item-block">';
+                            new_block_html +=   '<button type="button" class="btn btn-primary btn-md' 
+                                                      + ' btn-add-block-item" id="additemblock_' + block_id 
+                                                      + '" style="margin-left:5px;">'
+                                                      +  '<span class="fa fa-plus"></span>'
+                                                + '</button>';
+
+                            new_block_html +=   '<div class="item-add-block" style="display:none;">';
+                            new_block_html +=   '<div class="ui-widget" style="float:left;clear:both;">'
+                                                        + '<input type="text" class="item-input" id="additeminput_' + block_id + '" '
+                                                            + 'placeholder="Search by Name or Category"/>&nbsp;&nbsp;'
+                                                        + '</div>';
+                            new_block_html +=   '<button type="button" class="btn btn-success btn-md' 
+                                                      + ' btn-add-item-confirm" id="additemconfirm_' + block_id + '">'
+                                                      +  '<span class="fa fa-check"></span>'
+                                                      + '</button>';
+                            new_block_html +=   '</div>';
+                            new_block_html += '</div>';
+
+                            new_block_html += '</div>';
+
+                            // Add the block to html and json
+                            $('#add-block-row').before(new_block_html);
+                            updateBlockJsonFromHtml(block_id);
+
+                            // Event for user deleting the block. Decrement count, remove from html and itemset_json
+                            $('.btn-delete-block').click(function(e){
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                block_count -= 1;
+                                var html_id = (e.currentTarget.id || e.srcEvent.id);
+                                var block_id = html_id.split('_')[1];
+                                var block_title = $('#title-span_' + block_id).html();
+                                var block = getBlock(block_id);
+                                var index = itemset_json['blocks'].indexOf(block);
+                                itemset_json['blocks'].splice(index, 1);
+                                $('#block_' + block_id).remove();
+                            });
+
+                            // Event for user editing block title, toggling the display span and the input span.
+                            // Updates from the input span if appropriate
+                            $('.btn-edit-block-title').click(function(e){
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                var html_id = (e.currentTarget.id || e.srcEvent.id);
+                                var block_id = html_id.split('_')[1];
+                                if($('#title-span_' + block_id).is(':visible')) {
+                                    $('#title-span_' + block_id).hide();
+                                    $('#title-edit-input_' + block_id).val($('#title-span_' + block_id).text());
+                                    $('#title-edit-span_' + block_id).show();
+                                }
+                                else {
+                                    $('#title-edit-span_' + block_id).hide();
+                                    var new_block_title = $('#title-edit-input_' + block_id).val();
+                                    var block = getBlock(block_id);
+                                    block['type'] = new_block_title;
+                                    $('#title-span_' + block_id).html(new_block_title);
+                                    $('#title-span_' + block_id).show();
+                                }
+                            });
+
+                            $(".edit-input").bind("enterKey", function(e){
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                $('#editblock_' + block_id).click();
+                            });
+                            $('.edit-input').keyup(function(e){
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                if(e.keyCode == 13)
+                                {
+                                  $(this).trigger("enterKey");
+                                }
+                            });
+
+                            // Event for clicking to add a new item to a block -- this handles the autocomplete
+                            $('.btn-add-block-item').click(function(e){
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                var html_id = (e.currentTarget.id || e.srcEvent.id);
+                                var block_id = html_id.split('_')[1];
+                                $('#additeminput_' + block_id).val('');
+                                $('#additemblock_' + block_id).hide();
+                                $('#additemconfirm_' + block_id).parent().show();
+                                $('#additeminput_' + block_id).autocomplete({
+                                    source: function(request, callback) {
+                                        $('#additeminput_' + block_id).css("color", "black");  
+                                        var query = $('#additeminput_' + block_id).val().toLowerCase();
+                                        var namematch = [];
+                                        var tagmatch = [];
+                                        var tree = item_info["tree"];
+                                        var headerTags = [];
+                                        for (var headerkey in tree){
+                                            if (tree[headerkey]["header"].toLowerCase().indexOf(query) == 0 
+                                                && query.length > 2)
+                                            {
+                                                headerTags = tree[headerkey]["tags"];
+                                                for (var i = 0; i < headerTags.length; i++)
+                                                    headerTags[i] = headerTags[i].toUpperCase();
+                                                break;
+                                            }
+                                        }
+                                        for (var itemkey in item_info["data"]){
+                                            var item = item_info["data"][itemkey];
+                                            if (item["name"].toLowerCase().indexOf(query) > -1){   
+                                                namematch.push({'label':item["name"], 'id':item["id"]});
+                                            }
+                                            else if (headerTags.length > 0) {
+
+                                                for (var i in item["tags"]){
+                                                    if (headerTags.indexOf(item["tags"][i].toUpperCase()) > -1){
+                                                        tagmatch.push({'label':item["name"], 'id':item["id"]});
+                                                        break;
+                                                    }
+                                                }  
+                                            }
+                                            else {
+                                                for (var i in item["tags"]){
+                                                    if (item["tags"][i].toLowerCase().indexOf(query) > -1){
+                                                        tagmatch.push({'label':item["name"], 'id':item["id"]});
+                                                        break;
+                                                    }  
+                                                }
+                                            }
+                                        }
+                                        function compare(a,b) {
+                                            if (a.label < b.label)
+                                                return -1;
+                                            if (a.label > b.label)
+                                                return 1;
+                                            return 0;
+                                        }
+                                        namematch.sort(compare);
+                                        tagmatch.sort(compare);
+                                        //var responsels = namematch + tagmatch;
+                                        var responsels = namematch.concat(tagmatch);
+                                        callback(responsels);
+                                    },   
+                                });
+                                // Needed to add images to the autocomplete
+                                $('#additeminput_' + block_id).data('ui-autocomplete')._renderItem = function (ul, item) {
+                                        var $li = $('<li>'), $img = $('<img>');
+                                        $img.attr({
+                                            src: 'http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' + item.id + '.png',
+                                            style: "height:25px;width:25px;",
+                                            alt: item.label
+                                        });
+
+                                        $li.attr('data-value', item.label);
+                                        $li.append('<a>');
+                                        $li.find('a').append($img).append('&nbsp;').append(item.label);    
+
+                                        return $li.appendTo(ul);
+                                };
+                            });
+
+                            
+
+                            // Event for confirming to add item to block. First validate that the item to add exists.
+                            // Then check if it's already in block of itemset_json. Update HTML and itemset_json appropriately.
+                            // Or if it doesn't exist add new html and new item to itemset_json.
+                            $('.btn-add-item-confirm').click(function(e){
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                                var html_id = (e.currentTarget.id || e.srcEvent.id);
+                                var block_id = html_id.split('_')[1];
+                                var query = $('#additeminput_' + block_id).val().toLowerCase();
+                                var additem_id;
+                                for (var itemkey in item_info["data"]){
+                                    var item = item_info["data"][itemkey];
+                                    if (item["name"].toLowerCase() == query){
+                                        additem_id = item["id"];
+                                        break;
+                                    }
+                                }
+                                if (!additem_id){
+                                    shakeElement('#additeminput_' + block_id);
+                                }
+                                else 
+                                {
+                                    var item_exists = getItem(block_id, additem_id);
+                                    if (!item_exists)
+                                    {
+                                        var newItemHtml = '<div id="itemimg_id_'+additem_id 
+                                                            + '_block_'+block_id+'" class="item-icon-container" data-value="1">'
+                                                            + '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
+                                                                + additem_id + '.png"' 
+                                                                + ' class="item-icon">'
+                                                                + '<span class="item-quantity-overlay"></span>'
+                                                                + '<button class="btn btn-danger btn-xxs delete-item-overlay">&times;</button></div>';
+                                        var item_json = {
+                                            'id': String(additem_id),
+                                            'count': 1,
+                                        }
+                                        var block = getBlock(block_id);
+                                        block['items'].push(item_json);
+                                        $('#additemblock_' + block_id).before(newItemHtml);
+                                    }
+                                    else
+                                    {
+                                        var item = item_exists;
+                                        item['count'] += 1;
+                                        $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
+                                        $('#itemimg_id_'+additem_id+'_block_'+block_id).find('.item-quantity-overlay').html(item['count']);
+                                    }
+                                    $('#additemblock_' + block_id).show();
+                                    $('#additemconfirm_' + block_id).parent().hide();
+                                }
+
+                                // Event for handling the delete-button for each item. Update itemset_json and html appropriately.
+                                $('.delete-item-overlay').click(function(e){
+                                    e.preventDefault();
+                                    e.stopImmediatePropagation();
+                                    console.log('clicked');
+                                    var html_id = $(e.target).parent().attr('id');
+                                    var block_id = html_id.split('_')[4];
+                                    var item_id = html_id.split('_')[2];
+
+                                    var block = getBlock(block_id);
+                                    var item = getItem(block_id, item_id);
+                                    if (item['count'] <= 1)
+                                    {
+                                        var index = block['items'].indexOf(item);
+                                        block['items'].splice(index, 1);
+                                        $(e.target).parent().remove();
+                                    }
+                                    else
+                                    {
+                                        item['count'] -= 1;
+                                        if (item['count'] == 1)
+                                            $(e.target).parent().find('.item-quantity-overlay').html('');
+                                        else
+                                            $(e.target).parent().find('.item-quantity-overlay').html(item['count']);
+                                        $(e.target).parent().attr('data-value', item['count']);
+                                    }
+                                });
+                            }); 
+                        });
+
+                        // update the html from the json
+                        var start_block_count = itemset_json['blocks'].length;
+                        console.log('start_block_count' + start_block_count);
+                        for (var b = 0; b < start_block_count; b++)
+                        {
+                            var block = itemset_json['blocks'][b];
+                            var block_id = unique_block_count;
+                            block['id'] = block_id;
+                            $('.btn-add-block').click();
+                            $('#title-span_' + block_id).html(block['type']);
+                            for (var i = 0; i < block['items'].length; i++)
+                            {
+                                var item = block['items'][i];
+                                console.log(item);
+                                var additem_id = item['id'];
+                                console.log(additem_id);
+                                if (additem_id)
+                                {
+                                    var newItemHtml = '<div id="itemimg_id_'+additem_id 
+                                                            + '_block_'+block_id+'" class="item-icon-container" data-value="1">'
+                                                            + '<img src="http://ddragon.leagueoflegends.com/cdn/5.16.1/img/item/' 
+                                                                + additem_id + '.png"' 
+                                                                + ' class="item-icon">'
+                                                                + '<span class="item-quantity-overlay"></span>'
+                                                                + '<button class="btn btn-danger btn-xxs delete-item-overlay">&times;</button></div>';
+
+                                    $('#additemblock_' + block_id).before(newItemHtml);
+                                    if (item['count'] > 1)
+                                    {
+                                        $('#itemimg_id_'+additem_id+'_block_'+block_id).attr('data-value', item['count']); 
+                                        $('#itemimg_id_'+additem_id+'_block_'+block_id).find('.item-quantity-overlay').html(item['count']);
+                                    }
+                                }
+                            }
+                        }
+                        // Delete the empty blocks made by the click function
+                        for (var b = start_block_count; b < itemset_json['blocks'].length; b++)
+                        {
+                            itemset_json['blocks'].splice(b, 1);
+                        }
+
+                    });
+                });
+// ---------------------------------------------------------------------------------------------------------------------//
             });       
         });
 
