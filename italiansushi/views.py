@@ -153,6 +153,10 @@ def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
     new_itemset.save()
     return {'success':True, 'filename': name32}
 
+def faq_page(request):
+    context_dict = {'logged_in': request.user.is_authenticated()}
+    return render(request, 'italiansushi/faq.html', context_dict)
+
 def about_page(request):
     context_dict = {'logged_in': request.user.is_authenticated()}
     return render(request, 'italiansushi/about.html', context_dict)
