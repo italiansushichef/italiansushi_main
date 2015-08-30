@@ -1,7 +1,3 @@
-/* Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
-   from http://bootsnipp.com/snippets/featured/simple-vertical-tab 
-   */
-
 .main-container {
   background-image: url("http://i.imgur.com/M07FxXD.jpg");
   max-width:100%; 
@@ -57,6 +53,10 @@
   margin-top: 0;
   color:#55518a;
 }
+
+
+/* Below CSS Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
+   from http://bootsnipp.com/snippets/featured/simple-vertical-tab */
 
 /*  bhoechie tab */
 div.bhoechie-tab-container{
@@ -127,14 +127,24 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
   display: none;
 }
 
-.btn-side {
+.tab-fa-icon {
+  font-size:20px;
+  margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.tab-text {
+  font-size: 13px;
 }
 
 /* fix for bootbox fadein issue -- no longer needed as of Aug 20 wtf */
 /*.modal-backdrop.fade.in {
   z-index: 0;
 }*/
+
+.btn-side {
+  margin-bottom: 5px;
+}
 
 .text-center {
   text-align: center;
@@ -307,12 +317,4 @@ div.bootbox.modal.fade.in + div {
   padding-left: 10%;
 }
 
-.tab-fa-icon {
-  font-size:20px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
 
-.tab-text {
-  font-size: 14px;
-}
