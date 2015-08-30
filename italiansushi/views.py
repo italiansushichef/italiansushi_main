@@ -62,219 +62,6 @@ def save_itemset(itemToCopy, user):
     itemToCopy.user_upvotes = None
     itemToCopy.save()
 
-def about_page(request):
-    context_dict = {'logged_in': request.user.is_authenticated()}
-    return render(request, 'italiansushi/about.html', context_dict)
-
-# errorpage
-def error_page(request):
-    context_dict = {'logged_in': request.user.is_authenticated()}
-    return render(request, 'italiansushi/error.html', context_dict)
-
-# homepage
-def index(request):
-    context_dict = {'logged_in': request.user.is_authenticated()}
-    return render(request, 'italiansushi/index.html', context_dict)
-
-# receiving view for creating a new user acct
-# redirects to main page upon success, error page if failure
-def createuser(request):
-    if request.method == "POST":
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            password = data['password']
-            # repassword = data['repassword'] # TODO
-            username = data['username']
-            email = data['email']
-            ## validate username is at most 32 characters, at least 3 characters
-            if len(username) > 32 or len(username) < 3 or username=="tmp":
-                return HttpResponseRedirect('/?createuser=badusername')
-            ## validate password is at least 8 characters
-            if len(password) < 8 or len(password) > 32:
-                return HttpResponseRedirect('/?createuser=badpassword')
-
-            # if there is already a user with that acct -- matching username or email. 
-            # note: the username check is actually redundant 
-            #       because the form.is_valid will have already checked it
-            user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
-            if user_exists:
-                user = authenticate(username=username, password=password, email=email)
-                # login user if information matches 
-                if user is not None:
-                    django_login(request, user)
-                    return HttpResponseRedirect('/?login=success')
-                # otherwise username or email is taken 
-                else:
-                    return HttpResponseRedirect('/?createuser=usernameoremailtaken')
-            else:
-                # Create user
-                user = User(username=username, password=password, email=email)
-                user.set_password(password)
-                user.save()
-                user = authenticate(username=username, password=password, email=email)
-                django_login(request, user)
-                return HttpResponseRedirect('/?createuser=success')
-        else: # note, this checks if username is taken, also may check if email is valid already
-            print 'invalid createuser form'
-            print form.errors 
-            user_exists = User.objects.filter(username=request.POST['username'])
-            if user_exists:
-                return HttpResponseRedirect('/?createuser=usernameoremailtaken')
-            # validate email is probably an email address -- not thorough 
-            if not re.match(r'[^@]+@[^@]+\.[^@]+', request.POST['email']):
-                return HttpResponseRedirect('/?createuser=bademail')
-            ## some other type of error
-            return HttpResponseRedirect('/error/?createuser=formfailure')
-    return HttpResponseRedirect('/')
-
-# receiving view for creating a new user acct, and then saving the file
-# redirects to main page upon success, error page if failure
-def createuser_save(request):
-    if request.method == "POST":
-        form = CreateUserSaveForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            password = data['password']
-            # repassword = data['repassword'] # TODO
-            username = data['username']
-            email = data['email']
-            ## validate username is at most 32 characters, at least 3 characters
-            if len(username) > 32 or len(username) < 3 or username=="tmp":
-                return HttpResponseRedirect('/?createuser=badusername&save=failure')
-            ## validate password is at least 8 characters
-            if len(password) < 8 or len(password) > 32:
-                return HttpResponseRedirect('/?createuser=badpassword&save=failure')
-
-            # if there is already a user with that acct -- matching username or email. 
-            # note: the username check is actually redundant 
-            #       because the form.is_valid will have already checked it
-            user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
-            if user_exists:
-                user = authenticate(username=username, password=password, email=email)
-                # login user if information matches 
-                if user is not None:
-                    django_login(request, user)
-                    idToSave = data['idToSave']
-
-                    if not under_maxuploads(user):
-                        return HttpResponseRedirect('/?login=success&save=limitreached')
-
-                    itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
-                    # validate id exists
-                    if not itemToCopy:
-                        return HttpResponseRedirect('/?login=success&save=badItemSet')
-                    else:
-                        itemToCopy = itemToCopy[0]
-
-                    save_itemset(itemToCopy, request.user)
-                    return HttpResponseRedirect('/?login=success&save=success')
-                # otherwise username or email is taken 
-                else:
-                    return HttpResponseRedirect('/?createuser=usernameoremailtaken&save=failure')
-            else:
-                # Create user
-                user = User(username=username, password=password, email=email)
-                user.set_password(password)
-                user.save()
-                user = authenticate(username=username, password=password, email=email)
-                django_login(request, user)
-                idToSave = data['idToSave']
-                # Save ItemSet to the User 
-                if not under_maxuploads(user):
-                    return HttpResponseRedirect('/?createuser=success&save=limitreached')
-                itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
-                # validate id exists
-                if not itemToCopy:
-                    return HttpResponseRedirect('/?createuser=success&save=badItemSet')
-                else:
-                    itemToCopy = itemToCopy[0]
-
-                # Make a copy
-                filenameToSave = itemToCopy.name
-                filenameToSave = get_validname(user, filenameToSave + '.json')
-                itemToCopy.pk = None
-                itemToCopy.owner = user
-                itemToCopy.name = filenameToSave
-                itemToCopy.user_upvotes = None
-                itemToCopy.save()
-                return HttpResponseRedirect('/?createuser=success&save=success')
-        else: # note, this checks if username is taken, also may check if email is valid already
-            print 'invalid createuser form'
-            print form.errors 
-            user_exists = User.objects.filter(username=request.POST['username'])
-            if user_exists:
-                return HttpResponseRedirect('/?createuser=usernameoremailtaken&save=failure')
-            # validate email is probably an email address -- not thorough 
-            if not re.match(r'[^@]+@[^@]+\.[^@]+', request.POST['email']):
-                return HttpResponseRedirect('/?createuser=bademail&save=failure')
-            ## some other type of error
-            return HttpResponseRedirect('/error/?createuser=formfailure&save=failure')
-    return HttpResponseRedirect('/')
-
-# receiving view for logging into the website
-# redirects to index page upon success, error page if failure
-def site_login(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            password = data['password']
-            usernameoremail = data['usernameoremail']
-            found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
-            # from list of possible users, try to authenticate
-            if found_user:
-                for possible_user in found_user:
-                    user = authenticate(username=possible_user, password=password)
-                    if user is not None:
-                        django_login(request, user)
-                        return HttpResponseRedirect('/?login=success')
-            return HttpResponseRedirect('/?login=nouser')
-        else:
-            print 'invalid login form'
-            print form.errors
-            return HttpResponseRedirect('/error/?login=formfailure')
-    return HttpResponseRedirect('/')
-
-# receiving view for logging into the website
-# redirects to index page upon success, error page if failure
-def site_login_save(request):
-    if request.method == "POST":
-        form = LoginSaveForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            password = data['password']
-            usernameoremail = data['usernameoremail']
-            found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
-            # from list of possible users, try to authenticate
-            if found_user:
-                for possible_user in found_user:
-                    user = authenticate(username=possible_user, password=password)
-                    if user is not None:
-                        django_login(request, user)
-                        idToSave = data['idToSave']
-                        # Save ItemSet to the User 
-
-                        if not under_maxuploads(user):
-                            return HttpResponseRedirect('/?login=success&save=limitreached')
-
-                        itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
-                        # validate id exists
-                        if not itemToCopy:
-                            return HttpResponseRedirect('/?login=success&save=badItemSet')
-                        else:
-                            itemToCopy = itemToCopy[0]
-
-                        # Make a copy
-                        save_itemset(itemToCopy, request.user)
-                        return HttpResponseRedirect('/?login=success&save=success')
-            return HttpResponseRedirect('/?login=nouser&save=failure')
-        else:
-            print 'invalid login form'
-            print form.errors
-            return HttpResponseRedirect('/error/?login=formfailure&save=failure')
-    return HttpResponseRedirect('/')
-
 # helper method to validate the input file as a jsonfile itemset minimally
 # return None if not json, the inputfile otherwise
 def validate_json(inputfile):
@@ -346,6 +133,221 @@ def validate_jsoncontents(contents):
                     print "invalid item id"
                     return None
         return parsed
+
+def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
+    jsonToSave = validate_jsoncontents(itemset_json)
+    if not jsonToSave:
+        return {'success':False}
+    champ1_id = getChampId(champ1)
+    champ2_id = getChampId(champ2)
+    valid_lane = checkValidLane(lane)
+    if (not champ1_id and champ1 != "") or (not champ2_id and champ2 != "") or not valid_lane:
+        return {'success':False}
+    jsonToSave = byteify(jsonToSave)
+    filename = jsonToSave['title']
+    name32 = get_validname(user, filename + '.json')
+    new_itemset = ItemSet(json=jsonToSave, owner=user, name=name32, 
+                        champ_for=champ1_id, champ_against=champ2_id, lane=lane)
+    new_itemset.save()
+    return {'success':True, 'filename': name32}
+
+def about_page(request):
+    context_dict = {'logged_in': request.user.is_authenticated()}
+    return render(request, 'italiansushi/about.html', context_dict)
+
+# errorpage
+def error_page(request):
+    context_dict = {'logged_in': request.user.is_authenticated()}
+    return render(request, 'italiansushi/error.html', context_dict)
+
+# homepage
+def index(request):
+    context_dict = {'logged_in': request.user.is_authenticated()}
+    return render(request, 'italiansushi/index.html', context_dict)
+
+# receiving view for creating a new user acct
+# redirects to main page upon success, error page if failure
+def createuser(request):
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            password = data['password']
+            # repassword = data['repassword'] # TODO
+            username = data['username']
+            email = data['email']
+            ## validate username is at most 32 characters, at least 3 characters
+            if len(username) > 32 or len(username) < 3 or username=="tmp":
+                return HttpResponseRedirect('/?createuser=badusername')
+            ## validate password is at least 8 characters
+            if len(password) < 8 or len(password) > 32:
+                return HttpResponseRedirect('/?createuser=badpassword')
+
+            # if there is already a user with that acct -- matching username or email. 
+            # note: the username check is actually redundant 
+            #       because the form.is_valid will have already checked it
+            user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
+            if user_exists:
+                return HttpResponseRedirect('/?createuser=usernameoremailtaken')
+            else:
+                # Create user
+                user = User(username=username, password=password, email=email)
+                user.set_password(password)
+                user.save()
+                user = authenticate(username=username, password=password, email=email)
+                django_login(request, user)
+                return HttpResponseRedirect('/?createuser=success')
+        else: # note, this checks if username is taken, also doesn't check if email is valid already
+            print 'invalid createuser form'
+            print form.errors 
+            user_exists = User.objects.filter(username=request.POST['username'])
+            if user_exists:
+                return HttpResponseRedirect('/?createuser=usernameoremailtaken')
+            # validate email is probably an email address -- not thorough 
+            if not re.match(r'[^@]+@[^@]+\.[^@]+', request.POST['email']):
+                return HttpResponseRedirect('/?createuser=bademail')
+            ## some other type of error
+            return HttpResponseRedirect('/error/?createuser=formfailure')
+    return HttpResponseRedirect('/')
+
+# receiving view for creating a new user acct, and then saving the file
+# redirects to main page upon success, error page if failure
+def createuser_save(request):
+    if request.method == "POST":
+        form = CreateUserSaveForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            password = data['password']
+            # repassword = data['repassword'] # TODO
+            username = data['username']
+            email = data['email']
+            ## validate username is at most 32 characters, at least 3 characters
+            if len(username) > 32 or len(username) < 3 or username=="tmp":
+                return HttpResponseRedirect('/?createuser=badusername&save=failure')
+            ## validate password is at least 8 characters
+            if len(password) < 8 or len(password) > 32:
+                return HttpResponseRedirect('/?createuser=badpassword&save=failure')
+
+            # if there is already a user with that acct -- matching username or email. 
+            # note: the username check is actually redundant 
+            #       because the form.is_valid will have already checked it
+            user_exists = User.objects.filter(username=username) | User.objects.filter(email=email)
+            if user_exists:
+                return HttpResponseRedirect('/?createuser=usernameoremailtaken&save=failure')
+            else:
+                # Create user
+                user = User(username=username, password=password, email=email)
+                user.set_password(password)
+                user.save()
+                user = authenticate(username=username, password=password, email=email)
+                django_login(request, user)
+                idToSave = data['idToSave']
+                # Save ItemSet to the User 
+                if not under_maxuploads(user):
+                    return HttpResponseRedirect('/?createuser=success&save=limitreached')
+
+                if idToSave != 0:
+                    itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
+                    # validate id exists
+                    if not itemToCopy:
+                        return HttpResponseRedirect('/?createuser=success&save=badItemSet')
+                    else:
+                        itemToCopy = itemToCopy[0]
+                    # Make a copy
+                    save_itemset(itemToCopy, user)
+                    return HttpResponseRedirect('/?createuser=success&save=success')
+                else:
+                    itemset_json = request.POST['itemset_json'] 
+                    champ1 = request.POST['champ1']
+                    champ2 = request.POST['champ2']
+                    lane = request.POST['lane']
+                    result = checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user)
+                    return JsonResponse(result) 
+        else: # note, this checks if username is taken, also may check if email is valid already
+            print 'invalid createuser form'
+            print form.errors 
+            user_exists = User.objects.filter(username=request.POST['username'])
+            if user_exists:
+                return HttpResponseRedirect('/?createuser=usernameoremailtaken&save=failure')
+            # validate email is probably an email address -- not thorough 
+            if not re.match(r'[^@]+@[^@]+\.[^@]+', request.POST['email']):
+                return HttpResponseRedirect('/?createuser=bademail&save=failure')
+            ## some other type of error
+            return HttpResponseRedirect('/error/?createuser=formfailure&save=failure')
+    return HttpResponseRedirect('/')
+
+# receiving view for logging into the website
+# redirects to index page upon success, error page if failure
+def site_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            password = data['password']
+            usernameoremail = data['usernameoremail']
+            found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
+            # from list of possible users, try to authenticate
+            if found_user:
+                for possible_user in found_user:
+                    user = authenticate(username=possible_user, password=password)
+                    if user is not None:
+                        django_login(request, user)
+                        return HttpResponseRedirect('/?login=success')
+            return HttpResponseRedirect('/?login=nouser')
+        else:
+            print 'invalid login form'
+            print form.errors
+            return HttpResponseRedirect('/error/?login=formfailure')
+    return HttpResponseRedirect('/')
+
+# receiving view for logging into the website
+# redirects to index page upon success, error page if failure
+def site_login_save(request):
+    if request.method == "POST":
+        
+        form = LoginSaveForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            password = data['password']
+            usernameoremail = data['usernameoremail']
+            found_user = User.objects.filter(username=usernameoremail) | User.objects.filter(email=usernameoremail)
+            # from list of possible users, try to authenticate
+            if found_user:
+                for possible_user in found_user:
+                    user = authenticate(username=possible_user, password=password)
+                    if user is not None:
+                        django_login(request, user)
+                        idToSave = data['idToSave']
+                        # Save ItemSet to the User 
+
+                        if not under_maxuploads(user):
+                            return HttpResponseRedirect('/?login=success&save=limitreached')
+                        if idToSave != 0:
+                            itemToCopy = ItemSet.objects.filter(id=idToSave,owner=None)
+                            # validate id exists
+                            if not itemToCopy:
+                                return HttpResponseRedirect('/?login=success&save=badItemSet')
+                            else:
+                                itemToCopy = itemToCopy[0]
+
+                            # Make a copy
+                            save_itemset(itemToCopy, request.user)
+                            return HttpResponseRedirect('/?login=success&save=success')
+                        else:
+                            itemset_json = request.POST['itemset_json'] 
+                            champ1 = request.POST['champ1']
+                            champ2 = request.POST['champ2']
+                            lane = request.POST['lane']
+                            result = checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user)
+                            return JsonResponse(result)
+            return HttpResponseRedirect('/?login=nouser&save=failure')
+        else:
+            print 'invalid login form'
+            print form.errors
+            return HttpResponseRedirect('/error/?login=formfailure&save=failure')
+    return HttpResponseRedirect('/')
+
+
 
 
 # receiving view for uploading a file
@@ -564,6 +566,8 @@ def byteify(input):
     else:
         return input
 
+
+
 @login_required
 def custom_save_file(request):
     if request.method == "POST":
@@ -571,17 +575,17 @@ def custom_save_file(request):
             return JsonResponse({'max_uploads_reached':True})
 
         contents = request.POST['itemset_json']
-        jsonToSave = validate_jsoncontents(contents)
-        if not jsonToSave:
-            return JsonResponse({'success':False})
 
-        jsonToSave = byteify(jsonToSave)
-        filename = jsonToSave['title']
-        name32 = get_validname(request.user, filename + '.json')
-        new_itemset = ItemSet(json=jsonToSave, owner=request.user, name=name32)
-            #, champ_for=champ1_id, champ_against=champ2_id, lane=lane)
-        new_itemset.save()
-        return JsonResponse({'success':True, 'filename':name32})
+        # validate other fields
+        champ1 = str(request.POST['champ1'])
+        champ2 = str(request.POST['champ2'])
+        lane = str(request.POST['lane'])
+
+        champ1_id = getChampId(champ1)
+        champ2_id = getChampId(champ2)
+        valid_lane = checkValidLane(lane)
+        response = checkAndSaveCustomFile(contents, champ1, champ2, lane, request.user)
+        return JsonResponse(response)
     return HttpResponseRedirect('/')
 
 def load_item_info(request):
