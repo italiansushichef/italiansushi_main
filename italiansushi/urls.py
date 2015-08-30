@@ -19,5 +19,6 @@ urlpatterns = patterns('',
         url(r'^createuser-and-save/$', views.createuser_save, name='createuser'),
         url(r'^login-and-save/$', views.site_login_save, name='login'),
         url(r'^.*\.json$', views.view_itemset, name='view_itemset'),
-        url(r'^about/$', views.about_page, name = 'about')
+        url(r'^about/$', views.about_page, name = 'about'),
+        url(r'^faq/$', views.faq_page, name = 'faq')
         )
