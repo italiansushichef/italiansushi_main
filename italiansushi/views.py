@@ -125,6 +125,8 @@ def validate_jsoncontents(contents):
             if "items" not in block:
                 print "Missing items in block field"
                 return None
+            if "id" in block:
+                del block["id"]
             for item in block["items"]:
                 if "id" not in item: # also validate item id
                     print "no item id read"

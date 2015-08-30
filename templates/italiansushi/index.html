@@ -776,7 +776,7 @@
                                         + '<input type="number" name="idToSave" value="'+ matchup_fileid +'" hidden = true/>'
                                         + '<button type="submit" class="btn btn-primary btn-save-item"'
                                         + 'id="login-save:' + matchup_fileid +'">'
-                                        + '<span class="fa fa-bookmark"></span></button></form></td>';
+                                        + '<span class="fa fa-floppy-o"></span></button></form></td>';
 
                     matchuppanel_html += '<td class="text-center"><a href="/tmp/' + matchup_filename + '.json"' 
                                         + ' type="submit" class="btn btn-success"' 
@@ -884,6 +884,8 @@
             // get item_info from the server (list of items and all their information)
             // create itemset_json which keeps track of the itemset being built, following Riot Item Set Docs
             var item_info;
+            var isSaved = false;
+            var link_filename;
             var itemset_json = {'title':'Custom Itahm Set Page', 
                                 'type':'global',
                                 'map':'any',
@@ -915,9 +917,9 @@
 
                                     + '<div class="text-center col-xs-1">'
                                     + '<button class="btn btn-primary btn-save-custom" id="btn-save-custom">'
-                                    + '<span class="fa fa-bookmark"></span></button></div>'
+                                    + '<span class="fa fa-floppy-o"></span></button></div>'
 
-                                    + '<div class="text-center col-xs-1"><a href="#"' 
+                                    + '<div class="text-center col-xs-1"><a' 
                                     + ' type="submit" class="btn btn-success" id="btn-dl-custom" target="_blank" disabled="disabled">'
                                     + '<span class="fa fa-download"></span></a></div>'
 
@@ -960,6 +962,7 @@
                             + '</div>',
                     onEscape: function() {},
                 });
+
                 toggleOptions('#toggleCustomAdvancedOptions', '#customAdvancedOptions');
                 autocompleteForId("#custom_champ1");
                 autocompleteForId("#custom_champ2");
@@ -992,6 +995,9 @@
                             {
                                 var mssg = json["filename"] + " added to your items successfully!";
                                 updateSuccessSpan(mssg);
+                                isSaved = true;
+                                link_filename = json["filename"];
+                                $('#btn-dl-custom').attr("disabled", false);
                             }
                             else if (json["max_uploads_reached"])
                             {
@@ -1005,6 +1011,7 @@
                                 updateDangerSpan(mssg);
                             }
                             $(".btn-save-custom").attr("disabled","disabled");
+
                         },
                         error : function(xhr, errmsg, err){
                             console.log(xhr.status + ": " + xhr.responseText);
@@ -1057,8 +1064,10 @@
                                 + '</div>',
                         onEscape: function() {},
                     });
+
                     $('#custom-submit-login-form').click(function(e){
                         e.preventDefault();
+                        e.stopImmediatePropagation();
                         $.ajax({
                             url: "/login-and-save/",
                             type: "POST",
@@ -1084,8 +1093,10 @@
                             },
                         });
                     });
+
                     $('#custom-submit-createuser-form').click(function(e){
                         e.preventDefault();
+                        e.stopImmediatePropagation();
                         $.ajax({
                             url: "/createuser-and-save/",
                             type: "POST",
@@ -1108,6 +1119,17 @@
                             },
                         });
                     }); 
+                    {% endif %}
+                });
+
+                $('#btn-dl-custom').click(function(e){
+                    {% if logged_in %}
+                    if (isSaved)
+                        $('#btn-dl-custom').attr('href', '/{{user.username}}/' + link_filename + '.json');
+                    else
+                        bootbox.alert("You must save the item set before you can download it.");
+                    {% else %}
+                        bootbox.alert("You must save the item set before you can download it.");
                     {% endif %}
                 });
 
