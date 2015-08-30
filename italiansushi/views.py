@@ -11,6 +11,7 @@ import re
 import json as jsonlib
 import json
 
+################################### Helper functions #############################
 # helper func, returns champid if champname works, 0 if champname is empty, None otherwise
 def getChampId(champname):
     BLANK_ID = 0
@@ -22,16 +23,30 @@ def getChampId(champname):
             return champ["id"]
     return None
 
+# Helper function to check if lane is valid 
 def checkValidLane(lane):
     valid_lanes = ['', 'M', 'T', 'J', 'B']
     return lane in valid_lanes
 
+# Helper function to check if user can save new itemsets
 def under_maxuploads(user):
     MAX_UPLOADS = 10
     savedcount = len(ItemSet.objects.filter(owner=user))
     return savedcount < MAX_UPLOADS
 
+# Helper function to convert from unicode
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key):byteify(value) for key,value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+
 # assumes a .json extension!
+# Helper function to generate a valid name for filename to save, by checking user's itemsets
 def get_validname(user,filename):
     # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
     name28 = filename[:-5][0:28] 
@@ -52,6 +67,7 @@ def get_validname(user,filename):
                 foundname = True
     return name32
 
+# helper function to make of copy of itemToCopy and saves it to user
 def save_itemset(itemToCopy, user):
     # Make a copy and save it to user
     filenameToSave = itemToCopy.name
@@ -62,26 +78,8 @@ def save_itemset(itemToCopy, user):
     itemToCopy.user_upvotes = None
     itemToCopy.save()
 
-# helper method to validate the input file as a jsonfile itemset minimally
-# return None if not json, the inputfile otherwise
-def validate_json(inputfile):
-    name = inputfile.name
-    content_type = inputfile.content_type
-    size = inputfile.size
 
-    # this check isn't working on windows. TODO find out why
-    # if inputfile.content_type != "application/json": return None
-
-    # -5: gives the .json extension assuming it is there
-    if len(name) < 5 or name[-5:] != '.json':
-        print "Not a json extension"
-        return None
-    if size > 6000: 
-        print "Input file size is too big"
-        return None
-    contents = inputfile.read()
-    return validate_jsoncontents(contents)
-
+# helper function: takes in contents (a stringified json) and validates its format
 def validate_jsoncontents(contents):
     # https://developer.riotgames.com/docs/item-sets
     valid_details = {
@@ -136,6 +134,28 @@ def validate_jsoncontents(contents):
                     return None
         return parsed
 
+# helper method to validate the input file as a jsonfile itemset
+# return None if not json, the inputfile otherwise
+def validate_json(inputfile):
+    name = inputfile.name
+    content_type = inputfile.content_type
+    size = inputfile.size
+
+    # this check isn't working on windows. TODO find out why
+    # if inputfile.content_type != "application/json": return None
+
+    # -5: gives the .json extension assuming it is there
+    if len(name) < 5 or name[-5:] != '.json':
+        print "Not a json extension"
+        return None
+    if size > 6000: 
+        print "Input file size is too big"
+        return None
+    contents = inputfile.read()
+    return validate_jsoncontents(contents)
+
+# helper function: validates contents of itemset_json, then gets champ1 and champ2 id
+# checks lane, and saves the itemset to user then if all checks passed
 def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
     jsonToSave = validate_jsoncontents(itemset_json)
     if not jsonToSave:
@@ -153,6 +173,10 @@ def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
     new_itemset.save()
     return {'success':True, 'filename': name32}
 
+################################### End Helper functions #############################
+
+
+################################### Views ##########################################
 def faq_page(request):
     context_dict = {'logged_in': request.user.is_authenticated()}
     return render(request, 'italiansushi/faq.html', context_dict)
@@ -560,17 +584,6 @@ def matchup_save_file(request):
             print form.errors
             return JsonResponse({'success':False})
     return HttpResponseRedirect('/')
-
-# convert from unicode
-def byteify(input):
-    if isinstance(input, dict):
-        return {byteify(key):byteify(value) for key,value in input.iteritems()}
-    elif isinstance(input, list):
-        return [byteify(element) for element in input]
-    elif isinstance(input, unicode):
-        return input.encode('utf-8')
-    else:
-        return input
 
 @login_required
 def custom_save_file(request):

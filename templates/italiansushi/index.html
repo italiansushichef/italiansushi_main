@@ -1194,8 +1194,10 @@
                             }
                         }
                         // Delete the empty blocks made by the click function
-                        for (var b = start_block_count; b < itemset_json['blocks'].length; b++)
+                        var final_length = itemset_json['blocks'].length;
+                        for (var b = final_length - 1; b >= start_block_count; b--) {
                             itemset_json['blocks'].splice(b, 1);
+                        }
 
                     });
                 });
