@@ -554,12 +554,14 @@
                 }
                 else
                 {
-                    dynamictable = '<table class="table"><col width="70%"><col width="10%"><col width="10%"><col width="10%">';
+                    dynamictable = '<table class="table"><col width="60%"><col width="10%"><col width="10%">'
+                                    + '<col width="10%"><col width="10%">';
                     // Head
                     dynamictable += '<thead>';
                     dynamictable += '<tr><th>ItemSet</th>';
                     dynamictable += '<th class="text-center">Preview</th>';
                     dynamictable += '<th class="text-center">Download</th>';
+                    dynamictable += '<th class="text-center">Edit</th>';
                     dynamictable += '<th class="text-center">Delete</th></tr>';
                     dynamictable += '</thead>';
                     // Body
@@ -569,23 +571,31 @@
                         dynamictable += '<tr id="row_' + items[i] + '">';
                         dynamictable += '<td>' + items[i] + '</td>';
                         dynamictable += '<td class="text-center">'
-                                        + '<button type="submit" class="btn btn-primary btn-preview-item"'
+                                        + '<button type="submit" class="btn btn-primary btn-preview-item btn-sm"'
                                         + 'id="{{user.username}}_preview:' + items[i] +'_'+i+'">'
                                         + '<span class="fa fa-search"></span></button></form></td>';
 
                         dynamictable += '<td class="text-center"><a href="/{{user.username}}/' + items[i] + '.json"' 
-                                        + ' type="submit" class="btn btn-success"' 
+                                        + ' type="submit" class="btn btn-success btn-sm"' 
                                         + 'id="{{user.username}}_dl_' + items[i] +'" target="_blank">'
                                         + '<span class="fa fa-download"></span></a></td>';
+
+                        dynamictable += '<td class="text-center">'
+                                        + '<button class="btn btn-warning btn-edit-itemset btn-sm"'
+                                        + 'id="{{user.username}}_edit:' + items[i] +'_'+i+'">'
+                                        + '<span class="fa fa-edit"></span></button></form></td>';
 
                         dynamictable += '<td class="text-center">'
                                         + '<form method="POST" id="{{user.username}}_delete_'+items[i]+'_form">' 
                                         + "{% csrf_token %}"
                                         + '<input type="text" name="name" value="'+items[i]+'" hidden = true/>'
                                         + '<input type="text" name="user" value="{{user.username}}" hidden = true/>'
-                                        + '<button type="submit" class="btn btn-danger btn-delete-item"'
+                                        + '<button type="submit" class="btn btn-danger btn-delete-item btn-sm"'
                                         + 'id="{{user.username}}_delete_' + items[i]+'">'
                                         + '<span class="fa fa-trash-o"></span></button></form></td>';
+
+                        
+
                         dynamictable += '</tr>';
                         dynamictable += '<tr id="item_row:' + i + '"></tr>';
                     }
@@ -923,7 +933,7 @@
 
                                     + '<div class="row">'
 
-                                    + '<div class="col-xs-9 text-center form-title">'
+                                    + '<div class="col-xs-8 col-sm-10 text-center form-title">'
                                         + '<strong><span id="custom-title-span">Custom iTahm Set Page</span></strong>'
                                     + '<span id="custom-title-edit-span" style="display:none;font-size:14px;">'
                                         + '<i><input type="text" id="custom-title-edit-input" class="edit-input"></input></i>' 
@@ -934,15 +944,15 @@
                                     + '</button>'
                                     + '</div>'
 
-                                    + '<div class="text-center col-xs-1">'
-                                    + '<button class="btn btn-primary btn-save-custom" id="btn-save-custom">'
-                                    + '<span class="fa fa-floppy-o"></span></button></div>'
+                                    + '<div class="text-center col-xs-4 col-sm-2">'
+                                    + '<button class="btn btn-primary btn-save-custom btn-margin-right" id="btn-save-custom">'
+                                    + '<span class="fa fa-floppy-o"></span></button>'
 
-                                    + '<div class="text-center col-xs-1"><a' 
-                                    + ' type="submit" class="btn btn-success" id="btn-dl-custom" target="_blank" disabled="disabled">'
+                                    + '<a type="submit" class="btn btn-success btn-margin-right"'
+                                            +' id="btn-dl-custom" target="_blank" disabled="disabled">'
                                     + '<span class="fa fa-download"></span></a></div>'
 
-                                    + '<div class="col-xs-12" style="padding-right:7%; margin-top:5px; margin-bottom:3px; font-size:12px;">'
+                                    + '<div class="col-xs-12" style="padding-right:10px; margin-top:5px; margin-bottom:3px; font-size:12px;">'
                                         + '<a href="#" id="toggleCustomAdvancedOptions" class="pull-right">Advanced Options</a>'
                                     + '</div>'
                                     + '<div id="customAdvancedOptions" class="col-xs-12" style="display: none;">'

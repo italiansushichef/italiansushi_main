@@ -317,4 +317,14 @@ div.bootbox.modal.fade.in + div {
   padding-left: 10%;
 }
 
+@media (min-width: 768px) {
+  .bootbox > .modal-dialog {
+    width: 768px;
+    margin: 30px auto;
+  }
+}
+
+.btn-margin-right {
+  margin-right: 5%;
+}
 
