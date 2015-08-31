@@ -1,11 +1,6 @@
 iTahmSets 
 ==============
 
-
-Live URL
-----
-http://itahmsets.herokuapp.com/
-
 About
 ----
 iTahmSets isn't endorsed by Riot Games and neither reflects the views or opinions of Riot Games nor anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
@@ -14,6 +9,10 @@ iTahmSets was originally created for the Riot API Challenge 2.0 in August 2015, 
 It provides 5 distinct item set features for users. See the website tutorials in the tabs for how to use. 
 
 Made by: Kevin Wang (NA: donutgodking) and Alex Zhang (NA: ACannibal)
+
+Live URL
+----
+http://itahmsets.herokuapp.com/
 
 Features
 ----
@@ -31,7 +30,7 @@ Browse and vote on the most popular item sets that other users have uploaded or 
 
 Data Set for Matchup Generator
 ----
-Using the Riot Developmental API, we collected ~11,000 ranked players from the Plat-Diamond range and ~50,000 of their unique ranked SR matches. Due to GitHub repo limits, we currently only use a smaller set of ~5000 matches to generate lane matchups. In the future this will be increased, which should also provide better matchup results. 
+Using the Riot Developmental API, we collected ~11,000 ranked players from the Plat-Diamond range and ~50,000 of their unique ranked SR matches. Due to GitHub repo limits, we currently only use a smaller set of ~5000 matches to generate lane matchups. In the future (after competition) this will be increased, which should also provide better matchup results. 
 
 Development Stack
 ----
@@ -39,4 +38,4 @@ Development Stack
 * Python scripts for Riot API Calls
 * Javascript/JQuery
 * Bootstrap, Font-awesome.css, Bootbox.js
-* Photoshop for Background Images and Icons
+* Photoshop for Website Images
