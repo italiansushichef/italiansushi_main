@@ -421,9 +421,9 @@ def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
 
 
 ################################### Views ##########################################
-# def faq_page(request):
-#     context_dict = {'logged_in': request.user.is_authenticated()}
-#     return render(request, 'italiansushi/faq.html', context_dict)
+def faq_page(request):
+    context_dict = {'logged_in': request.user.is_authenticated()}
+    return render(request, 'italiansushi/faq.html', context_dict)
 
 def about_page(request):
     with open('static/json-data/updatetime.json', 'r') as readfile:
