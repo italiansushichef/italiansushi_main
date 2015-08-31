@@ -568,7 +568,7 @@
                         resultspanel_html += '<tr id="row_' + filename + '">';
                         resultspanel_html += '<td>' + filename + '</td>';
                         resultspanel_html += '<td class="text-center">'
-                                        + '<button type="submit" class="btn btn-primary btn-preview-item btn-sm"'
+                                        + '<button type="submit" class="btn btn-info btn-preview-item btn-sm"'
                                         + 'id="{{user.username}}_preview:' + filename +'_'+i+'">'
                                         + '<span class="fa fa-search"></span></button></form></td>';
 
@@ -580,7 +580,7 @@
                         resultspanel_html += '<td class="text-center">';
 
                         {% if not logged_in %}
-                        resultspanel_html +=  '<button class="btn btn-warning btn-cannot-save-item"'
+                        resultspanel_html +=  '<button class="btn btn-primary btn-cannot-save-item btn-sm"'
                                                 + 'id="btn_cannot_save:'+ i + '" disabled="disabled">'
                                                 + '<span class="fa fa-floppy-o"></span></button></td>';
                         resultspanel_html += '<td class="text-center">'
@@ -592,14 +592,14 @@
                                                 + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
                                                 + '<input type="text" id="upordown_'+ i +'" name="upordown" value="up" hidden = true/>'
                                                 + '</form>'
-                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + '<button type="submit" class="btn btn-warning btn-upvote-itemset btn-sm"'
                                                 + 'id="upvote_' + i + '_' + filename +'" disabled="disabled">'
                                                 + '<span id="upvote-count1_' + i+ '"class="fa fa-star-o upvote-count">' 
                                                     + upvotes + '</span></button>'
                                                 + '</span>'
 
                                                 + '<span id="td-downvote_' + i + '" style="display: none;">'
-                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + '<button type="submit" class="btn btn-warning btn-upvote-itemset btn-sm"'
                                                 + 'id="downvote_' + i + '_' + filename +'">'
                                                 + '<span id="upvote-count2_' + i+ '" class="fa fa-star">' 
                                                     + upvotes + '</span></button>'
@@ -611,12 +611,12 @@
                                                 + "{% csrf_token %}"
                                                 + '<input type="number" name="idToSave" value="'+ fileid +'" hidden = true/>'
                                                 + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
-                                                + '<button class="btn btn-warning btn-save-item"'
+                                                + '<button class="btn btn-primary btn-save-item btn-sm"'
                                                 + 'id="btn_save:'+ i + '">'
                                                 + '<span class="fa fa-floppy-o"></span></button></form></td>';
                         }
                         else {
-                            resultspanel_html +=  '<button class="btn btn-warning btn-cannot-save-item"'
+                            resultspanel_html +=  '<button class="btn btn-primary btn-cannot-save-item btn-sm"'
                                                 + 'id="btn_cannot_save:'+ i + '" disabled="disabled">'
                                                 + '<span class="fa fa-floppy-o"></span></button></td>';
                         }
@@ -632,14 +632,14 @@
                                                 + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
                                                 + '<input type="text" id="upordown_'+ i +'" name="upordown" value="up" hidden = true/>'
                                                 + '</form>'
-                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + '<button type="submit" class="btn btn-warning btn-upvote-itemset btn-sm"'
                                                 + 'id="upvote_' + i + '_' + filename +'">'
                                                 + '<span id="upvote-count1_' + i+ '"class="fa fa-star-o upvote-count">' 
                                                     + upvotes + '</span></button>'
                                                 + '</span>'
 
                                                 + '<span id="td-downvote_' + i + '" style="display: none;">'
-                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + '<button type="submit" class="btn btn-warning btn-upvote-itemset btn-sm"'
                                                 + 'id="downvote_' + i + '_' + filename +'">'
                                                 + '<span id="upvote-count2_' + i+ '" class="fa fa-star">' 
                                                     + upvotes + '</span></button>'
@@ -655,14 +655,14 @@
                                                 + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
                                                 + '<input type="text" id="upordown_'+ i +'" name="upordown" value="down" hidden = true/>'
                                                 + '</form>'
-                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + '<button type="submit" class="btn btn-warning btn-upvote-itemset btn-sm"'
                                                 + 'id="upvote_' + i + '_' + filename +'">'
                                                 + '<span id="upvote-count1_' + i+ '"class="fa fa-star-o upvote-count">' 
                                                     + upvotes + '</span></button>'
                                                 + '</span>'
 
                                                 + '<span id="td-downvote_' + i + '" >'
-                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + '<button type="submit" class="btn btn-warning btn-upvote-itemset btn-sm"'
                                                 + 'id="downvote_' + i + '_' + filename +'">'
                                                 + '<span id="upvote-count2_' + i+ '" class="fa fa-star">' 
                                                     + upvotes + '</span></button>'
@@ -1015,7 +1015,7 @@
                         dynamictable += '<tr id="row_' + items[i] + '">';
                         dynamictable += '<td>' + items[i] + '</td>';
                         dynamictable += '<td class="text-center">'
-                                        + '<button type="submit" class="btn btn-primary btn-preview-item btn-sm"'
+                                        + '<button type="submit" class="btn btn-info btn-preview-item btn-sm"'
                                         + 'id="{{user.username}}_preview:' + items[i] +'_'+i+'">'
                                         + '<span class="fa fa-search"></span></button></form></td>';
 

@@ -368,3 +368,10 @@ div.bootbox.modal.fade.in + div {
 .tutorial-img {
     border:5px solid #55518a;
 }
+
+.btn-purple {
+    color: #fff;
+    background-color: #5A55A3;
+    border-color: #5A55A3;
+}
+
