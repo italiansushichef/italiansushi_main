@@ -14,6 +14,8 @@ Live URL
 ----
 http://itahmsets.herokuapp.com/
 
+(We are currently hosting using a free Hobby-dev account.)
+
 Features
 ----
 * Uploading Item Sets: Store your item set JSON files on our website. Our website will check the file format to make sure it is in the appropriate format. You can download them on any computer.
@@ -36,6 +38,8 @@ Development Stack
 ----
 * Django
 * Python scripts for Riot API Calls
-* Javascript/JQuery
-* Bootstrap, Font-awesome.css, Bootbox.js
+* Bootstrap, JQuery, Font-awesome.css, Bootbox.js
+* Postgresql (hosted on Heroku) for database 
 * Photoshop for Website Images
+
+(See requirements.txt for full list of Python libraries used)
