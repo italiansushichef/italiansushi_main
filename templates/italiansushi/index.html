@@ -752,7 +752,7 @@
                                 }
                             }
                             else {
-                                var mssg = "Sorry, something went wrong with the star. Refresh and try again."
+                                var mssg = "Sorry, something went wrong. Refresh and try again."
                                 updateDangerSpan(mssg);
                             }
                         },
@@ -1062,10 +1062,8 @@
                                     parentrow.remove();
                                     nextrow.remove();
                                     $.post('/delete-itemset/', $(delete_form).serialize(), function(response){
-                                        if (response == "success")
-                                            updateSuccessSpan('Item Set Deleted!')
-                                        else
-                                            updateDangerSpan('Sorry, something went wrong. Refresh and try again.')
+                                        if (response != "success")
+                                            updateDangerSpan('Sorry, something went wrong. Refresh and try again.');
                                     });
                                     items.splice(i, 1);
                                     item_jsonfiles.splice(i, 1);
