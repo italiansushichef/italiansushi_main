@@ -305,7 +305,7 @@ div.bootbox.modal.fade.in + div {
 .delete-item-overlay{
   position: absolute;
   top: -2px;
-  left: -2px
+  left: -2px;
 }
 
 .item-quantity-overlay{
@@ -342,6 +342,21 @@ div.bootbox.modal.fade.in + div {
   margin-right: 5%;
 }
 
+
 .tutorial-container {
     padding: 3% 7%;
+}
+
+.descriptionHover {
+  display: none; 
+  font-size: 10px;
+  z-index: 100000;
+  position:absolute;
+  background-color: #5A55A3;
+  width:250px;
+  margin-top:30px;
+  margin-left:62px;
+  border-radius:6px;
+  border-clip:padding-box;
+  padding: 5px;
 }

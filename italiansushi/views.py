@@ -11,6 +11,7 @@ import re
 import json as jsonlib
 import json
 
+################################### Helper functions #############################
 # helper func, returns champid if champname works, 0 if champname is empty, None otherwise
 def getChampId(champname):
     BLANK_ID = 0
@@ -22,16 +23,30 @@ def getChampId(champname):
             return champ["id"]
     return None
 
+# Helper function to check if lane is valid 
 def checkValidLane(lane):
     valid_lanes = ['', 'M', 'T', 'J', 'B']
     return lane in valid_lanes
 
+# Helper function to check if user can save new itemsets
 def under_maxuploads(user):
     MAX_UPLOADS = 10
     savedcount = len(ItemSet.objects.filter(owner=user))
     return savedcount < MAX_UPLOADS
 
+# Helper function to convert from unicode
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key):byteify(value) for key,value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
+
 # assumes a .json extension!
+# Helper function to generate a valid name for filename to save, by checking user's itemsets
 def get_validname(user,filename):
     # the -5 removes the .json extension. the 0:28 takes up to 28 chars of remaining for the name
     name28 = filename[:-5][0:28] 
@@ -52,6 +67,7 @@ def get_validname(user,filename):
                 foundname = True
     return name32
 
+# helper function to make of copy of itemToCopy and saves it to user
 def save_itemset(itemToCopy, user):
     # Make a copy and save it to user
     filenameToSave = itemToCopy.name
@@ -59,29 +75,12 @@ def save_itemset(itemToCopy, user):
     itemToCopy.pk = None
     itemToCopy.owner = user
     itemToCopy.name = filenameToSave
-    itemToCopy.user_upvotes = None
+    if itemToCopy.users_upvotes_count:
+        itemToCopy.users_upvotes_count = 0
     itemToCopy.save()
+    return filenameToSave
 
-# helper method to validate the input file as a jsonfile itemset minimally
-# return None if not json, the inputfile otherwise
-def validate_json(inputfile):
-    name = inputfile.name
-    content_type = inputfile.content_type
-    size = inputfile.size
-
-    # this check isn't working on windows. TODO find out why
-    # if inputfile.content_type != "application/json": return None
-
-    # -5: gives the .json extension assuming it is there
-    if len(name) < 5 or name[-5:] != '.json':
-        print "Not a json extension"
-        return None
-    if size > 6000: 
-        print "Input file size is too big"
-        return None
-    contents = inputfile.read()
-    return validate_jsoncontents(contents)
-
+# helper function: takes in contents (a stringified json) and validates its format
 def validate_jsoncontents(contents):
     # https://developer.riotgames.com/docs/item-sets
     valid_details = {
@@ -136,6 +135,28 @@ def validate_jsoncontents(contents):
                     return None
         return parsed
 
+# helper method to validate the input file as a jsonfile itemset
+# return None if not json, the inputfile otherwise
+def validate_json(inputfile):
+    name = inputfile.name
+    content_type = inputfile.content_type
+    size = inputfile.size
+
+    # this check isn't working on windows. TODO find out why
+    # if inputfile.content_type != "application/json": return None
+
+    # -5: gives the .json extension assuming it is there
+    if len(name) < 5 or name[-5:] != '.json':
+        print "Not a json extension"
+        return None
+    if size > 6000: 
+        print "Input file size is too big"
+        return None
+    contents = inputfile.read()
+    return validate_jsoncontents(contents)
+
+# helper function: validates contents of itemset_json, then gets champ1 and champ2 id
+# checks lane, and saves the itemset to user then if all checks passed
 def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
     jsonToSave = validate_jsoncontents(itemset_json)
     if not jsonToSave:
@@ -153,6 +174,10 @@ def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
     new_itemset.save()
     return {'success':True, 'filename': name32}
 
+################################### End Helper functions #############################
+
+
+################################### Views ##########################################
 def faq_page(request):
     context_dict = {'logged_in': request.user.is_authenticated()}
     return render(request, 'italiansushi/faq.html', context_dict)
@@ -400,10 +425,13 @@ def view_itemset(request):
     url = request.path
     user = url.split('/')[1]
     filename = url.split('/')[-1][:-5]
-    if request.user.is_authenticated() and request.user.username == user:
-        itemset = ItemSet.objects.filter(owner=request.user, name=filename)
-    elif user == 'tmp':
+    itemset = None
+    if user == 'tmp':
         itemset = ItemSet.objects.filter(owner=None, name=filename)
+    else:
+        userobject = User.objects.filter(username=user)
+        if userobject:
+            itemset = ItemSet.objects.filter(owner=userobject[0], name=filename)
     if itemset:
         json = itemset[0].json
         output = jsonlib.dumps(json, indent=4)
@@ -439,12 +467,6 @@ def get_items(request):
     for i in range(0, len(item_ls)):
         response_data[i] = {}
         response_data[i]["filename"] = str(item_ls[i].name)
-        #response_data[i]["item_ids"] = preview_items(item_ls[i], 15)
-        # preview_ls = preview_items(item_ls[i], 15) # for debugging only
-        # if not preview_ls:
-        #     item_ls[i].delete()
-        # else:
-        #     response_data[i]["item_ids"] = preview_ls
         response_data[i]["jsonfile"] = item_ls[i].json
     return JsonResponse(response_data)
 
@@ -460,7 +482,7 @@ def delete_itemset(request):
             itemToDelete = ItemSet.objects.filter(owner=request.user, name=name)
             if request.user.username == user and itemToDelete:
                 itemToDelete[0].delete()
-                return HttpResponse("deleted " + name + " successfully")
+                return HttpResponse("success")
         else:
             print "invalid delete itemset form"
             print form.errors
@@ -554,23 +576,67 @@ def matchup_save_file(request):
                 itemToCopy = itemToCopy[0]
 
             # Make a copy
-            save_itemset(itemToCopy, request.user)
-            return JsonResponse({'success':True})
+            title = save_itemset(itemToCopy, request.user)
+            return JsonResponse({'success':True, 'savetitle': title})
         else:
             print form.errors
             return JsonResponse({'success':False})
     return HttpResponseRedirect('/')
 
-# convert from unicode
-def byteify(input):
-    if isinstance(input, dict):
-        return {byteify(key):byteify(value) for key,value in input.iteritems()}
-    elif isinstance(input, list):
-        return [byteify(element) for element in input]
-    elif isinstance(input, unicode):
-        return input.encode('utf-8')
-    else:
-        return input
+@login_required
+def search_save_file(request):
+    if request.method == "POST":
+        idToSave = request.POST['idToSave']
+        owner_username = request.POST['owner']
+        # Save ItemSet to the User 
+        if not under_maxuploads(request.user):
+            return JsonResponse({'max_uploads_reached':True})
+        if owner_username == 'tmp':
+            owner = None
+        else:
+            owner = User.objects.filter(username=owner_username)
+        itemToCopy = ItemSet.objects.filter(id=idToSave,owner=owner)
+        # validate id exists
+        if not itemToCopy:
+            return JsonResponse({'success':False})
+        else:
+            itemToCopy = itemToCopy[0]
+
+        # Make a copy
+        title = save_itemset(itemToCopy, request.user)
+        return JsonResponse({'success':True, 'savetitle': title})
+    return HttpResponseRedirect('/')
+
+@login_required
+def search_upvote_file(request):
+    if request.method == "POST":
+        idToSave = request.POST['idToSave']
+        owner_username = request.POST['owner']
+        upordown = request.POST['upordown']
+        if owner_username == 'tmp':
+            owner = None
+        else:
+            owner = User.objects.filter(username=owner_username)
+        itemToUpvote = ItemSet.objects.filter(id=idToSave,owner=owner)
+        # validate id exists
+        if not itemToUpvote:
+            return JsonResponse({'success':False})
+        else:
+            itemToUpvote = itemToUpvote[0]
+        if upordown == "up":
+            itemToUpvote.users_upvotes.add(request.user)
+            itemToUpvote.users_upvotes_count = itemToUpvote.users_upvotes.count()
+            itemToUpvote.save()
+            return JsonResponse({'success':True, 'upvotes': itemToUpvote.users_upvotes_count, 'upvotesuccess': True})
+        elif upordown == "down":
+            itemToUpvote.users_upvotes.remove(request.user)
+            itemToUpvote.users_upvotes_count = itemToUpvote.users_upvotes.count()
+            itemToUpvote.save()
+            return JsonResponse({'success':True, 'upvotes': itemToUpvote.users_upvotes_count, 'downvotesuccess': True})
+        else:
+            return JsonResponse({'success':False})
+        
+    return HttpResponseRedirect('/')
 
 @login_required
 def custom_save_file(request):
@@ -599,6 +665,62 @@ def load_item_info(request):
             data = jsonlib.load(itemfile)
         if data:
             return JsonResponse(data)
+    return JsonResponse({})
+
+@login_required
+def search_itemsets(request):
+    response = {}
+    if request.method == "GET":
+        champ1 = str(request.GET['champ1'])
+        champ2 = str(request.GET['champ2'])
+        lane = str(request.GET['lane'])
+        searchpage = int(request.GET['searchpage'])
+        response['champ1_id'] = getChampId(champ1)
+        response['champ2_id'] = getChampId(champ2)
+        response['valid_lane'] = checkValidLane(lane)
+        response['lane'] = lane
+        if (not response['champ1_id'] and champ1 != "") or (not response['champ2_id'] and champ2 != "") or not response['valid_lane']:
+            response['results'] = []
+            return JsonResponse(response)
+        else:
+            possible_matches = ItemSet.objects.all()
+            # filter as appropriate
+            if (response['champ1_id'] != 0): # not 0 (any)
+                possible_matches = possible_matches.filter(champ_for=response['champ1_id'])
+            if (response['champ2_id'] != 0): # not 0 (any)
+                possible_matches = possible_matches.filter(champ_against=response['champ2_id'])
+            if (response['lane'] != ''):      # not blank (any)
+                possible_matches = possible_matches.filter(lane=response['lane'])
+            possible_matches = possible_matches.order_by('-users_upvotes_count')
+            
+            startindex = searchpage * 10
+            endindex = (searchpage + 1) * 10
+            return_ls = possible_matches[startindex:endindex]
+            if len(return_ls) == 0: 
+                response["nextpage"] = -1
+            else:
+                response["nextpage"] = searchpage + 1
+            response["count"] = len(return_ls)
+            response["results"] = []
+            for i in range(0, len(return_ls)):
+                can_upvote = True
+                # check if already upvoted
+                if return_ls[i].users_upvotes.filter(id=request.user.id):
+                    can_upvote = False
+                if return_ls[i].owner:
+                    owner = return_ls[i].owner.username
+                else:
+                    owner = 'tmp'
+                can_save = True
+                if return_ls[i].owner and return_ls[i].owner == request.user:
+                    can_save = False
+                result = {
+                    'json': return_ls[i].json, 'upvotes': return_ls[i].users_upvotes_count, 
+                    'filename': return_ls[i].name, 'can_upvote': can_upvote, 'id': return_ls[i].id,
+                    'owner': owner, 'can_save': can_save
+                }
+                response["results"].append(result)
+            return JsonResponse(response)
     return JsonResponse({})
 
 # logout view
