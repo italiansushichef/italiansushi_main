@@ -79,26 +79,26 @@ WSGI_APPLICATION = 'italiansushi_project.wsgi.application'
 
 
 ### HEROKU DB SETTINGS: Comment this out when running on local, but uncomment when using these settings to run on heroku
-import dj_database_url
-DATABASES = {}
-DATABASES['default'] =  dj_database_url.config(default='postgres://hblubpszykpvii:31pFU1_b5GnuP3FW9TB5qXhs5R@ec2-54-235-134-128.compute-1.amazonaws.com:5432/d7bt0vs8i5fjkl')
-DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+# import dj_database_url
+# DATABASES = {}
+# DATABASES['default'] =  dj_database_url.config(default='postgres://hblubpszykpvii:31pFU1_b5GnuP3FW9TB5qXhs5R@ec2-54-235-134-128.compute-1.amazonaws.com:5432/d7bt0vs8i5fjkl')
+# DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 ### end of Heroku server db settings
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 ### LOCAL DB SETTINGS: Uncomment for local 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'italiansushi_db',
-#         'USER': 'italiansushi_user',
-#         'PASSWORD' : 'password',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'italiansushi_db',
+        'USER': 'italiansushi_user',
+        'PASSWORD' : 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 ### end of LOCAL DB SETTINGS
 
 # Internationalization
