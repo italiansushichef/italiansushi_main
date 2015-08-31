@@ -364,3 +364,7 @@ div.bootbox.modal.fade.in + div {
   border-clip:padding-box;
   padding: 5px;
 }
+
+.tutorial-img {
+    border:5px solid #55518a;
+}
