@@ -421,12 +421,21 @@ def checkAndSaveCustomFile(itemset_json, champ1, champ2, lane, user):
 
 
 ################################### Views ##########################################
-def faq_page(request):
-    context_dict = {'logged_in': request.user.is_authenticated()}
-    return render(request, 'italiansushi/faq.html', context_dict)
+# def faq_page(request):
+#     context_dict = {'logged_in': request.user.is_authenticated()}
+#     return render(request, 'italiansushi/faq.html', context_dict)
 
 def about_page(request):
-    context_dict = {'logged_in': request.user.is_authenticated()}
+    with open('static/json-data/updatetime.json', 'r') as readfile:
+        data = jsonlib.load(readfile)
+
+    context_dict = {
+        'logged_in': request.user.is_authenticated(),
+        'summoner_data_update': data["Updates"]["Update Summoner Data"],
+        'item_data_update': data["Updates"]["Update Item Data"],
+        'match_data_update': data["Updates"]["Update Match Data"],
+        'champ_data_update': data["Updates"]["Update Champ Data"],
+    }
     return render(request, 'italiansushi/about.html', context_dict)
 
 # errorpage
@@ -929,7 +938,7 @@ def search_itemsets(request):
             response['results'] = []
             return JsonResponse(response)
         else:
-            possible_matches = ItemSet.objects.all()
+            possible_matches = ItemSet.objects.all().exclude(owner=None)
             # filter as appropriate
             if (response['champ1_id'] != 0): # not 0 (any)
                 possible_matches = possible_matches.filter(champ_for=response['champ1_id'])

@@ -60,24 +60,6 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                 	<li><a href="">About</a></li>
-                    <!-- <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="dropdown-header">Nav header</li>
-                            <li><a href="#">Separated link</a></li>
-                            <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li> -->
-                </ul>
-                <ul class="nav navbar-nav">
-                    <li><a href="/faq">FAQ</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if logged_in %}
@@ -85,38 +67,91 @@
                     {% else %}
                     <li><a href="" class="login-popup">Login</a></li> 
                     {% endif %}
-                    <!-- <li><a href="../navbar/">Default</a></li>
-                    <li><a href="../navbar-static-top/">Static top</a></li>
-                    <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li> -->
                 </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
-    <!-- Adapted from Bootstrap 3.1.0 snippet by Septian-Bhoechie 
-   from http://bootsnipp.com/snippets/featured/simple-vertical-tab -->
-
     <div class="container section-container about-container">
     	<div class="row">
             <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1 bhoechie-tab-container">
                 <div class="inner-about-container">
-                    <h1>About</h1>               
-                        <p>some information</p>
-	                <h3>Data Set</h2>
-	                	<p> some information...11,354 userids, xxx match ids, etc. </p>
-	                <h3>Uploading Item Sets</h2>
-	                	<p> requirements to upload an item set: </p>
-	                <h3>Matchup Item Set Generator</h2>
-	                	<p> must specify at least 'your champion', other fields may be left blank</p>
-                    <h3>Updated Data</h3>
-                    <p>For anyone wondering how recent our data is...:</p>
-                    <p>     Item Data was last updated on 8/30/2015 01:48</p>
-                    <p>     Champion Data was last updated on 8/30/2015 01:50</p>
-                    <p>     Summoner Data was last updated on 8/30/2015 01:55</p>
-                    <p>     Match Data was last updated on 8/30/2015 03:32</p>
-                    To return back to the main page, click
-                    <a href="/">here</a>.
+
+                    <h1>About iTahmSets</h1>               
+                        <p>
+                        iTahmSets isn't endorsed by Riot Games and neither
+                        reflects the views or opinions of Riot Games nor anyone 
+                        officially involved in producing or managing League of Legends. 
+                        League of Legends and Riot Games are trademarks or registered 
+                        trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
+                        </p>
+                    <h4>
+                        iTahmSets was originally created for the Riot API Challenge 2.0 in August 2015.
+                        For more details on the competition, 
+                        see <a href="https://developer.riotgames.com/discussion/announcements/show/2lxEyIcE">here.</a>
+                    </h4>
+                    <h5 style="margin-bottom:5px;">
+                     <strong> 
+                        Remember your account on this website is distinct from and unrelated to your League of Legends account! 
+                    </strong></h5>
+                    <hr style="margin-bottom:10px; margin-top:10px;">
+	                   <h3 style="margin-top:0px; margin-bottom:5px;">Features</h3>
+	                <p> iTahmSets provide 5 distinct features for users. See the tutorials in the tabs for how to use. </p> 
+                        <h4 style="margin-bottom:5px;">Uploading Item Sets </h4>
+                        <p> Store your item set JSON files on our website. Our website will check the file format to 
+                            make sure it is in the appropriate format. You can download them on any computer. 
+                        </p>
+                        <h4 style="margin-bottom:5px;">Matchup Generator </h4>
+                        <p> From our dataset, we parse item information from thousands of matches and use a weighted
+                            algorithm based on the lane, opponent champion, and who won the game to generate an item set with
+                            5 blocks: <b>Starting Items</b>, <b>Early Game</b>, <b>Mid Game</b>, <b>Late Game</b>,
+                            <b>Full Build</b>.
+                        </p>
+                        <h4 style="margin-bottom:5px;">Item Set Builder</h4>
+                        <p> 
+                            Design a custom item set in-browser that can be downloaded and used in-game. 
+                        </p>
+                        <h4 style="margin-bottom:5px;">Search Tool</h4>
+                        <p> 
+                            Browse by champion and lane to see the most popular item sets that other users have uploaded or designed. 
+                            You can vote on your favorites too!
+                        </p>
+                        <h4 style="margin-bottom:5px;">Saved Item Set Manager</h4>
+                        <p> 
+                            View, edit, and download all item sets saved to your account. 
+                            You can save up to 10 item sets to a single account. 
+                        </p>
+
+                    <hr style="margin-bottom:10px; margin-top:10px;">
+                    <h3 style="margin-bottom:5px; margin-top:0px;">Data Set</h3>
+                    <p> Using the Riot Developmental API, we collected ~11,000 ranked players from the
+                        Plat-Diamond range and ~50,000 of their unique ranked SR matches. 
+                        <strong>Due to GitHub repo limits, we currently only use a smaller set of ~5000 matches to generate lane matchups.
+                        In the future this will be increased, which will drastically improve the generated matchup results.</strong>
                     </p>
+                    <p style="margin-bottom:0px;">     Summoner IDs -- {{ summoner_data_update }} </p>
+                    <p style="margin-bottom:0px;">     Match IDs -- {{ match_data_update }}    </p>
+                    <p style="margin-bottom:0px;">     Champion Data -- {{ champ_data_update }}    </p>
+                    <p style="margin-bottom:5px;">     Item Data  -- {{ item_data_update }}     </p>
+                    <hr style="margin-bottom:10px; margin-top:10px;">
+                    <h3 style="margin-bottom:5px; margin-top:0px;">Frequently Asked Questions</h3>
+                    <p> Your question still not answered? 
+                        Shoot us an email at <a href="mailto:italiansushichef@gmail.com?Subject=Question">italiansushichef@gmail.com</a>
+                    </p>
+
+                    <h4 style="margin-bottom:5px;">What is League of Legends?</h4>
+                    <p> While I don't usually answer a question with a question, 
+                        in this case: How did you find our site? 
+                    </p>
+                    <h4 style="margin-bottom:5px;">Why can't I upload my item set?</h4>
+                        <p> Remember that you need to upload your item set in the specified json file format! 
+                            Check here for more info: <a href="https://developer.riotgames.com/docs/item-sets">
+                            https://developer.riotgames.com/docs/item-sets</a>
+                        </p>
+                    <h4 style="margin-bottom:5px;">Are you coming out with more features (e.g. item sets for ARAM, dataset updates)?</h4>
+                        <p>
+                        After the Riot API Challenge 2.0 is over and judged, we will add new features. 
+                        </p>
                 </div>
             </div>
       </div>
