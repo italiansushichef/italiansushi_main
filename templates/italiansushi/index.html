@@ -292,8 +292,7 @@
             if (!jsonfile["blocks"] || jsonfile["blocks"].length == 0){
                 return_html = '<p><strong> No items in this item set. </strong></p>';
             }
-            else
-            {
+            else {
                 for (var i = 0; i < blocks.length; i++) {
                     return_html += '<div class="row">';
                     return_html += '<div class="col-xs-12"><strong style="font-size:10px;">' 
@@ -334,13 +333,11 @@
         // close the success span alert 
         $('#close-success-span').click(function(e){
             e.preventDefault();
-            console.log('closing success')
             $('#alert-success-span').parent().css('visibility', 'hidden');
         });
         // close the danger span alert 
         $('#close-danger-span').click(function(e){
             e.preventDefault();
-            console.log('closing danger')
             $('#alert-danger-span').parent().css('visibility', 'hidden');
         });
         // Handler for toggling to show advanced options (optionsid) when (toggleid) is clicked
@@ -693,7 +690,6 @@
                         bootbox.dialog({   
                             message: '<div class="row">'
                                         + '<div class="col-xs-12">'
-
                                             + '<div class="row">'
 
                                             + '<div class="col-xs-10 col-xs-offset-1 alert alert-info">'
@@ -745,12 +741,14 @@
                                             + '</div>'
                                             + '<hr class="hr-sm">'
 
-                                            + '<div class="row" id="add-block-row"><div class="col-xs-12">'
+                                            + '<div class="row" id="add-block-row"><div class="col-xs-10">'
                                                 + '<button type="button" class="btn btn-default btn-add-block">'
                                                     +  '<span class="fa fa-plus"></span>&nbsp;Add a block'
                                                     + '</button>'
-                                            + '</div></div>'
+                                            + '</div>'
+                                            + '</div>'
                                         + '</div>'
+                                        
                                         + '<div class="row"><div class="col-xs-2 col-xs-offset-3">'
                                         + '<button type="button" class="btn btn-success btn-md' 
                                           + ' " id="view-itemset_json">'
@@ -950,6 +948,8 @@
                                                       + '</button>';
                             new_block_html +=   '</div>';
                             new_block_html += '</div>';
+
+                            new_block_html += '<div class="descriptionHover" id="descriptionHover_' + block_id + '"></div>'
 
                             new_block_html += '</div>';
 
@@ -1162,6 +1162,19 @@
                                         $(e.target).parent().attr('data-value', item['count']);
                                     }
                                 });
+                                // For displaying item description when hovered over 
+                                //     -- needed here to display for item sets loaded in 
+                                $('.item-icon').hover(function (e) {
+                                    var iconid = $(this).parent().attr('id').split('_')[2];
+                                    var block_id = $(this).parent().attr('id').split('_')[4];
+                                    var description = item_info["data"][iconid]['description'];
+                                    var position = $(this).parent().position();
+                                    $("#descriptionHover_"+ block_id).html(description).css(
+                                        {"top": position.bottom, "left": position.left}).show();
+                                    }, function (e) {
+                                        var block_id = $(this).parent().attr('id').split('_')[4];
+                                        $("#descriptionHover_"+ block_id).hide().html("");
+                                });
                             }); 
                         });
 
@@ -1198,7 +1211,18 @@
                         for (var b = final_length - 1; b >= start_block_count; b--) {
                             itemset_json['blocks'].splice(b, 1);
                         }
-
+                        // For displaying item description when hovered over
+                        $('.item-icon').hover(function (e) {
+                            var iconid = $(this).parent().attr('id').split('_')[2];
+                            var block_id = $(this).parent().attr('id').split('_')[4];
+                            var description = item_info["data"][iconid]['description'];
+                            var position = $(this).parent().position();
+                            $("#descriptionHover_"+ block_id).html(description).css(
+                                {"top": position.bottom, "left": position.left}).show();
+                            }, function (e) {
+                                var block_id = $(this).parent().attr('id').split('_')[4];
+                                $("#descriptionHover_"+ block_id).hide().html("");
+                        });
                     });
                 });
                 // --------------------- END of popup for editing itemset file ---------------------------------//
@@ -1798,6 +1822,8 @@
                     new_block_html +=   '</div>';
                     new_block_html += '</div>';
 
+                    new_block_html += '<div class="descriptionHover" id="descriptionHover_' + block_id + '"></div>'
+
                     new_block_html += '</div>';
 
                     // Add the block to html and json
@@ -2006,11 +2032,25 @@
                                 $(e.target).parent().attr('data-value', item['count']);
                             }
                         });
-                    }); 
+                        // For displaying item description when hovered over
+                        $('.item-icon').hover(function (e) {
+                            var iconid = $(this).parent().attr('id').split('_')[2];
+                            var block_id = $(this).parent().attr('id').split('_')[4];
+                            var description = item_info["data"][iconid]['description'];
+                            var position = $(this).parent().position();
+                            $("#descriptionHover_"+ block_id).html(description).css(
+                                {"top": position.bottom, "left": position.left}).show();
+                            }, function (e) {
+                                var block_id = $(this).parent().attr('id').split('_')[4];
+                                $("#descriptionHover_"+ block_id).hide().html("");
+                        });
+                    });
+
                 });
 
             });
         });
+
         /* ------------------------- END Custom Item Set Builder JS Functions -------------------------------------- */
 
 
