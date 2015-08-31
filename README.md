@@ -48,3 +48,4 @@ Limitations
 * As mentioned, our data set for the matchup generator is limited in the live version because of the repo limits. This drastically limits the quality of the generated item sets, but the underlying algorithm is what we'd like to highlight.
 * There are likely minor bugs through, since we did not have time for widespread open user testing.
 
+In the future (aka if we had more time), we'd add more features to building item sets with the more advanced (optional) fields listed in the item set documentation, add support for Item Sets for modes outside of SR, and fine-tune the matchup item set generator algorithm.
