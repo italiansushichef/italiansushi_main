@@ -1670,6 +1670,31 @@
                                 var block_id = $(this).parent().attr('id').split('_')[4];
                                 $("#descriptionHover_"+ block_id).hide().html("");
                         });
+
+                        // Event for handling the delete-button for each item. Update itemset_json and html appropriately.
+                        $('.delete-item-overlay').click(function(e){
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            var html_id = $(e.target).parent().attr('id');
+                            var block_id = html_id.split('_')[4];
+                            var item_id = html_id.split('_')[2];
+
+                            var block = getBlock(block_id);
+                            var item = getItem(block_id, item_id);
+                            if (item['count'] <= 1) {
+                                var index = block['items'].indexOf(item);
+                                block['items'].splice(index, 1);
+                                $(e.target).parent().remove();
+                            }
+                            else {
+                                item['count'] -= 1;
+                                if (item['count'] == 1)
+                                    $(e.target).parent().find('.item-quantity-overlay').html('');
+                                else
+                                    $(e.target).parent().find('.item-quantity-overlay').html(item['count']);
+                                $(e.target).parent().attr('data-value', item['count']);
+                            }
+                        });
                     });
                 });
                 // --------------------- END of popup for editing itemset file ---------------------------------//
