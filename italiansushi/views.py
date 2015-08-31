@@ -983,3 +983,7 @@ def search_itemsets(request):
 def site_logout(request):
     logout(request)
     return HttpResponseRedirect('/?logout=success')
+
+# rendered when user tries to access a bad url-pattern
+def bad_url(request):
+    return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
