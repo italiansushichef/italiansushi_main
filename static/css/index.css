@@ -342,3 +342,6 @@ div.bootbox.modal.fade.in + div {
   margin-right: 5%;
 }
 
+.tutorial-container {
+    padding: 3% 7%;
+}
