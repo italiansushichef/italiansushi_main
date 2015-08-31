@@ -59,7 +59,7 @@
 }
 
 .color-icon {
-  font-size:10em;
+  font-size:8em;
   color:#55518a;
 }
 
@@ -166,9 +166,11 @@ div.bhoechie-tab div.bhoechie-tab-content:not(.active){
 
 .form-title {
   color: #555;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 18px;
   display: block;
+  margin-top: 10px;
+  font-weight: 500;
+  line-height: 1.1;
 }
 
 .form-title-smaller {
