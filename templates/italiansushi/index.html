@@ -91,8 +91,8 @@
                     <li><a href="../navbar-static-top/">Static top</a></li>
                     <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li> -->
                 </ul>
-        </div><!--/.nav-collapse -->
-      </div>
+            </div><!--/.nav-collapse -->
+        </div>
     </nav>
 
     <!-- This section adapted from a Bootstrap 3.1.0 snippet by Septian-Bhoechie 
@@ -102,23 +102,23 @@
     	<div class="row">
             <div class="col-md-8 col-md-offset-2 col-xs-10 col-xs-offset-1 bhoechie-tab-container">
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 bhoechie-tab-menu">
-                  <div class="list-group">
-                    <a href="#" class="list-group-item active text-center">
-                      <h4 class="fa fa-cloud-upload tab-fa-icon"></h4><br/><span class="tab-text">Upload Item Sets</span>
-                    </a>
-                    <a href="#" class="list-group-item text-center">
-                      <h4 class="fa fa-gamepad tab-fa-icon"></h4><br/><span class="tab-text">Matchup Generator</span>
-                    </a>
-                    <a href="#" class="list-group-item text-center">
-                      <h4 class="fa fa-cogs tab-fa-icon"></h4><br/><span class="tab-text">Item Set Builder</span>
-                    </a>
-                    <a href="#" class="list-group-item text-center">
-                      <h4 class="fa fa-search tab-fa-icon"></h4><br/><span class="tab-text">Search Tool</span>
-                    </a>
-                    <a href="#" class="list-group-item text-center">
-                      <h4 class="fa fa-files-o tab-fa-icon"></h4><br/><span class="tab-text">Saved Item Sets Manager</span>
-                    </a>
-                  </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item active text-center">
+                            <h4 class="fa fa-cloud-upload tab-fa-icon"></h4><br/><span class="tab-text">Upload Item Sets</span>
+                        </a>
+                        <a href="#" class="list-group-item text-center">
+                            <h4 class="fa fa-gamepad tab-fa-icon"></h4><br/><span class="tab-text">Matchup Generator</span>
+                        </a>
+                        <a href="#" class="list-group-item text-center">
+                            <h4 class="fa fa-cogs tab-fa-icon"></h4><br/><span class="tab-text">Item Set Builder</span>
+                        </a>
+                        <a href="#" class="list-group-item text-center">
+                            <h4 class="fa fa-search tab-fa-icon"></h4><br/><span class="tab-text">Search Tool</span>
+                        </a>
+                        <a href="#" class="list-group-item text-center">
+                            <h4 class="fa fa-files-o tab-fa-icon"></h4><br/><span class="tab-text">Saved Item Sets Manager</span>
+                        </a>
+                    </div>
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 bhoechie-tab">
                     <div class="bhoechie-tab-content active">
@@ -221,9 +221,28 @@
                     </div>
                     <div class="bhoechie-tab-content">
                         <center>
-                          <h1 class="fa fa-search color-icon"></h1>
-                          <h2 class="color-header">Coming Soon</h2>
-                          <h5 class="color-header">Search for custom item sets to download.</h5>
+                            <h1 class="fa fa-search color-icon"></h1>
+                            <h2 class="color-header">Coming Soon</h2>
+                            <h5 class="color-header">Search for custom item sets to download.</h5>
+                            <div class="ui-widget col-sm-4">
+                                <input class="champ-input" id="search-champ1" placeholder=" Your Champion"/>
+                            </div>
+                            <div class="ui-widget col-sm-4">
+                                <input class="champ-input" id="search-champ2" placeholder=" Your Opponent"/>
+                            </div>
+                            <div class="col-sm-3 col-sm-offset-0 col-xs-6 col-xs-offset-3">
+                                <select id="search-lane" class="form-control no-padding">
+                                    <option value="">any lane</option>
+                                    <option value="M">mid</option>
+                                    <option value="T">top</option>        
+                                    <option value="J">jungle</option>
+                                    <option value="B">bot</option>
+                                </select>
+                            </div>
+                            <div class="col-xs-offset-1 col-sm-offset-1 col-sm-10 col-xs-8 btn-top-bot-margins">
+                                <a id="search-popup-btn" class="btn btn-md btn-primary search-popup">
+                                Search Item Sets</a>
+                            </div>
                         </center>
                     </div>
                     <div class="bhoechie-tab-content">
@@ -405,6 +424,9 @@
             autocompleteForId("#champ1");
             autocompleteForId("#champ2");
 
+            autocompleteForId("#search-champ1");
+            autocompleteForId("#search-champ2");
+
             {% if logged_in %}
             autocompleteForId("#upload_champ1");
             autocompleteForId("#upload_champ2");
@@ -433,6 +455,300 @@
             return null;
         };
         /* ------------------------- END General JS Functions -------------------------------------- */
+
+        /* ------------------------------ Search JS Functions -------------------------------------- */
+        $('.search-popup').click(function(e){
+            var searchpage = 0;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            var champ1 = checkChampion('#search-champ1');
+            var champ2 = checkChampion('#search-champ2');
+            if (champ1 == null || champ2 == null)   return;
+            var raw_lane = $("#search-lane").val();
+            var lane;
+            // lane is for displaying in html, raw_lane is the value 
+            if (raw_lane == "")         lane = "any lane"
+            else if (raw_lane == "M")   lane = "mid"
+            else if (raw_lane == "B")   lane = "bot"
+            else if (raw_lane == "T")   lane = "top"
+            else if (raw_lane == "J")   lane = "jungle"
+            var id1; // champ1 id
+            var id2; // champ2 id
+            var resultspanel_html = ""; // html for the results panel (displays the itemsets)
+            var response_nextpage; // paging index for next page of results
+            var response_count;   // number of results to display
+            var response_results; // list of results to display
+            $.when($.ajax({
+                url: "/search-itemsets/",
+                type: "GET",
+                data: {'champ1': champ1, 'champ2': champ2, 'lane': raw_lane, 'searchpage': searchpage},
+
+                success : function(json) {
+                    console.log(json);
+                    // Display champ names, or red if not found, or Any if blank
+                    if (json['champ1_id'] == 0) {
+                        champ1 = "Any";
+                        id1 = json['champ1_id'];
+                    }
+                    else if (!json['champ1_id']) // null 
+                        champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
+                    else
+                        id1 = json['champ1_id']; 
+
+                    if (json['champ2_id'] == 0) {
+                        champ2 = "Any";
+                        id2 = json['champ2_id'];
+                    }
+                    else if (!json['champ2_id']) // null 
+                        champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
+                    else
+                        id2 = json['champ2_id']; 
+
+                    // Color lane red if invalid 
+                    if (!json['valid_lane'])
+                        lane = '<strong style="color:red;">' + lane + '</strong>';
+
+                    response_nextpage = json['nextpage'];
+                    response_count = json['count'];       
+                    response_results = json['results'];
+
+                },
+                // TODO: Remove this, debugging only
+                error : function(xhr, errmsg, err){
+                    console.log(xhr.status + ": " + xhr.responseText);
+                    champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
+                    champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
+                    lane = '<strong style="color:red;">' + lane + '</strong>';
+                    resultspanel_html = '<h4> An error on the backend occurred. To report, please email italiansushichef@gmail.com </h4>';
+                }
+
+            })).then(function(){
+                // Initial popup
+                bootbox.dialog({
+                    message: '<div class="row">'
+                                + '<div class="col-xs-12">'
+                                    + '<h1 class="text-center form-title"> Search Results </h1>'
+                                    + '<div class="col-xs-6 col-sm-offset-1 col-sm-4">'
+                                        + '<span class="label label-primary">For</span>' + champ1
+                                    + '</div>'
+                                    + '<div class="col-xs-6 col-sm-4">'
+                                        + '<span class="label label-primary">Against</span>' + champ2
+                                    + '</div>'
+                                    + '<div class="col-xs-3">'
+                                        + '<span class="label label-primary">Lane</span>' + lane
+                                    + '</div>'
+                                    + '<div class="col-xs-12" style="margin-top:5px;">'
+                                        + '<div class="panel panel-default">'
+                                            + '<div class ="panel-body" id="dynamic-search-panel">'
+                                            + '</div>'
+                                        + '</div>'
+                                    + '</div>'
+                                + '</div>'
+                            + '</div>',
+                    onEscape: function() {},
+                });
+
+                // If there is a results list, display it
+                if (response_count > 0) {
+                    resultspanel_html = '<table class="table"><col width="60%"><col width="10%"><col width="10%">'
+                                    + '<col width="10%"><col width="10%">';
+                    // Head
+                    resultspanel_html += '<thead>';
+                    resultspanel_html += '<tr><th>ItemSet</th>';
+                    resultspanel_html += '<th class="text-center">Preview</th>';
+                    resultspanel_html += '<th class="text-center">Download</th>';
+                    resultspanel_html += '<th class="text-center">Save</th>';
+                    resultspanel_html += '<th class="text-center">Stars</th></tr>';
+                    resultspanel_html += '</thead>';
+                    // Body
+                    resultspanel_html += '<tbody>' ;
+                    for (var i = 0; i < response_results.length; i++)
+                    {
+                        var filename = response_results[i]['filename'];
+                        var owner = response_results[i]['owner'];
+                        var fileid = response_results[i]['id'];
+                        var upvotes = response_results[i]['upvotes']
+
+                        resultspanel_html += '<tr id="row_' + filename + '">';
+                        resultspanel_html += '<td>' + filename + '</td>';
+                        resultspanel_html += '<td class="text-center">'
+                                        + '<button type="submit" class="btn btn-primary btn-preview-item btn-sm"'
+                                        + 'id="{{user.username}}_preview:' + filename +'_'+i+'">'
+                                        + '<span class="fa fa-search"></span></button></form></td>';
+
+                        resultspanel_html += '<td class="text-center"><a href="/' + owner + '/' + filename + '.json"' 
+                                        + ' type="submit" class="btn btn-success btn-sm"' 
+                                        + 'id="{{user.username}}_dl_' + filename +'" target="_blank">'
+                                        + '<span class="fa fa-download"></span></a></td>';
+
+                        resultspanel_html += '<td class="text-center">';
+                        if (response_results[i]['can_save']) {
+                            resultspanel_html += '<form method="POST" id="save_'+ i +'_form">' 
+                                                + "{% csrf_token %}"
+                                                + '<input type="number" name="idToSave" value="'+ fileid +'" hidden = true/>'
+                                                + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
+                                                + '<button class="btn btn-warning btn-save-item"'
+                                                + 'id="btn_save:'+ i + '">'
+                                                + '<span class="fa fa-floppy-o"></span></button></form></td>';
+                        }
+                        else {
+                            resultspanel_html +=  '<button class="btn btn-warning btn-cannot-save-item"'
+                                                + 'id="btn_cannot_save:'+ i + '" disabled="disabled">'
+                                                + '<span class="fa fa-floppy-o"></span></button></td>';
+                        }
+                        
+
+                        if (response_results[i]['can_upvote']){
+                            resultspanel_html += '<td class="text-center">'
+
+                                                + '<span id="td-upvote_'+ i +'">'
+                                                + '<form method="POST" id="upvote_'+ i +'_form">' 
+                                                + "{% csrf_token %}"
+                                                + '<input type="number" name="idToSave" value="'+ fileid +'" hidden = true/>'
+                                                + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
+                                                + '<input type="text" id="upordown_'+ i +'" name="upordown" value="up" hidden = true/>'
+                                                + '</form>'
+                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + 'id="upvote_' + i + '_' + filename +'">'
+                                                + '<span id="upvote-count1_' + i+ '"class="fa fa-star-o upvote-count">' 
+                                                    + upvotes + '</span></button>'
+                                                + '</span>'
+
+                                                + '<span id="td-downvote_' + i + '" style="display: none;">'
+                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + 'id="downvote_' + i + '_' + filename +'">'
+                                                + '<span id="upvote-count2_' + i+ '" class="fa fa-star">' 
+                                                    + upvotes + '</span></button>'
+                                                + '</span>'
+                                            + '</td>';
+                        }
+                        else { // cannot vote up
+                            resultspanel_html += '<td class="text-center">'
+                                                + '<span id="td-upvote_'+ i +'" style="display: none;">'
+                                                + '<form method="POST" id="upvote_'+ i +'_form">' 
+                                                + "{% csrf_token %}"
+                                                + '<input type="number" name="idToSave" value="'+ fileid +'" hidden = true/>'
+                                                + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
+                                                + '<input type="text" id="upordown_'+ i +'" name="upordown" value="down" hidden = true/>'
+                                                + '</form>'
+                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + 'id="upvote_' + i + '_' + filename +'">'
+                                                + '<span id="upvote-count1_' + i+ '"class="fa fa-star-o upvote-count">' 
+                                                    + upvotes + '</span></button>'
+                                                + '</span>'
+
+                                                + '<span id="td-downvote_' + i + '" >'
+                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + 'id="downvote_' + i + '_' + filename +'">'
+                                                + '<span id="upvote-count2_' + i+ '" class="fa fa-star">' 
+                                                    + upvotes + '</span></button>'
+                                                + '</span>'
+                                            + '</td>';
+                        }
+                                            
+                        
+                        resultspanel_html += '</tr>';
+                        resultspanel_html += '<tr id="item_row:' + i + '"></tr>';
+
+
+
+                    }
+                    resultspanel_html += '</tbody>';
+                    resultspanel_html += '</table>';
+                        
+                }
+                else { // no results in list 
+                    resultspanel_html = '<h4> Unable to find any itemsets that match your criteria. <br> Change inputs and try again. </h4>'
+                }
+                $('#dynamic-search-panel').html(resultspanel_html);
+
+                // Handing the preview btn for an item set.
+                $('.btn-preview-item').click(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var id = (e.currentTarget.id || e.srcEvent.id); // this may not work in IE!                
+                    var clicked_btn_id = id.split('_');
+                    var num_id = clicked_btn_id[clicked_btn_id.length - 1];
+                    // tofix: Jquery functions won't work.  
+                    if (document.getElementById('item_row:' + num_id).innerHTML != "")
+                        document.getElementById('item_row:' + num_id).innerHTML = "";
+                    else {
+                        var myitems_jsonfile = response_results[num_id]['json'];
+                        document.getElementById('item_row:' + num_id).innerHTML = getItemPreviewHtml(myitems_jsonfile);
+                    }
+                });
+
+                // For saving the file to your profile
+                $('.btn-save-item').click(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var id = (e.currentTarget.id || e.srcEvent.id);
+                    var html_id = id.split(':')[1];
+                    var save_form = document.getElementById('save_' + html_id + '_form');
+                    e.currentTarget.setAttribute("disabled", "disabled");
+                    $.ajax({
+                        url: "/search-save-file/",
+                        type: "POST",
+                        data: $(save_form).serialize(),
+                        success : function(json) {
+                            if (json["success"]) {
+                                updateSuccessSpan(json["savetitle"] + " added to your items successfully!");
+                            }
+                            else if (json["max_uploads_reached"]) {
+                                var mssg = "Sorry, you have reached the item set max of 10" 
+                                                                        + " and cannot add more item sets.";
+                                updateDangerSpan(mssg);
+                            }
+                            else {
+                                var mssg = "Sorry, something went wrong. Refresh and try again."
+                                updateDangerSpan(mssg);
+                            }
+                        },
+                        error : function(xhr, errmsg, err){
+                            console.log(xhr.status + ": " + xhr.responseText);
+                        },
+                    });     
+                });
+
+                // For upvoting 
+                $('.btn-upvote-itemset').click(function(e){
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    var id = (e.currentTarget.id || e.srcEvent.id);
+                    var html_id = id.split('_')[1];
+                    var upvote_form = document.getElementById('upvote_' + html_id + '_form');
+                    $.ajax({
+                        url: "/search-upvote-file/",
+                        type: "POST",
+                        data: $(upvote_form).serialize(),
+                        success : function(json) {
+                            if (json["success"]) {
+                                document.getElementById('upvote-count1_' + html_id).innerHTML = json["upvotes"];
+                                document.getElementById('upvote-count2_' + html_id).innerHTML = json["upvotes"];
+                                if (json["upvotesuccess"]) {
+                                    document.getElementById("td-downvote_" + html_id).style.display = "block";
+                                    document.getElementById("td-upvote_" + html_id).style.display = "none";
+                                    document.getElementById("upordown_" + html_id).value = "down";
+                                }
+                                else if (json["downvotesuccess"]) {
+                                    document.getElementById("td-downvote_" + html_id).style.display = "none";
+                                    document.getElementById("td-upvote_" + html_id).style.display = "block";
+                                    document.getElementById("upordown_" + html_id).value = "up";
+                                }
+                            }
+                            else {
+                                var mssg = "Sorry, something went wrong with the star. Refresh and try again."
+                                updateDangerSpan(mssg);
+                            }
+                        },
+                        error : function(xhr, errmsg, err){
+                            console.log(xhr.status + ": " + xhr.responseText);
+                        },
+                    });     
+                });
+            });
+        });
+        /* ------------------------- End Search JS Functions -------------------------------------- */
 
         /* ------------------------- Upload file JS Functions -------------------------------------- */
         // Check champion inputs before submitting for uploading       
@@ -1379,7 +1695,7 @@
                         data: $(save_form).serialize(),
                         success : function(json) {
                             if (json["success"]) {
-                                updateSuccessSpan("ItemSet added to your items successfully!");
+                                updateSuccessSpan(json["savetitle"] + " added to your items successfully!");
                             }
                             else if (json["max_uploads_reached"]) {
                                 var mssg = "Sorry, you have reached the item set max of 10" 
@@ -2045,7 +2361,6 @@
                                 $("#descriptionHover_"+ block_id).hide().html("");
                         });
                     });
-
                 });
 
             });

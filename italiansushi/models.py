@@ -20,16 +20,13 @@ class ItemSet(models.Model):
     )
     lane = models.CharField(max_length=1, choices=LANE_CHOICES, default='')
     users_upvotes = models.ManyToManyField(User,blank=True, default=None, related_name="users_who_upvoted")
+    users_upvotes_count = models.IntegerField(default=0)
 
     def __unicode__(self):
     	if self.owner:
     		ownername = self.owner.username
     	else:
     		ownername = "tmp"
-    	if self.users_upvotes:
-    		upvotes = 1
-    	else:
-    		upvotes = 0
-    	return self.name + "|owner: " + ownername + "|for: " + str(self.champ_for) + \
-    			"|against: " + str(self.champ_against) + "|lane: " + self.lane + "|upvotes: " + str(upvotes)
+    	return self.name + "| owner: " + ownername + "| for: " + str(self.champ_for) + \
+    			"| against: " + str(self.champ_against) + "| lane: " + self.lane + "| upvotes count: " + str(self.users_upvotes_count)
 
