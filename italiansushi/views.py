@@ -7,9 +7,10 @@ from django.contrib.auth import login as django_login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-import re
+import re, random
 import json as jsonlib
 import json
+from operator import itemgetter
 
 ################################### Helper functions #############################
 # helper func, returns champid if champname works, 0 if champname is empty, None otherwise
@@ -66,6 +67,241 @@ def get_validname(user,filename):
             else:
                 foundname = True
     return name32
+
+def returnGamePart(ms):
+    # in seconds
+    startingitemscutoff = 2*60
+    earlygameuppercutoff = 20*60
+    midgameuppercutoff = 35*60
+    sec = ms/1000
+    if sec < startingitemscutoff:
+        return "start"
+    if sec < earlygameuppercutoff:
+        return "early"
+    if sec < midgameuppercutoff:
+        return "mid"
+    else:
+        return "late"
+
+def getItemBlockFromItemBlock(possible_block, title):
+    sortedls = sorted(possible_block, key=itemgetter("weight"), reverse=True)
+    block = {'type':title, 'items':[]}
+    for itemid in sortedls[0]['items']:
+        found = False
+        for i in block['items']:
+            if i['id'] == itemid:
+                print 'match'
+                i['count'] += 1
+                found = True
+                break
+        if not found:
+            block['items'].append({'id': itemid, 'count': 1})
+    return block
+
+
+def getItemBlockFromItem(possible_items, title, n):
+    sortedls = sorted(possible_items, key=itemgetter("weight"), reverse=True)
+    block = {'type':title, 'items':[]}
+    for i in range(0, min(n + 1, len(possible_items))):
+        itemid = possible_items[i]['id']
+        found = False
+        for existingi in block['items']:
+            if existingi['id'] == itemid:
+                existingi['id'] += 1
+                found = True
+                break
+        if not found:
+            block['items'].append({'id': itemid, 'count': 1})
+    return block
+
+
+# Helper func, uses a weighted algorithm to generate an itemset based on data that
+# matches the input criteria
+def generateItemSetForMatchup(champ1_id, champ2_id, lane):
+    newjson = {}
+    with open('static/json-data/champls.json', 'r') as champfile:
+        champdata = jsonlib.load(champfile)
+    champ1 = "ANY"
+    champ2 = "ANY"
+    for champ in champdata["data"].itervalues():
+        if champ1_id == champ["id"]:
+            champ1 = champ["key"]
+        if champ2_id == champ["id"]:
+            champ2 = champ["key"]
+    raw_lane = "ANYLANE"
+    if lane == 'M': 
+        raw_lane = "MIDDLE"
+    elif lane == 'B': 
+        raw_lane = "BOTTOM"
+    elif lane == 'T': 
+        raw_lane = "TOP"
+    elif lane == 'J': 
+        raw_lane = "JUNGLE"
+    title = champ1 + "_vs_" + champ2 + "_in_" + raw_lane
+    title = title[0:32] 
+    newjson['title'] = title
+    newjson['type'] = 'global'
+    newjson['map'] = 'any'
+    newjson['mode'] = 'any'
+    newjson['blocks'] = []
+    possible_startingitemsblock = []
+    possible_earlygame = []
+    possible_midgame = []
+    possible_lategame = []
+    possible_fullbuildblock = []
+
+    matchfiles = [
+                    'processedmatches_0_1000.json',
+                    'processedmatches_1000_2000.json',
+                    'processedmatches_2000_2500.json',
+                    'processedmatches_2500_3000.json',
+                    'processedmatches_3000_3500.json',
+                    'processedmatches_3500_4000.json',
+                    'processedmatches_4000_4500.json',
+                    'processedmatches_4500_5000.json',
+                    'processedmatches_5000_5500.json',
+                    'processedmatches_5500_6000.json',
+                 ]
+
+    searched_matches = 0
+    champion_matches = 0
+    search_match_limit = 4000
+    champion_match_limit = 150
+
+    fullbuildcheckcutoff = 50*60
+
+    normalWeight = 5
+    laneMatchWeight = 8
+    champ2Weight = 5
+    victoryWeight = 3
+
+    while searched_matches < search_match_limit and champion_matches < champion_match_limit:
+        fileToSearch = random.choice(matchfiles)
+        matchfiles.remove(fileToSearch)
+        with open('static/json-data/' + fileToSearch, 'r') as matchfile:
+            matchdata = jsonlib.load(matchfile)
+        for match in matchdata:
+            searched_matches += 1
+            if searched_matches >= search_match_limit or champion_matches >= champion_match_limit:
+                break
+            duration = match['duration'] # in seconds
+            weight = normalWeight
+            matchChamp = None
+
+            for champ in match['champions']:
+                if champ['id'] == champ1_id:
+                    if (raw_lane == "ANYLANE") or (champ['position'] == raw_lane):
+                        weight += laneMatchWeight
+                    if champ['statistics']['winner']:
+                        weight += victoryWeight
+                    matchChamp = champ
+                    break
+            if matchChamp:
+                champion_matches += 1
+                for otherchamp in match['champions']:
+                    if otherchamp["id"] == champ2_id: #found second champ
+                        if (otherchamp["statistics"]['winner'] != matchChamp['statistics']['winner']): #not on same team
+                            if (raw_lane == "ANYLANE") or (raw_lane == otherchamp["position"]): # in same lane
+                                weight += laneMatchWeight
+                                break
+                if duration > fullbuildcheckcutoff:
+                    fullbuildblock = []
+                    fullbuildblock.append(matchChamp["statistics"]["item0"])
+                    fullbuildblock.append(matchChamp["statistics"]["item1"])
+                    fullbuildblock.append(matchChamp["statistics"]["item2"])
+                    fullbuildblock.append(matchChamp["statistics"]["item3"])
+                    fullbuildblock.append(matchChamp["statistics"]["item4"])
+                    fullbuildblock.append(matchChamp["statistics"]["item5"])
+                    fullbuildblock.append(matchChamp["statistics"]["item6"])
+                    fullbuildblock.sort()
+                    found = False
+                    for poss in possible_fullbuildblock:
+                        if poss['items'] == fullbuildblock:
+                            poss['weight'] += weight
+                            found = True
+                    if not found:
+                        possible_fullbuildblock.append({'items': fullbuildblock, 'weight': weight})
+
+                startingitemsblock = []
+                destroyWeight = weight - 3
+                for event in matchChamp["eventlist"]:
+                    gamepart = returnGamePart(event["timestamp"])
+                    if (gamepart == "start") and (event["eventType"] == "ITEM_PURCHASED"):
+                        startingitemsblock.append(event["itemId"])
+
+                    elif (gamepart == "early"):
+                        if event["eventType"] == "ITEM_PURCHASED":
+                            found = False
+                            for item in possible_earlygame:
+                                if item["id"] == event["itemId"]:
+                                    found = True
+                                    item["weight"] += weight
+                            if not found:
+                                possible_earlygame.append({"id": event["itemId"], "weight": weight})
+                        elif event["eventType"] == "ITEM_DESTROYED":
+                            found = False
+                            for item in possible_earlygame:
+                                if item["id"] == event["itemId"]:
+                                    found = True
+                                    item["weight"] -= destroyWeight
+
+                    elif (gamepart == "mid"):
+                        if event["eventType"] == "ITEM_PURCHASED":
+                            found = False
+                            for item in possible_midgame:
+                                if item["id"] == event["itemId"]:
+                                    found = True
+                                    item["weight"] += weight
+                            if not found:
+                                possible_midgame.append({"id": event["itemId"], "weight": weight})
+                        elif event["eventType"] == "ITEM_DESTROYED":
+                            found = False
+                            for item in possible_midgame:
+                                if item["id"] == event["itemId"]:
+                                    found = True
+                                    item["weight"] -= destroyWeight
+
+                    elif (gamepart == "late"):
+                        if event["eventType"] == "ITEM_PURCHASED":
+                            found = False
+                            for item in possible_lategame: 
+                                if item["id"] == event["itemId"]:
+                                    found = True
+                                    item["weight"] += weight
+                            if not found:
+                                possible_lategame.append({"id": event["itemId"], "weight": weight})
+                        elif event["eventType"] == "ITEM_DESTROYED":
+                            found = False
+                            for item in possible_lategame:
+                                if item["id"] == event["itemId"]:
+                                    found = True
+                                    item["weight"] -= destroyWeight
+                startingitemsblock.sort()
+                found = False
+                for poss in possible_startingitemsblock:
+                    if poss['items'] == startingitemsblock:
+                        poss['weight'] += weight
+                        found = True
+                if not found:
+                    possible_startingitemsblock.append({'items': startingitemsblock, 'weight': weight})
+
+    if possible_startingitemsblock:
+        newjson['blocks'].append(getItemBlockFromItemBlock(possible_startingitemsblock, 'Starting Items'))
+    if possible_earlygame:
+        newjson['blocks'].append(getItemBlockFromItem(possible_earlygame, "Early Game", 5))
+    if possible_midgame:
+        newjson['blocks'].append(getItemBlockFromItem(possible_midgame, "Mid Game", 5))
+    if possible_lategame:
+        newjson['blocks'].append(getItemBlockFromItem(possible_lategame, "Late Game", 5))
+    if possible_fullbuildblock:
+        newjson['blocks'].append(getItemBlockFromItemBlock(possible_fullbuildblock, 'Full Build'))
+
+    print "Searched " + str(searched_matches)
+    print "Where Champ Appeared " + str(champion_matches) 
+    newitemset = ItemSet(json=newjson, owner=None, name=title, 
+                        champ_for=champ1_id, champ_against=champ2_id, lane=lane)
+    newitemset.save()
+    return newitemset
 
 # helper function to make of copy of itemToCopy and saves it to user
 def save_itemset(itemToCopy, user):
@@ -535,7 +771,11 @@ def matchup_generate_item(request):
             response['valid_lane'] = valid_lane
             if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
                 return JsonResponse(response)
-            item = ItemSet.objects.filter(owner=None, name='sample_realistic_sublime')[0]
+            possibleitem = ItemSet.objects.filter(owner=None, champ_for=champ1_id, champ_against=champ2_id, lane=lane)
+            if possibleitem:
+                item = possibleitem[0]
+            else:
+                item = generateItemSetForMatchup(champ1_id, champ2_id, lane)
             response['jsonfile'] = item.json
             response['jsonfile_id'] = item.id
             response['jsonfile_name'] = item.name
