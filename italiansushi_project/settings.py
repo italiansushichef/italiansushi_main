@@ -88,6 +88,7 @@ DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
+### LOCAL DB SETTINGS: Uncomment for local 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -98,6 +99,7 @@ DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 #         'PORT': '5432',
 #     }
 # }
+### end of LOCAL DB SETTINGS
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
