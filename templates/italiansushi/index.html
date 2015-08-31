@@ -208,8 +208,8 @@
                                 </select>
                             </div>
                             <div class="col-xs-offset-1 col-sm-offset-1 col-sm-10 col-xs-8 btn-top-bot-margins">
-                                <a id="matchup-popup-btn" class="btn btn-md btn-primary matchup-popup">
-                                Generate Item Set</a>
+                                <button id="matchup-popup-btn" class="btn btn-md btn-primary matchup-popup">
+                                Generate Item Set</button>
                             </div>
                             <div class="col-xs-12" style="font-size:12px">
                                 <a href="#" id="matchupTutorial-btn" class="matchupTutorial-popup">Tutorial</a>
@@ -532,13 +532,12 @@
                     response_results = json['results'];
 
                 },
-                // TODO: Remove this, debugging only
                 error : function(xhr, errmsg, err){
-                    console.log(xhr.status + ": " + xhr.responseText);
                     champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
                     champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
                     lane = '<strong style="color:red;">' + lane + '</strong>';
-                    resultspanel_html = '<h4> An error on the backend occurred. To report, please email italiansushichef@gmail.com </h4>';
+                    resultspanel_html = '<h4> An error on the server occurred. Please refresh and try again. '
+                                            + 'To report, please email italiansushichef@gmail.com </h4>';
                 }
 
             })).then(function(){
@@ -752,7 +751,9 @@
                             }
                         },
                         error : function(xhr, errmsg, err){
-                            console.log(xhr.status + ": " + xhr.responseText);
+                            var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                            updateDangerSpan(mssg);
                         },
                     });     
                 });
@@ -789,7 +790,9 @@
                             }
                         },
                         error : function(xhr, errmsg, err){
-                            console.log(xhr.status + ": " + xhr.responseText);
+                            var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                            updateDangerSpan(mssg);
                         },
                     });     
                 });
@@ -1279,7 +1282,9 @@
                                     }
                                 },
                                 error : function(xhr, errmsg, err){
-                                    console.log(xhr.status + ": " + xhr.responseText);
+                                    var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                                    updateDangerSpan(mssg);
                                 },
                             });
                         });
@@ -1720,6 +1725,8 @@
             var matchup_jsonfile; // jsonfile loaded from server for the matchup
             var matchup_fileid;   // db id for the file, for saving 
             var matchup_filename; // name of the file
+            $('.matchup-popup').html('Generating the item set...');
+            $('.matchup-popup').attr('disabled', 'disabled');
             $.when($.ajax({
                 url: "/matchup_generate_item/",
                 type: "POST",
@@ -1762,16 +1769,18 @@
                     else
                         matchuppanel_html = '<h4> Unable to generate an itemset. Please fix inputs and try again. </h4>';
                 },
-                // TODO: Remove this, debugging only
+
                 error : function(xhr, errmsg, err){
-                    console.log(xhr.status + ": " + xhr.responseText);
                     champ1 = '<strong style="color:red;">' + champ1 + '</strong>';
                     champ2 = '<strong style="color:red;">' + champ2 + '</strong>';
                     lane = '<strong style="color:red;">' + lane + '</strong>';
-                    matchuppanel_html = '<h4> An error on the backend occurred. To report, please email italiansushichef@gmail.com </h4>';
+                    matchuppanel_html = '<h4> An error on the server occurred. Please refresh and try again.' 
+                                        + 'To report, please email italiansushichef@gmail.com </h4>';
                 }
 
             })).then(function(){
+                $('.matchup-popup').html('Generate Item Set');
+                $('.matchup-popup').attr('disabled', false);
                 // Initial popup
                 bootbox.dialog({
                     message: '<div class="row">'
@@ -1859,7 +1868,9 @@
                             }
                         },
                         error : function(xhr, errmsg, err){
-                            console.log(xhr.status + ": " + xhr.responseText);
+                            var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                            updateDangerSpan(mssg);
                         },
                     });
                     {% else %}
@@ -2045,8 +2056,9 @@
                             }
                         },
                         error : function(xhr, errmsg, err) {
-                            // TOD: Remove
-                            console.log(xhr.status + ": " + xhr.responseText);
+                            var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                            updateDangerSpan(mssg);
                         },
                     });
                     {% else %} // Else popup, adapted from saving matchup generated item set
@@ -2116,8 +2128,9 @@
                                     $(location).attr('href','/?login=success&save=failure');
                             },
                             error : function(xhr, errmsg, err){
-                                // TODO: Remove
-                                console.log(xhr.status + ": " + xhr.responseText);
+                                var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                                updateDangerSpan(mssg);
                             },
                         });
                     });
@@ -2139,8 +2152,9 @@
                                     $(location).attr('href','/?createuser=success&save=failure');
                             },
                             error : function(xhr, errmsg, err){
-                                // TODO: Remove
-                                console.log(xhr.status + ": " + xhr.responseText);
+                                var mssg = "An error on the server occurred. Please refresh and try again. " 
+                                        + "To report, please email italiansushichef@gmail.com";
+                                updateDangerSpan(mssg);
                             },
                         });
                     }); 

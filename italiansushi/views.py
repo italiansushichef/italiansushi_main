@@ -89,13 +89,12 @@ def getItemBlockFromItemBlock(possible_block, title):
     for itemid in sortedls[0]['items']:
         found = False
         for i in block['items']:
-            if i['id'] == itemid:
-                print 'match'
+            if i['id'] == str(itemid):
                 i['count'] += 1
                 found = True
                 break
-        if not found:
-            block['items'].append({'id': itemid, 'count': 1})
+        if not found and itemid:
+            block['items'].append({'id': str(itemid), 'count': 1})
     return block
 
 
@@ -106,12 +105,12 @@ def getItemBlockFromItem(possible_items, title, n):
         itemid = possible_items[i]['id']
         found = False
         for existingi in block['items']:
-            if existingi['id'] == itemid:
+            if existingi['id'] == str(itemid):
                 existingi['id'] += 1
                 found = True
                 break
-        if not found:
-            block['items'].append({'id': itemid, 'count': 1})
+        if not found and itemid:
+            block['items'].append({'id': str(itemid), 'count': 1})
     return block
 
 
@@ -138,7 +137,18 @@ def generateItemSetForMatchup(champ1_id, champ2_id, lane):
     elif lane == 'J': 
         raw_lane = "JUNGLE"
     title = champ1 + "_vs_" + champ2 + "_in_" + raw_lane
-    title = title[0:32] 
+    name28 = title[0:28] 
+    name32 = name28
+    if ItemSet.objects.filter(owner=None, name=name28):
+        startindex = 1
+        foundname = False
+        while not foundname:
+            name32 = name28 + '(' + str(startindex) + ')' 
+            if ItemSet.objects.filter(owner=None, name=name32):
+                startindex += 1
+            else:
+                foundname = True
+    title = name32
     newjson['title'] = title
     newjson['type'] = 'global'
     newjson['map'] = 'any'
@@ -171,9 +181,9 @@ def generateItemSetForMatchup(champ1_id, champ2_id, lane):
     fullbuildcheckcutoff = 50*60
 
     normalWeight = 5
-    laneMatchWeight = 8
-    champ2Weight = 5
-    victoryWeight = 3
+    laneMatchWeight = 15
+    champ2Weight = 10
+    victoryWeight = 5
 
     while searched_matches < search_match_limit and champion_matches < champion_match_limit:
         fileToSearch = random.choice(matchfiles)
@@ -772,8 +782,9 @@ def matchup_generate_item(request):
             if not champ1_id or (not champ2_id and champ2 != "") or not valid_lane:
                 return JsonResponse(response)
             possibleitem = ItemSet.objects.filter(owner=None, champ_for=champ1_id, champ_against=champ2_id, lane=lane)
-            if possibleitem:
-                item = possibleitem[0]
+            if possibleitem and possibleitem.count() >= 5:
+                randomindex = random.randint(0, possibleitem.count())
+                item = possibleitem[randomindex]
             else:
                 item = generateItemSetForMatchup(champ1_id, champ2_id, lane)
             response['jsonfile'] = item.json
