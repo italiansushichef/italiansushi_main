@@ -14,7 +14,7 @@ Live URL
 ----
 http://itahmsets.herokuapp.com/
 
-(We are currently hosting using a free Hobby-dev account.)
+(Developed and tested on Chrome, Firefox)
 
 Features
 ----
