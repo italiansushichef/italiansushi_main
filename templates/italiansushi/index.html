@@ -601,6 +601,34 @@
                                         + '<span class="fa fa-download"></span></a></td>';
 
                         resultspanel_html += '<td class="text-center">';
+
+                        {% if not logged_in %}
+                        resultspanel_html +=  '<button class="btn btn-warning btn-cannot-save-item"'
+                                                + 'id="btn_cannot_save:'+ i + '" disabled="disabled">'
+                                                + '<span class="fa fa-floppy-o"></span></button></td>';
+                        resultspanel_html += '<td class="text-center">'
+
+                                                + '<span id="td-upvote_'+ i +'">'
+                                                + '<form method="POST" id="upvote_'+ i +'_form">' 
+                                                + "{% csrf_token %}"
+                                                + '<input type="number" name="idToSave" value="'+ fileid +'" hidden = true/>'
+                                                + '<input type="text" name="owner" value="'+ owner +'" hidden = true/>'
+                                                + '<input type="text" id="upordown_'+ i +'" name="upordown" value="up" hidden = true/>'
+                                                + '</form>'
+                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + 'id="upvote_' + i + '_' + filename +'" disabled="disabled">'
+                                                + '<span id="upvote-count1_' + i+ '"class="fa fa-star-o upvote-count">' 
+                                                    + upvotes + '</span></button>'
+                                                + '</span>'
+
+                                                + '<span id="td-downvote_' + i + '" style="display: none;">'
+                                                + '<button type="submit" class="btn btn-info btn-upvote-itemset btn-sm"'
+                                                + 'id="downvote_' + i + '_' + filename +'">'
+                                                + '<span id="upvote-count2_' + i+ '" class="fa fa-star">' 
+                                                    + upvotes + '</span></button>'
+                                                + '</span>'
+                                            + '</td>';
+                        {% else %}
                         if (response_results[i]['can_save']) {
                             resultspanel_html += '<form method="POST" id="save_'+ i +'_form">' 
                                                 + "{% csrf_token %}"
@@ -664,7 +692,7 @@
                                                 + '</span>'
                                             + '</td>';
                         }
-                                            
+                        {% endif %}                   
                         
                         resultspanel_html += '</tr>';
                         resultspanel_html += '<tr id="item_row:' + i + '"></tr>';

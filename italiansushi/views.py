@@ -662,8 +662,8 @@ def load_item_info(request):
     return JsonResponse({})
 
 # ajax backend for searching item sets
-@login_required
 def search_itemsets(request):
+    PAGE_SIZE = 20
     response = {}
     if request.method == "GET":
         champ1 = str(request.GET['champ1'])
@@ -688,8 +688,8 @@ def search_itemsets(request):
                 possible_matches = possible_matches.filter(lane=response['lane'])
             possible_matches = possible_matches.order_by('-users_upvotes_count')
             
-            startindex = searchpage * 10
-            endindex = (searchpage + 1) * 10
+            startindex = searchpage * PAGE_SIZE
+            endindex = (searchpage + 1) * PAGE_SIZE
             return_ls = possible_matches[startindex:endindex]
             if len(return_ls) == 0: 
                 response["nextpage"] = -1
@@ -700,14 +700,14 @@ def search_itemsets(request):
             for i in range(0, len(return_ls)):
                 can_upvote = True
                 # check if already upvoted
-                if return_ls[i].users_upvotes.filter(id=request.user.id):
+                if not request.user.is_authenticated() or return_ls[i].users_upvotes.filter(id=request.user.id):
                     can_upvote = False
                 if return_ls[i].owner:
                     owner = return_ls[i].owner.username
                 else:
                     owner = 'tmp'
                 can_save = True
-                if return_ls[i].owner and return_ls[i].owner == request.user:
+                if not request.user.is_authenticated() or (return_ls[i].owner and return_ls[i].owner == request.user):
                     can_save = False
                 result = {
                     'json': return_ls[i].json, 'upvotes': return_ls[i].users_upvotes_count, 
