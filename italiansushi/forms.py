@@ -6,7 +6,6 @@ from jsonfield import JSONField
 # for creating new users
 class CreateUserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
-    # repassword = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
@@ -14,7 +13,6 @@ class CreateUserForm(forms.ModelForm):
 # for creating new users
 class CreateUserSaveForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
-    # repassword = forms.CharField(widget=forms.PasswordInput())
     idToSave = forms.IntegerField()
     class Meta:
         model = User
