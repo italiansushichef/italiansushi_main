@@ -31,12 +31,14 @@ for i in idsData:
 #print parsedIds
 itemEvents = ["ITEM_PURCHASED", "ITEM_DESTROYED", "ITEM_SOLD"]
 relevantStats = ["item0","item1","item2","item3","item4","item5","item6","sightWardsBoughtInGame","visionWardsBoughtInGame","wardsKilled","wardsPlaced", "winner"]
-    
+c = 0   
 for parsedId in parsedIds:
     matchid = parsedId["matchid"]
     url = 'https://na.api.pvp.net/api/lol/na/v2.2/match/' + str(matchid) + '?includeTimeline=true&api_key=' + API_KEY
     readMatchDetails = urllib2.urlopen(url)
     matchDetailsData = json.load(readMatchDetails)
+    print c
+    c += 1
     parsedId["duration"] = matchDetailsData["matchDuration"]
     for player in matchDetailsData['participants']:
         champion = {"statistics":{}, "eventlist":[]}
