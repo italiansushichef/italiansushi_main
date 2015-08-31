@@ -766,105 +766,108 @@
         /* ------------------------- End Search JS Functions -------------------------------------- */
         
         $('.uploadTutorial-popup').click(function(e){
-                                         e.preventDefault();
-                                         //console.log("uploadTutorial-btn clicked");
-                                         bootbox.dialog({
-                                                        
-                                                        message: '<div class="row">'
-                                                        + '<div class="col-xs-12">'
-                                                        + '<div class="tutorial-container">'
-                                                        + '<h3> Upload Item Set Tutorial </h3>'
-                                                        + '<p> Upload a saved json file onto the site for ease of access in terms of viewing and editing in the tab ‘Saved Item Sets Manager’</p>'
-                                                        + '<p> Accepted json files are usually in the form of:(picture)</p>'
-                                                        + '<p> You can make item sets on the League by [//askJosephlater](picture??)</p>'
-                                                        + '<br> <p> Click ‘Advanced Options’ to set further details about your item set.</p>'
-                                                        + '<p> Note: You do not need to fill in any of the options at all! If you do decide to, you don’t have to fill in every option!</p><br>'
-                                                        + '<p> \'Champion For\' indicates which champion you are making this item set for.</p>'
-                                                        + '<p> \‘Champion Against\’ indicates which champion this build can be potentially be used against or which lane opponent you faced while in game.</p>'
-                                                        + '<p> The third option simply lets you choose which lane this item set is usually used in. Feel free to leave the option as ‘any lane’ if you honestly think it’d be good for any lane!</p>'
-                                                        + '</div>'
-                                                        + '</div>'
-                                                        + '</div>',
-                                                        onEscape: function() {},
-                                                        });
-                                         });
-                                         
-                                         $('.matchupTutorial-popup').click(function(e){
-                                                                           e.preventDefault();
-                                                                           bootbox.dialog({
-                                                                                          
-                                                                                          message: '<div class="row">'
-                                                                                          + '<div class="col-xs-12">'
-                                                                                          + '<div class="tutorial-container">'
-                                                                                          + '<h3> Matchup Generator Tutorial </h3>'
-                                                                                          + '<p> Type in the champion that you are playing or want to play to get an item set used by the majority of players.</p>'
-                                                                                          + '<p> Furthermore, type in the name of your opponent or potential opponent to narrow down the options of what could possibly help you win lane.</p>'
-                                                                                          + '<p> Going Swain against a Yasuo top instead of mid? Go ahead and fill in the third option to see if the build changes at all. Maybe the lane change means an extra item you should get!</p>'
-                                                                                          + '</div>'
-                                                                                          + '</div>'
-                                                                                          + '</div>',
-                                                                                          onEscape: function() {},
-                                                                                          });
-                                                                           });
-                                                                           
-                                                                           $('.customTutorial-popup').click(function(e){
-                                                                                                            e.preventDefault();
-                                                                                                            bootbox.dialog({
-                                                                                                                           
-                                                                                                                           message: '<div class="row">'
-                                                                                                                           + '<div class="col-xs-12">'
-                                                                                                                           + '<div class="tutorial-container">'
-                                                                                                                           + '<h3>Build Custom Item Set Tutorial</h3>'
-                                                                                                                           + '<p> (tons o pictures) Clicking the button at the top allows you to change the name of the item set you are building.</p>'
-                                                                                                                           + '<p> Click ‘Add a block’ to start off! You can also name individual blocks by clicking on this button next to the delete button.</p>'
-                                                                                                                           + '<p> Simply click the ‘+’ to add an item. If you want to buy more than one of the same item, they will stack, indicated by a number in the lower right corner. Click the ‘x’ in the upper right corner to get rid of the item. Don’t worry, if you have items stacked up, this will not remove all of them; just one!</p>'
-                                                                                                                           + '<p> Done with the greatest Tahm Kench build ever? Click the save button at the upper right corner and you’re good to go! </p>'
-                                                                                                                           + '<p> You can also immediately download the item set to use in game. Good luck on the Fields of Justice! </p>'
-                                                                                                                           + '<p> Click \‘Advanced Options\’ to set further details about your item set.<br>Note: You do not need to fill in any of the options at all! If you do decide to, you don’t have to fill in every option!<br>\'Champion For\' indicates which champion you are making this item set for.<br>‘Champion Against’ indicates which champion this build can be potentially be used against.<br>The third option simply lets you choose which lane this item set is usually used in. Feel free to leave the option as ‘any lane’ if you honestly think it’d be good for any lane!</p>'
-                                                                                                                           + '</div>'
-                                                                                                                           + '</div>'
-                                                                                                                           + '</div>',
-                                                                                                                           onEscape: function() {},
-                                                                                                                           });
-                                                                                                            });
-                                                                                                            
-                                                                                                            $('.searchTutorial-popup').click(function(e){
-                                                                                                                                             e.preventDefault();
-                                                                                                                                             bootbox.dialog({
-                                                                                                                                                            
-                                                                                                                                                            message: '<div class="row">'
-                                                                                                                                                            + '<div class="col-xs-12">'
-                                                                                                                                                            + '<div class="tutorial-container">'
-                                                                                                                                                            + '<h3>Search Tool Tutorial</h3>'
-                                                                                                                                                            + '<p> Have time to look through item sets for the best build ever? This is the right place for you! If you need something for a quick game, it is highly recommended to just go to the ‘Matchup Generator’ tab!</p>'
-                                                                                                                                                            + '<p> First of all, you need to input the champion you want to play in \‘Champion For\’. This is mandatory although all the other options are optional.<br>\‘Champion Against\’ indicates which champion this build can be potentially be used against.<br>The third option simply lets you choose which lane this item set is usually used in. Feel free to leave the option as ‘any lane’ if you honestly think it’d be good for any lane!</p>'
-                                                                                                                                                            + '<p> After you click ‘button’, you’ll get the top ten builds for that specific champ!</p>'
-                                                                                                                                                            + '<p> (picture showing 1, 2, 3) From here on, there are many things you can do:<br>1. Upvote builds! Like what you see? Thumb it up so other people can also enjoy this marvelous creation.<br>2. Download! So you see a build you like, save it into your item sets to go use it in-game<br>3. Move on! Don’t like what you see? That’s okay! Click the next button to get the next ten builds that might work for you! </p>'
-                                                                                                                                                            + '</div>'
-                                                                                                                                                            + '</div>'
-                                                                                                                                                            + '</div>',
-                                                                                                                                                            onEscape: function() {},
-                                                                                                                                                            });
-                                                                                                                                             });
-                                                                                                                                             
-                                                                                                                                             $('.manageTutorial-popup').click(function(e){
-                                                                                                                                                                              e.preventDefault();
-                                                                                                                                                                              bootbox.dialog({
-                                                                                                                                                                                             
-                                                                                                                                                                                             message: '<div class="row">'
-                                                                                                                                                                                             + '<div class="col-xs-12">'
-                                                                                                                                                                                             + '<div class="tutorial-container">'
-                                                                                                                                                                                             + '<h3>Saved Item Sets Manager Tutorial</h3>'
-                                                                                                                                                                                             + '<p> To start off, click the blue button in the middle of the screen. :]</p>'
-                                                                                                                                                                                             + '<p> In here, you can view and manage your item sets!</p>'
-                                                                                                                                                                                             + '<p> (picture of all the functions)<br>Alright, here’s what you can do with all the colorful buttons:</p>'
-                                                                                                                                                                                             + '<p> (picture showing 1, 2, 3) From here on, there are many things you can do:<br>1. Preview(h6): Hopefully, you gave your item sets names so you can easily distinguish which is which. If not, it’s still somewhat okay! You can click the preview button to see your item set<br>Download: Use your item set in game! Clicking this button will open the json file of the item set in a new tab. Don’t know how to actually get this into your game? There’s more info of how below.<br>Edit: Change something in your item set whether it be the name, an item, a new block or anything else you see fit!<br>Delete: Want to make room for an even better item set? If you click this button, you’ll get rid of an already saved item set, but be careful because this action cannot be undone. (Of course you can always make it again in the \‘Item Set Builder\’ tab!</p>'
-                                                                                                                                                                                             + '<p> So how exactly DO you use the downloaded json file? Well...</p>'
-                                                                                                                                                                                             + '</div>'
-                                                                                                                                                                                             + '</div>',
-                                                                                                                                                                                             onEscape: function() {},
-                                                                                                                                                                                             });
-                                                                                                                                                                              });
+         e.preventDefault();
+         //console.log("uploadTutorial-btn clicked");
+         bootbox.dialog({
+                        
+                message: '<div class="row">'
+                        + '<div class="col-xs-12">'
+                        + '<div class="tutorial-container">'
+                        + '<h3> Upload Item Set Tutorial </h3>'
+                        + '<p> Upload a saved json file onto the site for ease of access in terms of viewing and editing in the tab ‘Saved Item Sets Manager’</p>'
+                        + '<p> Accepted json files are usually in the form of:</p>'
+                        + '<img src = "https://i.gyazo.com/0c332b0c1d04e3e2d4cadcdc94d3d8e7.png" style = "border:3px">'
+                        + '<p> You can make item sets on the League by [//askJosephlater](picture??)</p>'
+                        + '<br> <p> Click ‘Advanced Options’ to set further details about your item set.</p>'
+                        + '<p style="font-size:10px"> Note: You do not need to fill in any of the options at all! If you do decide to, you don’t have to fill in every option!</p>'
+                        + '<img style="margin:0px auto;display:block" src = "https://i.gyazo.com/00e93232e57aeeb6de10bb716fa34dc7.png">'
+                        + '<p> \'Champion For\' indicates which champion you are making this item set for.</p>'
+                        + '<p> \‘Champion Against\’ indicates which champion this build can be potentially be used against or which lane opponent you faced while in game.</p>'
+                        + '<p> The third option simply lets you choose which lane this item set is usually used in. Feel free to leave the option as ‘any lane’ if you honestly think it’d be good for any lane!</p>'
+                        + '</div>'
+                        + '</div>'
+                        + '</div>',
+                onEscape: function() {},
+                });
+         });
+         
+         $('.matchupTutorial-popup').click(function(e){
+           e.preventDefault();
+           bootbox.dialog({
+                          
+                  message: '<div class="row">'
+                          + '<div class="col-xs-12">'
+                          + '<div class="tutorial-container">'
+                          + '<h3> Matchup Generator Tutorial </h3>'
+                          + '<p> Type in the champion that you are playing or want to play to get an item set used by the majority of players.</p>'
+                          + '<p> Furthermore, type in the name of your opponent or potential opponent to narrow down the options of what could possibly help you win lane.</p>'
+                          + '<p> Going Swain against a Yasuo top instead of mid? Go ahead and fill in the third option to see if the build changes at all. Maybe the lane change means an extra item you should get!</p>'
+                          + '</div>'
+                          + '</div>'
+                          + '</div>',
+                  onEscape: function() {},
+                  });
+           });
+
+           $('.customTutorial-popup').click(function(e){
+            e.preventDefault();
+            bootbox.dialog({
+                           
+                   message: '<div class="row">'
+                           + '<div class="col-xs-12">'
+                           + '<div class="tutorial-container">'
+                           + '<h3>Build Custom Item Set Tutorial</h3>'
+                           + '<p> (tons o pictures) Clicking the button at the top allows you to change the name of the item set you are building.</p>'
+                           + '<p> Click ‘Add a block’ to start off! You can also name individual blocks by clicking on this button next to the delete button.</p>'
+                           + '<p> Simply click the ‘+’ to add an item. If you want to buy more than one of the same item, they will stack, indicated by a number in the lower right corner. Click the ‘x’ in the upper right corner to get rid of the item. Don’t worry, if you have items stacked up, this will not remove all of them; just one!</p>'
+                           + '<p> Done with the greatest Tahm Kench build ever? Click the save button at the upper right corner and you’re good to go! </p>'
+                           + '<p> You can also immediately download the item set to use in game. Good luck on the Fields of Justice! </p>'
+                           + '<p> Click \‘Advanced Options\’ to set further details about your item set.<br>Note: You do not need to fill in any of the options at all! If you do decide to, you don’t have to fill in every option!<br>\'Champion For\' indicates which champion you are making this item set for.<br>‘Champion Against’ indicates which champion this build can be potentially be used against.<br>The third option simply lets you choose which lane this item set is usually used in. Feel free to leave the option as ‘any lane’ if you honestly think it’d be good for any lane!</p>'
+                           + '</div>'
+                           + '</div>'
+                           + '</div>',
+                   onEscape: function() {},
+                   });
+            });
+            
+            $('.searchTutorial-popup').click(function(e){
+             e.preventDefault();
+             bootbox.dialog({
+                            
+                    message: '<div class="row">'
+                            + '<div class="col-xs-12">'
+                            + '<div class="tutorial-container">'
+                            + '<h3>Search Tool Tutorial</h3>'
+                            + '<p> Have time to look through item sets for the best build ever? This is the right place for you! If you need something for a quick game, it is highly recommended to just go to the ‘Matchup Generator’ tab!</p>'
+                            + '<p> First of all, you need to input the champion you want to play in \‘Champion For\’. This is mandatory although all the other options are optional.<br>\‘Champion Against\’ indicates which champion this build can be potentially be used against.<br>The third option simply lets you choose which lane this item set is usually used in. Feel free to leave the option as ‘any lane’ if you honestly think it’d be good for any lane!</p>'
+                            + '<p> After you click ‘button’, you’ll get the top ten builds for that specific champ!</p>'
+                            + '<p> (picture showing 1, 2, 3) From here on, there are many things you can do:<br>1. Upvote builds! Like what you see? Thumb it up so other people can also enjoy this marvelous creation.<br>2. Download! So you see a build you like, save it into your item sets to go use it in-game<br>3. Move on! Don’t like what you see? That’s okay! Click the next button to get the next ten builds that might work for you! </p>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>',
+                    onEscape: function() {},
+                    });
+             });
+             
+             $('.manageTutorial-popup').click(function(e){
+              e.preventDefault();
+              bootbox.dialog({
+                             
+                     message: '<div class="row">'
+                             + '<div class="col-xs-12">'
+                             + '<div class="tutorial-container">'
+                             + '<h3>Saved Item Sets Manager Tutorial</h3>'
+                             + '<p> To start off, click the blue button in the middle of the screen. :]</p>'
+                             + '<p> In here, you can view and manage your item sets!</p>'
+                             + '<img src="https://i.gyazo.com/05616cc34cf3fe6153c3f3f8c2db5637.png" style="width:90%; height:90%">'
+                             + '<p>Alright, here’s what you can do with all the colorful buttons:</p>'
+                             + '</h5>1. Preview</h5>:<p>Hopefully, you gave your item sets names so you can easily distinguish which is which. If not, it’s still somewhat okay! You can click the preview button to see your item set<br>Download: Use your item set in game! Clicking this button will open the json file of the item set in a new tab. Don’t know how to actually get this into your game? There’s more info of how below.<br>Edit: Change something in your item set whether it be the name, an item, a new block or anything else you see fit!<br>Delete: Want to make room for an even better item set? If you click this button, you’ll get rid of an already saved item set, but be careful because this action cannot be undone. (Of course you can always make it again in the \‘Item Set Builder\’ tab!</p>'
+                             + '<p> So how exactly DO you use the downloaded json file? Well...</p>'
+                             + '</div>'
+                             + '</div>',
+                     onEscape: function() {},
+                     });
+              });
 
 
         /* ------------------------- Upload file JS Functions -------------------------------------- */
