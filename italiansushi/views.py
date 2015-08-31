@@ -82,7 +82,7 @@ def save_itemset(itemToCopy, user):
 
 # helper function: takes in contents (a stringified json) and validates its format
 def validate_jsoncontents(contents):
-    # https://developer.riotgames.com/docs/item-sets
+    # see https://developer.riotgames.com/docs/item-sets for more
     valid_details = {
         "type": ["custom", "global"],
         "map": ["any", "SR", "HA", "TT", "CS"],
@@ -141,9 +141,6 @@ def validate_json(inputfile):
     name = inputfile.name
     content_type = inputfile.content_type
     size = inputfile.size
-
-    # this check isn't working on windows. TODO find out why
-    # if inputfile.content_type != "application/json": return None
 
     # -5: gives the .json extension assuming it is there
     if len(name) < 5 or name[-5:] != '.json':
@@ -204,7 +201,6 @@ def createuser(request):
         if form.is_valid():
             data = form.cleaned_data
             password = data['password']
-            # repassword = data['repassword'] # TODO
             username = data['username']
             email = data['email']
             ## validate username is at most 32 characters, at least 3 characters
@@ -249,7 +245,6 @@ def createuser_save(request):
         if form.is_valid():
             data = form.cleaned_data
             password = data['password']
-            # repassword = data['repassword'] # TODO
             username = data['username']
             email = data['email']
             ## validate username is at most 32 characters, at least 3 characters
@@ -378,9 +373,6 @@ def site_login_save(request):
             return HttpResponseRedirect('/error/?login=formfailure&save=failure')
     return HttpResponseRedirect('/')
 
-
-
-
 # receiving view for uploading a file
 # redirects to main page if success, error page if failure
 @login_required
@@ -420,13 +412,13 @@ def receive_upload(request):
             return HttpResponseRedirect('/error/?upload=formfailure')
     return HttpResponseRedirect('/')
 
-# for viewing an itemset
+# backend for viewing an itemset -- displays the itemset formatted 
 def view_itemset(request):
     url = request.path
     user = url.split('/')[1]
     filename = url.split('/')[-1][:-5]
     itemset = None
-    if user == 'tmp':
+    if user == 'tmp': # special case, tmp is a reserved name
         itemset = ItemSet.objects.filter(owner=None, name=filename)
     else:
         userobject = User.objects.filter(username=user)
@@ -439,26 +431,25 @@ def view_itemset(request):
     return HttpResponse('The requested URL ' + str(request.path) + ' was not found on this server.')
     
 
-# Helper non-view method to get a list of up to n items from the input json 
-def preview_items(itemset, max_items):
-    ls = []
-    try:
-        parsed = jsonlib.loads(itemset.json)
-    except:
-        return None
-    else:
-        blocks = parsed['blocks']
-        for b in blocks:
-            items = b['items']
-            for i in items:
-                if len(ls) >= max_items:
-                    return ls
-                elif 'id' in i:
-                    ls.append(i['id'])
-        return ls
+# Helper: non-view method to get a list of up to n items from the input json ## DEPRECATED 
+# def preview_items(itemset, max_items):
+#     ls = []
+#     try:
+#         parsed = jsonlib.loads(itemset.json)
+#     except:
+#         return None
+#     else:
+#         blocks = parsed['blocks']
+#         for b in blocks:
+#             items = b['items']
+#             for i in items:
+#                 if len(ls) >= max_items:
+#                     return ls
+#                 elif 'id' in i:
+#                     ls.append(i['id'])
+#         return ls
 
-
-# ajax backend for displaying items list
+# ajax backend for displaying items list for the item manager
 @login_required
 def get_items(request):
     response_data = {}
@@ -470,7 +461,7 @@ def get_items(request):
         response_data[i]["jsonfile"] = item_ls[i].json
     return JsonResponse(response_data)
 
-# ajax backed for deleting an item set
+# ajax backed for deleting an item set from the item manager
 @login_required
 def delete_itemset(request):
     if request.method == "POST":
@@ -489,26 +480,27 @@ def delete_itemset(request):
             return HttpResponse('form error')
     return HttpResponse("/")
 
-# ajax backend for autocompleting a champion name
-def autocomplete_champ(request):
-    data = None
-    response = {"ac-match":[],}
-    query = ""
-    if request.method == "GET":
-        query = request.GET['query']
-    with open('static/json-data/champls.json', 'r') as champfile:
-        data = jsonlib.load(champfile)
-    if query == "" or query == None:
-        return JsonResponse(response)
-    q = re.compile(query, re.IGNORECASE)
-    # match is from first character, search is from entire string
-    for champ in data["data"].itervalues():
-        rematch = q.match(champ["name"])
-        if rematch != None and rematch.group() != "":
-            response["ac-match"].append(champ["name"])
-    response["ac-match"].sort()
-    return JsonResponse(response)
+# ajax backend for autocompleting a champion name ## DEPRECATED 
+# def autocomplete_champ(request):
+#     data = None
+#     response = {"ac-match":[],}
+#     query = ""
+#     if request.method == "GET":
+#         query = request.GET['query']
+#     with open('static/json-data/champls.json', 'r') as champfile:
+#         data = jsonlib.load(champfile)
+#     if query == "" or query == None:
+#         return JsonResponse(response)
+#     q = re.compile(query, re.IGNORECASE)
+#     # match is from first character, search is from entire string
+#     for champ in data["data"].itervalues():
+#         rematch = q.match(champ["name"])
+#         if rematch != None and rematch.group() != "":
+#             response["ac-match"].append(champ["name"])
+#     response["ac-match"].sort()
+#     return JsonResponse(response)
 
+# Ajax backend for returning the champion list, for autocomplete
 def load_champ_info(request):
     if request.method == "GET":
         data = None
@@ -518,14 +510,11 @@ def load_champ_info(request):
             return JsonResponse(data)
     return JsonResponse({})
 
-
-# ajax backend for generating an item
+# ajax backend for generating an itemset using matchup generater
 def matchup_generate_item(request):
-    BLANK_ID = 0
     if request.method == "POST":
         form = GenerateItemSetForm(request.POST)
         if form.is_valid():
-
             data = form.cleaned_data
             response = {'jsonfile':None}
             champdata = None
@@ -556,6 +545,7 @@ def matchup_generate_item(request):
             return JsonResponse({'jsonfile':None})
     return HttpResponseRedirect('/')
 
+# ajax backend for saving the matchup generated file, given the item set id
 @login_required
 def matchup_save_file(request):
     if request.method == "POST":
@@ -583,6 +573,7 @@ def matchup_save_file(request):
             return JsonResponse({'success':False})
     return HttpResponseRedirect('/')
 
+# ajax backend for a file found in search, given the item set id
 @login_required
 def search_save_file(request):
     if request.method == "POST":
@@ -607,6 +598,7 @@ def search_save_file(request):
         return JsonResponse({'success':True, 'savetitle': title})
     return HttpResponseRedirect('/')
 
+# ajax backend for up/downvoting a file found in search, given the item set id and the upordown vote
 @login_required
 def search_upvote_file(request):
     if request.method == "POST":
@@ -638,6 +630,7 @@ def search_upvote_file(request):
         
     return HttpResponseRedirect('/')
 
+# ajax backend for saving the file made in the custom file editor
 @login_required
 def custom_save_file(request):
     if request.method == "POST":
@@ -658,6 +651,7 @@ def custom_save_file(request):
         return JsonResponse(response)
     return HttpResponseRedirect('/')
 
+# ajax backend for sending the itemset data to frontend
 def load_item_info(request):
     if request.method == "GET":
         data = None
@@ -667,6 +661,7 @@ def load_item_info(request):
             return JsonResponse(data)
     return JsonResponse({})
 
+# ajax backend for searching item sets
 @login_required
 def search_itemsets(request):
     response = {}
