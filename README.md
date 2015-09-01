@@ -7,7 +7,7 @@ Made by: Kevin Wang (NA: donutgodking) and Alex Zhang (NA: ACannibal)
 
 About
 ----
-iTahmSets was created for the Riot API Challenge 2.0 in August 2015, for the Category: Item Sets. We strived to the "go-to" online hub for working with items sets, and our site provides 5 distinct tools for users. You can see the live website's tutorials in the tabs for details on usage. We woud like to highlight the single-page app design, which is both intuitive and easy to pick up, while also encompassing a wide array of features that other websites don't all provide. Due to time constraints, we weren't able to include everything we wanted, which is addressed in the Limitations section. The site's 5 core tools are featured in more detail below.
+iTahmSets was created for the Riot API Challenge 2.0 in August 2015, for the Category: Item Sets. We strived to the "go-to" all-encompassing online hub for working with items sets through 5 distinct tools for users. Detailed tutorials for each tool are available on the live website. We woud like to highlight the site's single-page app design, with a user-interface that is both intuitive and easy to pick up. At the same time, our site encompasses a wide array of features that other websites won't all provide. Due to time constraints, we weren't able to include everything we wanted, which is addressed in the Limitations section. The site's 5 core tools are featured in more detail below.
 
 Features
 ----
