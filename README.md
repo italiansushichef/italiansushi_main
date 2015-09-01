@@ -39,7 +39,7 @@ http://itahmsets.herokuapp.com/
 
 Data Set for Matchup Generator
 ----
-Using the Riot Developmental API, we collected ~11,000 ranked players from the Plat-Diamond range and ~50,000 of their unique ranked SR matches. Due to GitHub repo limits, we currently only use a smaller set of ~5000 matches to generate lane matchups.  In the future this will be increased, which will drastically improve the generated matchup results.
+Using the Riot Developmental API, we collected ~11,000 ranked players from the Plat-Diamond range, and used those players to collect ~10,000 matchids. We pre-processed the match information to take only the relevant information: duration, and for each participant the champion id and item events. This preprocessed info is stored as a static file on our website, which we access to generate the matchup item sets. Due to GitHub repo limits, we currently only use a smaller set of ~5000 matches to generate lane matchups. In the future this will be increased when we scale up, which will result in drastically improving the generated matchup results (right now it's only really good for popular champions). We also plan to make this process a scheduled Cron Job in the future, updating the match information every few days in order to keep the data fresh, while updating the static data (champion and item info) every patch.
 
 Development Stack
 ----
