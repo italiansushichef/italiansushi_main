@@ -31,7 +31,7 @@ This tool allows users, with or without an account, to view and vote for the hig
 
 This tool also users to manage the item sets saved to their account on the website, with features like preview, download, and delete. The website user accounts currently only allows 10 item sets to be saved per account. This also provides the functionality to edit existing item sets or tweak any sets saved from the matchup generator or the search tool as you see fit.
 
-Live URL
+Live URL (Demo)
 ----
 http://itahmsets.herokuapp.com/
 
