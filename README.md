@@ -17,19 +17,19 @@ This tool requires a free website account to use, and is intended to allow users
 
 * <strong>Matchup Generator</strong>: From our dataset, we parse item information from thousands of matches and use a weighted algorithm based on the lane, opponent champion, and who won the game to generate an item sets of 5 blocks: Starting Items, Early Game, Mid Game, Late Game, Full Build. The algorithm can be found in the <b> generateItemSetForMatchup(champ1_id, champ2_id, lane) </b> function in <i>italiansushi_main/italiansushi/views.py</i>
  
-This tool makes use of the match data collected by the Riot API to generate item sets specific for lane matchups, and can be used without a website account. It is intended to provide benefit for users, specifically in ranked games. If you know your lane matchup during pick and ban phase of a ranked game, you can quickly use our site to generate an optimized item set, and as long as you download and save it before the game starts loading, you can use the item set to get that extra edge on your opponent. You can also save item sets to your website account and tweak it as necessary.
+This tool makes use of the match data collected by the Riot API to generate item sets specific for lane matchups, and can be used without a website account. It is intended to provide benefit for users in ranked games; if you know your lane matchup during pick and ban phase of a ranked game, you can quickly use our site to generate an optimized item set, and as long as you download and save it before the game starts loading, you can use the item set to get that extra edge on your opponent. You can also save item sets to your website account and tweak it as necessary.
 
 * <strong>Item Set Builder</strong>: Design a custom item set in-browser that can be downloaded and used in-game.
  
-This tool provides the functionality of building an item set completely from scratch, thus providing an alternative, out-of-client option for building item sets. Users do not need a website account to use this, but will need to create an account for free in order to save the custom item set and download it.
+This tool provides the functionality of building an item set completely from scratch, thus providing an alternative, out-of-client option for building item sets. Users do not need a website account to start building a set, but will need to create an account for free in order to save the custom item set and download it.
 
 * <strong>Search Tool</strong>: Browse by champion and lane to see the most popular item sets that other users have uploaded or designed. You can vote on your favorites too!
  
-This tool allows users, with or without an account, to view and vote for the highest rated item sets on our site. You can search by champion or lane or matchup, and are returned a list of the top 20 item sets (including your own!) which are then available for download, voting (you can star the ones you like), or saving to your website account to tweak.
+This tool allows users, with or without an account, to view and vote for the highest rated item sets on our site. You can search by champion or lane or matchup, and are returned a list of the top 20 item sets (including your own!) which are then available for download, voting (you can star the ones you like!), or saving to your account to modify as necessary.
 
 * <strong>Saved Item Set Manager</strong>:View, edit, and download all item sets saved to your account. You can save up to 10 item sets to a single account.
 
-This tool also users to manage the item sets saved to their account on the website, with features like preview, download, and delete. The website user accounts currently only allows 10 item sets to be saved per account. This also provides the functionality to edit existing item sets or tweak ones from the matchup generator or the search tool as you see fit.
+This tool also users to manage the item sets saved to their account on the website, with features like preview, download, and delete. The website user accounts currently only allows 10 item sets to be saved per account. This also provides the functionality to edit existing item sets or tweak any sets saved from the matchup generator or the search tool as you see fit.
 
 Live URL
 ----
@@ -44,7 +44,7 @@ Using the Riot Developmental API, we collected ~11,000 ranked players from the P
 Development Stack
 ----
 All code is provided on GitHub, with comments to guide.
-* Django -- website backend 
+* Python via Django -- website backend 
 * Python scripts for Riot API Calls -- for data collecting
 * Bootstrap, JQuery, Font-awesome.css, Bootbox.js -- website front-end, code is organized by the tool
 * Postgresql (hosted on Heroku) -- database 
@@ -56,7 +56,8 @@ Limitations
 ----
 * We are currently hosting using a free Hobby-dev account, which is limited in the database size and app awake time, though it will support any expected traffic for the purposes of the competition.
 * As mentioned, our data set for the matchup generator is limited in the live version because of the repo limits. This drastically limits the quality of the generated item sets, but the underlying algorithm is what we'd like to highlight.
-* Our website is designed to be easier scaled to a large user base, which will be when the tools become much more beneficial. For example, the Search tool is currently not as useful as it potentially could be, due to the lack of users on our website. The item sets that can be found from search were created during development, but when we pick up users this can highlight popular builds, searchable by champion and/or lane. 
+* Our website is designed to be easier scaled to a large user base, which will be when the tools become much more beneficial. 
+ * For example, the Search tool is currently not as useful as it potentially could be, due to the lack of users on our website. The item sets that can currently be found from search were created during development for us and a small number of test users; but when the site pick ups more users, the Search tool becomes drastically more interesting, highlighting popular builds searchable by champion and/or lane and rated by the community. 
 * There are likely many minor bugs throughout, since we did not have time for widespread open user testing.
 
 In the future (aka if we had more time), we'd add more features to building item sets with the more advanced (optional) fields listed in the item set documentation, add support for Item Sets for modes outside of SR, and fine-tune the matchup item set generator algorithm. Our front-end tools are well organized and easily modifiable to allow for additional features. We look forward to pushing more features and seeing the impact of iTahmSets when we gain a critical mass of users in the future!
